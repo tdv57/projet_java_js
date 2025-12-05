@@ -16,6 +16,7 @@ import com.ensta.myfilmlist.dto.*;
 import com.ensta.myfilmlist.exception.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.persistence.controller.FilmController;
+
 @RestController
 @RequestMapping("/film")
 public class FilmControllerImpl implements FilmController {
@@ -32,5 +33,4 @@ public class FilmControllerImpl implements FilmController {
             throw new ControllerException("FilmControllerImpl::getAllFilms", e);
         }
     }
-
 }

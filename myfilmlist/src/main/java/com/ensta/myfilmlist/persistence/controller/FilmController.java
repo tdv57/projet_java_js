@@ -10,6 +10,6 @@ import com.ensta.myfilmlist.dto.*;
 import com.ensta.myfilmlist.exception.*;
 
 public interface FilmController {
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<FilmDTO>> getAllFilms() throws ControllerException;
 }
