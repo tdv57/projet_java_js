@@ -23,6 +23,7 @@ import com.ensta.myfilmlist.persistence.ConnectionManager;
 public class JdbcRealisateurDAO implements RealisateurDAO {
     @Autowired
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate(ConnectionManager.getDataSource());
+
     private final RowMapper<Realisateur> rowMapper = (ResultSet resultSet, int rowNum) -> {
         Realisateur realisateur = new Realisateur();
         realisateur.setId(resultSet.getLong("id"));
@@ -87,7 +88,7 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
             return statement;
         };
         jdbcTemplate.update(creator, keyHolder);
-        realisateur.setId(keyHolder.getKey().longValue());
+        realisateur.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
         return realisateur;
     }
 }

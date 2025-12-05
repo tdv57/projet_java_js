@@ -22,8 +22,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class JdbcFilmDAO implements FilmDAO {
+
     @Autowired
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate(ConnectionManager.getDataSource());
+
     private final RowMapper<Film> rowMapper = (ResultSet resultSet, int rowNum) -> {
         Film film = new Film();
         film.setId(resultSet.getLong("id"));
@@ -65,7 +67,7 @@ public class JdbcFilmDAO implements FilmDAO {
             return statement;
         };
         jdbcTemplate.update(creator, keyHolder);
-        film.setId(keyHolder.getKey().longValue());
+        film.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
         return film;
     }
 
