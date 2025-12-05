@@ -43,9 +43,9 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
 
     @Override
     public Realisateur findByNomAndPrenom(String nom, String prenom) {
-        String query = "SELECT * FROM Realisateur WHERE prenom LIKE ? AND nom LIKE ?";
+        String query = "SELECT * FROM Realisateur WHERE prenom=? AND nom=?";
         try {
-            return jdbcTemplate.queryForObject(query,this.rowMapper,prenom, nom);
+            return jdbcTemplate.queryForObject(query,this.rowMapper, prenom, nom);
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
             return null;
         }

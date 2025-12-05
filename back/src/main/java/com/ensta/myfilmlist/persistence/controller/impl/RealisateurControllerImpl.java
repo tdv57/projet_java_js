@@ -48,8 +48,8 @@ public class RealisateurControllerImpl implements RealisateurController {
     }
 
     @Override
-    @GetMapping("/{nom}&{prenom}")
-    public ResponseEntity<RealisateurDTO> getRealisateurByNameAndSurname(@PathVariable String nom, @PathVariable String prenom) throws ControllerException {
+    @GetMapping("/")
+    public ResponseEntity<RealisateurDTO> getRealisateurByNameAndSurname(@RequestParam String nom, @RequestParam String prenom) throws ControllerException {
         try {
             RealisateurDTO realisateurDTO = RealisateurMapper.convertRealisateurToRealisateurDTO(myFilmsService.findRealisateurByNomAndPrenom(nom, prenom));
             if (realisateurDTO == null) {
