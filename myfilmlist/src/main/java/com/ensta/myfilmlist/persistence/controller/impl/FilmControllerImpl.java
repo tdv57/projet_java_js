@@ -14,6 +14,8 @@ import com.ensta.myfilmlist.dto.*;
 import com.ensta.myfilmlist.exception.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/film")
 public class FilmControllerImpl implements FilmController {
@@ -45,7 +47,7 @@ public class FilmControllerImpl implements FilmController {
     }
     @Override
     @PostMapping
-    public ResponseEntity<FilmDTO> createFilm(@RequestBody FilmForm filmForm) throws ControllerException {
+    public ResponseEntity<FilmDTO> createFilm(@Valid @RequestBody FilmForm filmForm) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createFilm(filmForm));
         } catch (ServiceException e) {
