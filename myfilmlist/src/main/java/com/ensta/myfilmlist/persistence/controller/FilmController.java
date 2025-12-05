@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import com.ensta.myfilmlist.dto.*;
 import com.ensta.myfilmlist.exception.*;
@@ -19,7 +18,6 @@ import com.ensta.myfilmlist.exception.*;
 @Tag(name = "Film", description = "Opération sur les films")
 public interface FilmController {
 
-     @GetMapping("")
      @ApiOperation(value = "Lister les films", notes = "Permet de renvoyer la liste de tous les films.", produces = MediaType.APPLICATION_JSON_VALUE)
      @ApiResponses(value = {
              @ApiResponse(code = 200, message = "La liste des films a été renvoyée correctement")
@@ -33,10 +31,10 @@ public interface FilmController {
     })
      ResponseEntity<FilmDTO> getFilmById(Long id) throws ControllerException;
 
-    @ApiOperation(value = "Créer un film", notes = "Permet de créer un film d'après un formulaire.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Ajouter un film", notes = "Permet d'ajouter un film d'après un formulaire.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Le film a bien été crée"),
-            @ApiResponse(code = 404, message = "Le film n'a pas pu être crée")
+            @ApiResponse(code = 200, message = "Le film a bien été ajouté"),
+            @ApiResponse(code = 404, message = "Le film n'a pas pu être ajouté")
     })
     ResponseEntity<FilmDTO> createFilm(FilmForm filmForm) throws ControllerException;
 
