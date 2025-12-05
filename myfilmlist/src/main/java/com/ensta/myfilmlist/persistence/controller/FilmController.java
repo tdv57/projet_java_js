@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.dto.*;
 import com.ensta.myfilmlist.exception.*;
 
@@ -27,7 +26,7 @@ public interface FilmController {
      })
      ResponseEntity<List<FilmDTO>> getAllFilms() throws ControllerException;
 
-    @ApiOperation(value = "Recherche un film", notes = "Permet de renvoyer les détails d'un film grâce à son identifiant.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Rechercher un film", notes = "Permet de renvoyer les détails d'un film grâce à son identifiant.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le film demandé a été trouvé"),
             @ApiResponse(code = 404, message = "Le film demandé n'existe pas")
@@ -40,5 +39,12 @@ public interface FilmController {
             @ApiResponse(code = 404, message = "Le film n'a pas pu être crée")
     })
     ResponseEntity<FilmDTO> createFilm(FilmForm filmForm) throws ControllerException;
+
+    @ApiOperation(value = "Supprimer un film", notes = "Permet de supprimer un film d'après son identifiant.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Le film a bien été supprimé"),
+            @ApiResponse(code = 404, message = "Le film n'a pas pu être supprimé")
+    })
+    ResponseEntity<?> deleteFilm(Long id) throws ControllerException;
 
 }

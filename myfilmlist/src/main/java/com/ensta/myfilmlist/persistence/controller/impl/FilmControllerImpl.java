@@ -46,7 +46,7 @@ public class FilmControllerImpl implements FilmController {
         }
     }
     @Override
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<FilmDTO> createFilm(@Valid @RequestBody FilmForm filmForm) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createFilm(filmForm));
@@ -54,5 +54,14 @@ public class FilmControllerImpl implements FilmController {
             throw new ControllerException("FilmControllerImpl::createFilm", e);
         }
     }
-
+    @Override
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<?> deleteFilm(@PathVariable Long id) throws ControllerException {
+        try {
+            myFilmsService.deleteFilm(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        } catch (ServiceException e) {
+        throw new ControllerException("FilmControllerImpl::deleteFilm", e);
+        }
+    }
 }
