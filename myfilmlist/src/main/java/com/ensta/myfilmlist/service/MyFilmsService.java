@@ -10,15 +10,16 @@ import com.ensta.myfilmlist.dto.*;
 
 
 public interface MyFilmsService {
-    public Realisateur updateRealisateurCelebre(Realisateur realisateur) throws ServiceException;
-    public int calculerDureeTotale(List<Film> filmRealises);
-    public Optional<Double> calculerNoteMoyenne(List<Double> notes);
-    public List<Realisateur> updateRealisateurCelebres(List<Realisateur> realisateurs) throws ServiceException;
-    public List<Film> findAll() throws ServiceException;
-    public FilmDTO createFilm(FilmForm filmForm) throws ServiceException;
-    public RealisateurDTO createRealisateur(Realisateur realisateur);
-    public List<Realisateur> findAllRealisateurs() throws ServiceException;
-    public Realisateur findRealisateurByNomAndPrenom(String nom, String prenom) throws ServiceException;
-    public Film findFilmById(long id) throws ServiceException;
-    public void deleteFilm(long id) throws ServiceException;
+    Realisateur updateRealisateurCelebre(Realisateur realisateur) throws ServiceException;
+    int calculerDureeTotale(List<Film> filmRealises);
+    Optional<Double> calculerNoteMoyenne(List<Double> notes);
+    List<Realisateur> updateRealisateurCelebres(List<Realisateur> realisateurs) throws ServiceException;
+    List<Film> findAll() throws ServiceException;
+    FilmDTO createFilm(FilmForm filmForm) throws ServiceException;
+    RealisateurDTO createRealisateur(Realisateur realisateur) throws ServiceException;
+    List<Realisateur> findAllRealisateurs() throws ServiceException;
+    Realisateur findRealisateurById(Long id) throws ServiceException;
+    Realisateur findRealisateurByNomAndPrenom(String nom, String prenom) throws ServiceException;
+    Film findFilmById(long id) throws ServiceException;
+    void deleteFilm(long id) throws ServiceException;
 }

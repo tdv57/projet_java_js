@@ -7,23 +7,19 @@ import com.ensta.myfilmlist.mapper.RealisateurMapper;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Realisateur;
 import com.ensta.myfilmlist.service.*;
-import com.ensta.myfilmlist.dao.impl.JdbcFilmDAO;
 import com.ensta.myfilmlist.dao.impl.JdbcRealisateurDAO;
 import com.ensta.myfilmlist.dao.FilmDAO;
 import com.ensta.myfilmlist.dao.RealisateurDAO;
-import com.ensta.myfilmlist.form.FilmForm;
-import scala.languageFeature.dynamics;
 import com.ensta.myfilmlist.dto.*;
 
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResizableByteArrayOutputStream;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +34,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
      * La méthode prend en entré un Realisateur non null, si le Realisateur a fait au moins 3 films indique celebre=true, le cas contraire celebre=false, renvoit le Realisateur modifié.
      */
     @Override
+    @Transactional
     public Realisateur updateRealisateurCelebre(Realisateur realisateur) throws ServiceException {
         try {
             if (realisateur==null) {
@@ -81,7 +78,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
         return Optional.of(((double) Math.round(noteMoyenne*100 / notes.size())) / 100);
     }
 
-    @Override 
+    @Override
+    @Transactional
     public List<Realisateur> updateRealisateurCelebres(List<Realisateur> realisateurs) throws ServiceException {
         try {
         List<Realisateur> realisateursCelebres = realisateurs.stream()
@@ -105,7 +103,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
         return this.filmDAO.findAll();
     }
     
-    @Override 
+    @Override
+    @Transactional
     public FilmDTO createFilm(FilmForm filmForm) throws ServiceException {
         Film film = this.filmDAO.save(FilmMapper.convertFilmFormToFilm(filmForm));
         if (film.getRealisateur() == null) {
@@ -117,7 +116,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public RealisateurDTO createRealisateur(Realisateur realisateur) {
+    public RealisateurDTO createRealisateur(Realisateur realisateur) throws ServiceException {
         realisateur = this.realisateurDAO.save(realisateur);
         return RealisateurMapper.convertRealisateurToRealisateurDTO(realisateur);
     }
@@ -126,6 +125,17 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     public List<Realisateur> findAllRealisateurs() throws ServiceException {
         JdbcRealisateurDAO jdbcRealisateurDAO = new JdbcRealisateurDAO();
         return jdbcRealisateurDAO.findAll();
+    }
+
+    @Override
+    public Realisateur findRealisateurById(Long id) throws ServiceException {
+        JdbcRealisateurDAO jdbcRealisateurDAO = new JdbcRealisateurDAO();
+        Optional<Realisateur> realisateur = jdbcRealisateurDAO.findById(id);
+        if (realisateur.isPresent()) {
+            return realisateur.get();
+        } else {
+            throw new ServiceException ("Le realisateur n'existe pas");
+        }
     }
 
     @Override
