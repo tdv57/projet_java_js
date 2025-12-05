@@ -1,5 +1,6 @@
 package com.ensta.myfilmlist.dao.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -21,7 +22,9 @@ import com.ensta.myfilmlist.service.impl.MyFilmsServiceImpl;
 
 @Repository
 public class JdbcRealisateurDAO implements RealisateurDAO {
-    private final JdbcTemplate jdbcTemplate = new JdbcTemplate(ConnectionManager.getDataSource());
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
  
     @Override
     public List<Realisateur> findAll() {

@@ -21,11 +21,13 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Repository
 public class JdbcFilmDAO implements FilmDAO {
     
-    private final JdbcTemplate jdbcTemplate = new JdbcTemplate(ConnectionManager.getDataSource());
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     
     @Override
     public List<Film> findAll() throws ServiceException {
