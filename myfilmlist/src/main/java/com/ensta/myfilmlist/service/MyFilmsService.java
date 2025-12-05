@@ -3,7 +3,6 @@ package com.ensta.myfilmlist.service;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.FilmForm;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import com.ensta.myfilmlist.model.*;
 import com.ensta.myfilmlist.dto.*;
