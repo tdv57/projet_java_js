@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Min;
 /**
- * Contient les donnees pour requeter un film.
+ * Contient les donnees pour créer un nouveau film.
  */
 public class FilmForm {
 
