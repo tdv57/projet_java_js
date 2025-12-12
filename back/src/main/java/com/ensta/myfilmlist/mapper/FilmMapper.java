@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import java.util.Optional;
 
 import com.ensta.myfilmlist.dto.FilmDTO;
-import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.dao.impl.JdbcRealisateurDAO;
@@ -60,10 +59,10 @@ public class FilmMapper {
 	}
 
 	/**
-	 * Convertit un Form en film.
+	 * Convertit un formulaire de film (FilmForm) en film.
 	 * 
-	 * @param filmForm le Form a convertir
-	 * @return Un Film construit a partir des donnes du Form.
+	 * @param filmForm le Form à convertir
+	 * @return Un Film construit à partir des données du Form.
 	 */
 	public static Film convertFilmFormToFilm(FilmForm filmForm) {
 		Film film = new Film();

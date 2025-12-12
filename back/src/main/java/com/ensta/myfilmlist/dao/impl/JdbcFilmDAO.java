@@ -81,16 +81,32 @@ public class JdbcFilmDAO implements FilmDAO {
             return Optional.empty();
         }
     }
-    
+
     @Override
-    public void delete(Film film) {
-        String query = "DELETE FROM Film WHERE id=?";
-        this.jdbcTemplate.update(query, film.getId());
+    public Optional<Film> findByTitle(String title) {
+        String query = "SELECT * FROM Film JOIN Realisateur ON Film.realisateur_id = Realisateur.id WHERE Film.titre=?";
+        try {
+            Film film = this.jdbcTemplate.queryForObject(query, this.rowMapper, title);
+            return Optional.of(film);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<Film> findByRealisateurId(long realisateur_id) {
         String query = "SELECT * FROM Realisateur JOIN Film ON Film.realisateur_id = Realisateur.id WHERE Realisateur.id=?";
         return this.jdbcTemplate.query(query, this.rowMapper, realisateur_id);
+    }
+
+    @Override
+    public Film update(long id, Film film) throws ServiceException {
+        return null;
+    }
+    
+    @Override
+    public void delete(Film film) {
+        String query = "DELETE FROM Film WHERE id=?";
+        this.jdbcTemplate.update(query, film.getId());
     }
 }

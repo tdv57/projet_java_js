@@ -113,7 +113,49 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public RealisateurDTO createRealisateur(Realisateur realisateur) throws ServiceException {
+    public List<Film> findAll() throws ServiceException {
+        return this.filmDAO.findAll();
+    }
+
+    @Override
+    public Film findFilmById(long id) throws ServiceException {
+        Optional<Film> film = this.filmDAO.findById(id);
+        if (film.isEmpty()) {
+            throw new  ServiceException ("Le film demandé n'existe pas");
+        }
+        return film.get();
+    }
+
+    @Override
+    public Film findFilmByTitle(String title) throws ServiceException {
+        Optional<Film> film = this.filmDAO.findByTitle(title);
+        if (film.isEmpty()) {
+            throw new ServiceException("Le film demandé n'existe pas");
+        }
+        return film.get();
+    }
+
+    @Override
+    @Transactional
+    public FilmDTO updateFilm(long id, FilmForm filmForm) throws ServiceException {
+        Film new_film = FilmMapper.convertFilmFormToFilm(filmForm);
+        Film film = this.filmDAO.update(id, new_film);
+        return FilmMapper.convertFilmToFilmDTO(film);
+    }
+
+    @Override
+    @Transactional
+    public void deleteFilm(long id) throws ServiceException {
+        Film film = findFilmById(id);
+        this.filmDAO.delete(film);
+        updateRealisateurCelebre(film.getRealisateur());
+    }
+
+
+    @Override
+    @Transactional
+    public RealisateurDTO createRealisateur(RealisateurForm realisateurForm) throws ServiceException {
+        Realisateur realisateur = RealisateurMapper.convertRealisateurFormToRealisateur(realisateurForm);
         realisateur = this.realisateurDAO.save(realisateur);
         return RealisateurMapper.convertRealisateurToRealisateurDTO(realisateur);
     }

@@ -24,7 +24,14 @@ public interface FilmController {
      })
      ResponseEntity<List<FilmDTO>> getAllFilms() throws ControllerException;
 
-    @ApiOperation(value = "Rechercher un film", notes = "Permet de renvoyer les détails d'un film grâce à son identifiant.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Rechercher un film par son titre", notes = "Permet de renvoyer les détails d'un film grâce à son titre.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Le film demandé a été trouvé"),
+            @ApiResponse(code = 404, message = "Le film demandé n'existe pas")
+    })
+    ResponseEntity<FilmDTO> getFilmByTitle(String title) throws ControllerException;
+
+    @ApiOperation(value = "Rechercher un film par son identifiant", notes = "Permet de renvoyer les détails d'un film grâce à son identifiant.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le film demandé a été trouvé"),
             @ApiResponse(code = 404, message = "Le film demandé n'existe pas")
@@ -37,6 +44,14 @@ public interface FilmController {
             @ApiResponse(code = 404, message = "Le film n'a pas pu être ajouté")
     })
     ResponseEntity<FilmDTO> createFilm(FilmForm filmForm) throws ControllerException;
+
+    @ApiOperation(value = "Éditer un film", notes = "Permet d'étider un film d'après un formulaire.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Le film a bien été édité"),
+            @ApiResponse(code = 404, message = "Le film n'a pas pu être édité")
+    })
+    ResponseEntity<FilmDTO> updateFilm(Long id, FilmForm filmForm) throws ControllerException;
+
 
     @ApiOperation(value = "Supprimer un film", notes = "Permet de supprimer un film d'après son identifiant.")
     @ApiResponses(value = {

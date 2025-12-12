@@ -9,13 +9,14 @@ import com.ensta.myfilmlist.dto.*;
 
 
 public interface MyFilmsService {
-    Realisateur updateRealisateurCelebre(Realisateur realisateur) throws ServiceException;
-    int calculerDureeTotale(List<Film> filmRealises);
-    Optional<Double> calculerNoteMoyenne(List<Double> notes);
-    List<Realisateur> updateRealisateurCelebres(List<Realisateur> realisateurs) throws ServiceException;
-    List<Film> findAll() throws ServiceException;
     FilmDTO createFilm(FilmForm filmForm) throws ServiceException;
-    RealisateurDTO createRealisateur(Realisateur realisateur) throws ServiceException;
+    List<Film> findAll() throws ServiceException;
+    Film findFilmById(long id) throws ServiceException;
+    Film findFilmByTitle(String title) throws ServiceException;
+    FilmDTO updateFilm(long id, FilmForm filmForm) throws ServiceException;
+    void deleteFilm(long id) throws ServiceException;
+
+    RealisateurDTO createRealisateur(RealisateurForm realisateurForm) throws ServiceException;
     List<Realisateur> findAllRealisateurs() throws ServiceException;
     Realisateur findRealisateurById(Long id) throws ServiceException;
     Realisateur findRealisateurByNomAndPrenom(String nom, String prenom) throws ServiceException;
