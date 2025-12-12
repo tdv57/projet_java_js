@@ -1,8 +1,6 @@
 package com.ensta.myfilmlist.form;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Min;
-import java.security.Timestamp;
 import java.time.LocalDate;
 
 /**

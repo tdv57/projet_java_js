@@ -2,6 +2,7 @@ package com.ensta.myfilmlist.persistence.controller;
 
 import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.exception.ControllerException;
+import com.ensta.myfilmlist.form.RealisateurForm;
 import com.ensta.myfilmlist.model.Realisateur;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,14 +23,14 @@ public interface RealisateurController {
     })
     ResponseEntity<List<RealisateurDTO>> getAllRealisateurs() throws ControllerException;
 
-    @ApiOperation(value = "Recherche un réalisateur", notes = "Permet de renvoyer les détails d'un réalisateur grâce à son identifiant.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Recherche un réalisateur par son identifiant", notes = "Permet de renvoyer les détails d'un réalisateur grâce à son identifiant.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le réalisateur demandé a été trouvé"),
             @ApiResponse(code = 404, message = "Le réalisateur demandé n'existe pas")
     })
     ResponseEntity<RealisateurDTO> getRealisateurById(Long id) throws ControllerException;
 
-    @ApiOperation(value = "Recherche un réalisateur", notes = "Permet de renvoyer les détails d'un réalisateur grâce à son nom et prénom.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Recherche un réalisateur par son nom et prénom", notes = "Permet de renvoyer les détails d'un réalisateur grâce à son nom et prénom.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le réalisateur demandé a été trouvé"),
             @ApiResponse(code = 404, message = "Le réalisateur demandé n'existe pas")
@@ -41,6 +42,6 @@ public interface RealisateurController {
             @ApiResponse(code = 200, message = "Le réalisateur a bien été ajouté"),
             @ApiResponse(code = 404, message = "Le réalisateur n'a pas pu être ajouté")
     })
-    ResponseEntity<RealisateurDTO> createRealisateur(Realisateur realisateur) throws ControllerException;
+    ResponseEntity<RealisateurDTO> createRealisateur(RealisateurForm realisateurForm) throws ControllerException;
 
 }

@@ -3,6 +3,7 @@ package com.ensta.myfilmlist.persistence.controller.impl;
 import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.exception.ControllerException;
 import com.ensta.myfilmlist.exception.ServiceException;
+import com.ensta.myfilmlist.form.RealisateurForm;
 import com.ensta.myfilmlist.mapper.RealisateurMapper;
 import com.ensta.myfilmlist.model.Realisateur;
 import com.ensta.myfilmlist.persistence.controller.RealisateurController;
@@ -10,6 +11,7 @@ import com.ensta.myfilmlist.service.MyFilmsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/realisateur")
+@CrossOrigin
 public class RealisateurControllerImpl implements RealisateurController {
 
     @Autowired
@@ -63,11 +66,10 @@ public class RealisateurControllerImpl implements RealisateurController {
 
 
     @Override
-    @PostMapping("/add")
-    public ResponseEntity<RealisateurDTO> createRealisateur(@Valid @RequestBody Realisateur realisateur) throws ControllerException {
-        //TODO: add a RealisateurFrom as for film
+    @PostMapping(path="/add", consumes=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RealisateurDTO> createRealisateur(@Valid @RequestBody RealisateurForm realisateurForm) throws ControllerException {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createRealisateur(realisateur));
+            return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createRealisateur(realisateurForm));
         } catch (ServiceException e) {
             throw new ControllerException("RealisateurControllerImpl::createRealisateur", e);
         }
