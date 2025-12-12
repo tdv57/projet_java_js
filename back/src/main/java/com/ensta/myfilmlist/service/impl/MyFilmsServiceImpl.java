@@ -35,9 +35,6 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Transactional
     public Realisateur updateRealisateurCelebre(Realisateur realisateur) throws ServiceException {
         try {
-            if (realisateur==null) {
-                System.out.println("realisateur==null");
-            }
             List<Film> filmsDuRealisateur = filmDAO.findByRealisateurId(realisateur.getId());
             realisateur.setFilmRealises(filmsDuRealisateur);
             if (realisateur.getFilmRealises().size() >= NB_FILMS_MIN_REALISATEUR_CELEBRE) {
