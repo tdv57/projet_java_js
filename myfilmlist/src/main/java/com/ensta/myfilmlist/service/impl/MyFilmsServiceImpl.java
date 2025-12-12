@@ -47,7 +47,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
             }
             return realisateurDAO.update(realisateur);
         } catch(Throwable e) {
-            throw new ServiceException("MyFilmsServiceImpl::updateRealisateurCelebre", e);
+            throw new ServiceException("Erreur lors de la mise à jour de la célébrité", e);
         }
     }
 
@@ -92,7 +92,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
                     .collect(Collectors.toList());
         return realisateursCelebres;
         } catch (Throwable e) {
-            throw new ServiceException("MyFilmsServiceImpl::updateRealisateurCelebres", e);
+            throw new ServiceException("Erreur dans la mise à jour de la célébrité", e);
         }
     }
 
@@ -104,13 +104,13 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Override
     @Transactional
     public FilmDTO createFilm(FilmForm filmForm) throws ServiceException {
-        Film film = this.filmDAO.save(FilmMapper.convertFilmFormToFilm(filmForm));
-        if (film.getRealisateur() == null) {
-            throw new ServiceException("Le film associé ne possède pas de réalisateur");
-        } else {
-            film.setRealisateur(updateRealisateurCelebre(film.getRealisateur()));
-            return FilmMapper.convertFilmToFilmDTO(film);
+        Film film = FilmMapper.convertFilmFormToFilm(filmForm);
+        if (realisateurDAO.findById(filmForm.getRealisateurId()).isEmpty()) {
+            throw new ServiceException("Le réalisateur n'existe pas");
         }
+        film = this.filmDAO.save(film);
+        film.setRealisateur(updateRealisateurCelebre(film.getRealisateur()));
+        return FilmMapper.convertFilmToFilmDTO(film);
     }
 
     @Override

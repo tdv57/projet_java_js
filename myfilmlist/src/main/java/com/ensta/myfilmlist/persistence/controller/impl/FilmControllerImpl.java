@@ -29,7 +29,7 @@ public class FilmControllerImpl implements FilmController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findAll()));
         } catch (ServiceException e) {
-            throw new ControllerException("FilmControllerImpl::getAllFilms", e);
+            throw new ControllerException("Impossible de trouver tous les films", e);
         }
     }
     @Override
@@ -42,7 +42,7 @@ public class FilmControllerImpl implements FilmController {
             }
             return ResponseEntity.status(HttpStatus.OK).body(filmDTO);
         } catch (ServiceException e) {
-            throw new ControllerException("FilmControllerImpl::getFilmById", e);
+            throw new ControllerException("Film introuvable", e);
         }
     }
     @Override
@@ -51,7 +51,7 @@ public class FilmControllerImpl implements FilmController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createFilm(filmForm));
         } catch (ServiceException e) {
-            throw new ControllerException("FilmControllerImpl::createFilm", e);
+            throw new ControllerException(e.getMessage(), e);
         }
     }
     @Override
@@ -61,7 +61,7 @@ public class FilmControllerImpl implements FilmController {
             myFilmsService.deleteFilm(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (ServiceException e) {
-        throw new ControllerException("FilmControllerImpl::deleteFilm", e);
+        throw new ControllerException(e.getMessage(), e);
         }
     }
 }

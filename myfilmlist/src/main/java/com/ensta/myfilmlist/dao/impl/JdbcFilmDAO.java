@@ -51,7 +51,7 @@ public class JdbcFilmDAO implements FilmDAO {
             }
             return films;
         } catch (DataAccessException e) {
-            throw new ServiceException("JdbcFilmDAO::findAll DataAccessException", e);
+            throw new ServiceException("Erreur pour trouver tous les films", e);
         }
     }
 
