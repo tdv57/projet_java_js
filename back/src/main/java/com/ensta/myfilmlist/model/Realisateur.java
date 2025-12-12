@@ -1,21 +1,31 @@
 package com.ensta.myfilmlist.model;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.*;
 
-
+@Entity
+@Table
 public class Realisateur {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nom;
+
     private String prenom;
+
     private LocalDate dateNaissance;
+
+    @OneToMany(mappedBy = "realisateur")
     private List<Film> filmRealises;
+
     private boolean celebre;
 
     public Realisateur() {
         this.id = null;
-        this.nom = new String();
-        this.prenom = new String();
+        this.nom = "";
+        this.prenom = "";
         this.dateNaissance = null;
         this.filmRealises = new ArrayList<>();
         this.celebre = false;
