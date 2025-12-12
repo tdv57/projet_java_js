@@ -9,7 +9,6 @@ import com.ensta.myfilmlist.service.MyFilmsService;
 import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 
-import scala.Int;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -107,5 +106,18 @@ class FilmsDAOTests {
         assertEquals(3, filmsDeJackson.size());
         List<Film> filmsSansRealisateurs = filmDAO.findByRealisateurId(3);
         assertEquals(0, filmsSansRealisateurs.size());
+    }
+
+    @Test 
+    void whenFindById_thenShouldHaveTheGoodFilm() {
+        Optional<Film> filmInexistant = filmDAO.findById(100); 
+        assertEquals(Boolean.TRUE, filmInexistant.isEmpty() );
+        Optional<Film> filmExistant = filmDAO.findById(1);
+        assertEquals(Boolean.FALSE, filmExistant.isEmpty() );
+        Film film = filmExistant.get();
+        System.out.println(film);
+        assertEquals("avatar", film.getTitre());
+        assertEquals(162, film.getDuree());
+        assertEquals(1, film.getRealisateur().getId());
     }
 }
