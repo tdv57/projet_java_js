@@ -70,7 +70,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     
         double noteMoyenne = notes.stream()
                                     .reduce(0.0, (notemoyenne, note) -> notemoyenne + note);
-        return Optional.of(((double) Math.round(noteMoyenne*100 / notes.size())) / 100);
+        return Optional.of(Math.round(noteMoyenne * 100.0 / notes.size()) / 100.0);
     }
 
     @Override
