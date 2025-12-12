@@ -13,6 +13,8 @@ import com.ensta.myfilmlist.dao.RealisateurDAO;
 import com.ensta.myfilmlist.dto.*;
 
 import java.util.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,7 +72,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     
         double noteMoyenne = notes.stream()
                                     .reduce(0.0, (notemoyenne, note) -> notemoyenne + note);
-        return Optional.of(Math.round(noteMoyenne * 100.0 / notes.size()) / 100.0);
+        return Optional.of(BigDecimal.valueOf(noteMoyenne / notes.size()).setScale(2, RoundingMode.HALF_UP).doubleValue());
     }
 
     @Override
