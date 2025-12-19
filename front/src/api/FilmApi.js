@@ -6,22 +6,36 @@ export function getAllFilms() {
     return axios.get(FILM_URI);
 }
 
-export function postFilm(duree, realisateurId, titre) {
+export function addFilm(duration, directorId, title, genreId) {
     return axios.post(FILM_URI, {
-        duree,
-        realisateurId,
-        titre
+        duree: duration,
+        realisateurId: directorId,
+        titre: title,
+        genreId
     })
 }
 
-export function putFilm() {
-    return axios.put(FILM_URI, {
-        duree,
-        realisateurId,
-        titre
+export function editFilm(filmId, duration, directorId, title, genreId) {
+    return axios.put(FILM_URI + `/${filmId}`, {
+        duree: duration,
+        realisateurId: directorId,
+        titre: title,
+        genreId
     })
 }
 
-export function deleteFilm(id) {
-    return axios.get(FILM_URI + `/delete/${id}`)
+export function deleteFilmById(id) {
+    return axios.delete(FILM_URI + `/${id}`)
+}
+
+export function getFilmById(id) {
+    return axios.get(FILM_URI + `/${id}`)
+}
+
+export function getFilmByDirectorId(directorId) {
+    return axios.get(FILM_URI + `/${directorId}`)
+}
+
+export function getFilmByTitle(title) {
+    return axios.get(FILM_URI + `/${title}`)
 }
