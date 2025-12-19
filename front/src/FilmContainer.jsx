@@ -18,11 +18,12 @@ function FilmContainer() {
     const blank_film = {
         titre: "",
         realisateurDTO: { id: 1 },
-        duree: 0
+        duree: 0,
+        genreDTO: { id: 1 },
     }
 
     return <>
-        <FilmForm film={{ ...blank_film }} />
+        <FilmForm film={{ ...blank_film }} isNew={true} />
         <FilmList films={films} />
     </>
 }
