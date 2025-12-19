@@ -1,5 +1,6 @@
 package com.ensta.myfilmlist.dao.impl;
 
+import com.ensta.myfilmlist.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,7 +35,6 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
         return realisateur;
     };
 
-
     @Override
     public List<Realisateur> findAll() {
         String query = "SELECT * FROM Realisateur;";
@@ -42,12 +42,12 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
     }
 
     @Override
-    public Realisateur findByNomAndPrenom(String nom, String prenom) {
+    public Optional<Realisateur> findByNomAndPrenom(String nom, String prenom) {
         String query = "SELECT * FROM Realisateur WHERE prenom=? AND nom=?";
         try {
-            return jdbcTemplate.queryForObject(query,this.rowMapper, prenom, nom);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query,this.rowMapper, prenom, nom));
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -63,16 +63,20 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
     }
 
     @Override
-    public Realisateur update(Realisateur realisateur) {
+    public Realisateur update(long id, Realisateur realisateur) throws ServiceException {
         String query = "UPDATE Realisateur SET prenom=?, nom=?, date_naissance=?, celebre=? WHERE id=?";
-        this.jdbcTemplate.update(query,
-                                realisateur.getPrenom(), 
-                                realisateur.getNom(), 
-                                realisateur.getDateNaissance(), 
-                                realisateur.isCelebre(), 
-                                realisateur.getId()
-                            );
-        return realisateur;
+        try{
+            this.jdbcTemplate.update(query,
+                    realisateur.getPrenom(),
+                    realisateur.getNom(),
+                    realisateur.getDateNaissance(),
+                    realisateur.isCelebre(),
+                    realisateur.getId()
+            );
+            return realisateur;
+        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
+            throw new ServiceException("Le réalisateur n'a pas pu être mis à jour");
+        }
     }
 
     @Override
@@ -90,5 +94,10 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
         jdbcTemplate.update(creator, keyHolder);
         realisateur.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
         return realisateur;
+    }
+
+    @Override
+    public void delete(long id) {
+        // Not used
     }
 }

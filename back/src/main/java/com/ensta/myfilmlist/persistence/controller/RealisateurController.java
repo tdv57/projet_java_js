@@ -1,7 +1,9 @@
 package com.ensta.myfilmlist.persistence.controller;
 
+import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.exception.ControllerException;
+import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.form.RealisateurForm;
 import com.ensta.myfilmlist.model.Realisateur;
 import io.swagger.annotations.Api;
@@ -43,5 +45,20 @@ public interface RealisateurController {
             @ApiResponse(code = 404, message = "Le réalisateur n'a pas pu être ajouté")
     })
     ResponseEntity<RealisateurDTO> createRealisateur(RealisateurForm realisateurForm) throws ControllerException;
+
+    @ApiOperation(value = "Éditer un réalisateur", notes = "Permet d'éditer un réalisateur d'après un formulaire.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Le réalisateur a bien été édité"),
+            @ApiResponse(code = 404, message = "Le réalisateur n'a pas pu être édité")
+    })
+    ResponseEntity<RealisateurDTO> updateRealisateur(Long id, RealisateurForm realisateurForm) throws ControllerException;
+
+
+    @ApiOperation(value = "Supprimer un réalisateur", notes = "Permet de supprimer un réalisateur d'après son identifiant.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Le réalisateur a bien été supprimé"),
+            @ApiResponse(code = 404, message = "Le réalisateur n'a pas pu être supprimé")
+    })
+    ResponseEntity<?> deleteRealisateur(Long id) throws ControllerException;
 
 }

@@ -1,20 +1,15 @@
 package com.ensta.myfilmlist.mapper;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.ensta.myfilmlist.dao.impl.JdbcRealisateurDAO;
-import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.dto.RealisateurDTO;
-import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.form.RealisateurForm;
-import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Realisateur;
 
 
 public class RealisateurMapper {
-    public static List<RealisateurDTO> convertRealisateurToRealidateurDTOs(List<Realisateur> realisateurs) {
+    public static List<RealisateurDTO> convertRealisateurToRealisateurDTOs(List<Realisateur> realisateurs) {
         return realisateurs.stream()
                             .map(RealisateurMapper::convertRealisateurToRealisateurDTO)
                             .collect(Collectors.toList());

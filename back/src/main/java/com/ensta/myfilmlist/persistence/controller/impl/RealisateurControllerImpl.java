@@ -5,7 +5,6 @@ import com.ensta.myfilmlist.exception.ControllerException;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.RealisateurForm;
 import com.ensta.myfilmlist.mapper.RealisateurMapper;
-import com.ensta.myfilmlist.model.Realisateur;
 import com.ensta.myfilmlist.persistence.controller.RealisateurController;
 import com.ensta.myfilmlist.service.MyFilmsService;
 
@@ -30,7 +29,7 @@ public class RealisateurControllerImpl implements RealisateurController {
     @GetMapping("")
     public ResponseEntity<List<RealisateurDTO>> getAllRealisateurs() throws ControllerException {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(RealisateurMapper.convertRealisateurToRealidateurDTOs(myFilmsService.findAllRealisateurs()));
+            return ResponseEntity.status(HttpStatus.OK).body(RealisateurMapper.convertRealisateurToRealisateurDTOs(myFilmsService.findAllRealisateurs()));
         } catch (ServiceException e) {
             throw new ControllerException("RealisateurControllerImpl::getAllRealisateurs", e);
         }
@@ -64,14 +63,34 @@ public class RealisateurControllerImpl implements RealisateurController {
         }
     }
 
-
     @Override
-    @PostMapping(path="/add", consumes=MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path="/", consumes=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RealisateurDTO> createRealisateur(@Valid @RequestBody RealisateurForm realisateurForm) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createRealisateur(realisateurForm));
         } catch (ServiceException e) {
             throw new ControllerException("RealisateurControllerImpl::createRealisateur", e);
+        }
+    }
+
+    @Override
+    @PutMapping("/{id}")
+    public ResponseEntity<RealisateurDTO> updateRealisateur(@PathVariable Long id, @RequestBody RealisateurForm realisateurForm) throws ControllerException {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateRealisateur(id, realisateurForm));
+        } catch (ServiceException e) {
+            throw new ControllerException("Impossible d'éditer le réalisateur demandé", e);
+        }
+    }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRealisateur(@PathVariable Long id) throws ControllerException {
+        try {
+            myFilmsService.deleteRealisateur(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        } catch (ServiceException e) {
+            throw new ControllerException("Impossible de supprimer le réalisateur demandé", e);
         }
     }
 }
