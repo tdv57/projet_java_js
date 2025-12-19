@@ -7,11 +7,9 @@ import com.ensta.myfilmlist.model.*;
 import com.ensta.myfilmlist.service.impl.MyFilmsServiceImpl;
 import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
-<<<<<<< HEAD
-=======
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.*;
->>>>>>> e7bf419 (ajout de tests)
+import com.ensta.myfilmlist.dao.impl.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,33 +21,40 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import org.mockito.Mock;
 import org.mockito.InjectMocks;
-<<<<<<< HEAD
-import org.mockito.MockitoAnnotations; // for initialize mock manually
-=======
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations; // si tu initialises les mocks manuellement
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
->>>>>>> e7bf419 (ajout de tests)
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class FilmServiceTests {
-  @Mock 
-  private JdbcFilmDAO jdbcFilmDAO;
-  
-  @Mock 
-  private JdbcRealisateurDAO jdbcRealisateurDAO;
 
-  @InjectMocks 
+  @MockBean 
+  private JpaRealisateurDAO jpaRealisateurDAO;
+
+  @MockBean 
+  private JpaGenreDAO jpaGenreDAO;
+
+  @MockBean 
+  private JpaFilmDAO jpaFilmDAO;
+
+  @Autowired
+  private FilmMapper filmMapper; 
+
+  @Autowired 
   private MyFilmsServiceImpl myFilmsServiceImpl;
 
   private Realisateur jamesCameron = new Realisateur();
@@ -63,7 +68,23 @@ public class FilmServiceTests {
   private static Long realisateurId = Long.valueOf(1L);
   private static Long filmId = Long.valueOf(2L);
 
-  private Optional<Realisateur> mockJdbcRealisateurDAOFindById(Long id) {
+
+  private Optional<Realisateur> mockJpaRealisateurDAOFindById(long id) {
+    switch((int) id) {
+      case 1:
+        return Optional.of(jamesCameron);
+      case 2:
+        return Optional.of(peterJackson);
+      default:
+        return Optional.empty();
+    }
+  }
+
+  private Optional<Genre> mockJpaGenreDaoFindById(long id) {
+    return Optional.empty();
+  }
+
+  private Optional<Realisateur> mockJpaRealisateurDAOFindById(Long id) {
       if (id == Long.valueOf(1)) {
         return Optional.of(jamesCameron);
       } else if (id == Long.valueOf(2)) {
@@ -73,7 +94,7 @@ public class FilmServiceTests {
       }
   }
 
-  private List<Film> mockJdbcFilmDAOFindByRealisateurId(Long id) throws ServiceException {
+    private List<Film> mockJpaFilmDAOFindByRealisateurId(Long id) throws ServiceException {
       if (id == 1L) {
         System.out.println("Cameron");
         return jamesCameron.getFilmRealises();
@@ -86,12 +107,12 @@ public class FilmServiceTests {
       }
   }
 
-  private Film mockJdbcFilmDAOSave(Film film) {
+  private Film mockJpaFilmDAOSave(Film film) {
     film.setId(filmId++);
     return film;
   }
 
-  private Optional<Film> mockJdbcFilmDAOFindById(long id) {
+  private Optional<Film> mockJpaFilmDAOFindById(long id) {
     switch ((int)id) {
       case 1:
         return Optional.of(hihihi1);
@@ -106,7 +127,7 @@ public class FilmServiceTests {
     }
   }
 
-  private Optional<Film> mockJdbcFilmDAOFindByTitle(String title) {
+  private Optional<Film> mockJpaFilmDAOFindByTitle(String title) {
     switch (title) {
       case "hihihi1":
         return Optional.of(hihihi1);
@@ -123,6 +144,14 @@ public class FilmServiceTests {
 
   @BeforeEach 
   void setUp() {
+    when(jpaRealisateurDAO.findById(anyLong())).thenAnswer(invocation -> {
+      return mockJpaRealisateurDAOFindById(invocation.getArgument(0));
+    });
+
+    when(jpaGenreDAO.findById(anyLong())).thenAnswer(invocation -> {
+      return mockJpaGenreDaoFindById(invocation.getArgument(0));
+    });
+
     System.out.println("\n");
     System.out.println("Debut test n°" + count);
     System.out.println("\n");
@@ -184,13 +213,12 @@ public class FilmServiceTests {
   }
   @Test 
   void whenRealisateurHasAtLeast3Movies_thenShouldBeCelebre() throws ServiceException{
-    when(jdbcFilmDAO.findByRealisateurId(any(Long.class))).thenAnswer(invocation -> {
-      return mockJdbcFilmDAOFindByRealisateurId(invocation.getArgument(0));
+    when(jpaFilmDAO.findByRealisateurId(any(Long.class))).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindByRealisateurId(invocation.getArgument(0));
     });
-    when(jdbcRealisateurDAO.update(any(Realisateur.class))).thenAnswer(invocation -> {
-        return invocation.getArgument(0);
+    when(jpaRealisateurDAO.update(anyLong(), any(Realisateur.class))).thenAnswer(invocation -> {
+        return invocation.getArgument(1);
     });
-
     jamesCameron = myFilmsServiceImpl.updateRealisateurCelebre(jamesCameron);
     assertEquals(Boolean.TRUE, jamesCameron.isCelebre());
     peterJackson = myFilmsServiceImpl.updateRealisateurCelebre(peterJackson);
@@ -220,16 +248,16 @@ public class FilmServiceTests {
 
   @Test 
   void whenRealisateurAmongRealisateursHasAtLeast3Movies_thenShouldBeCelebre() throws ServiceException{
-      when(jdbcFilmDAO.findByRealisateurId(any(Long.class))).thenAnswer(invocation -> {
+      when(jpaFilmDAO.findByRealisateurId(any(Long.class))).thenAnswer(invocation -> {
         try {
-          return mockJdbcFilmDAOFindByRealisateurId(invocation.getArgument(0));
+          return mockJpaFilmDAOFindByRealisateurId(invocation.getArgument(0));
         } catch(ServiceException e) {
             return new ArrayList<>();
         }
       });
     
-    when(jdbcRealisateurDAO.update(any(Realisateur.class))).thenAnswer(invocation -> {
-        return invocation.getArgument(0);
+    when(jpaRealisateurDAO.update(anyLong(), any(Realisateur.class))).thenAnswer(invocation -> {
+        return invocation.getArgument(1);
     });
 
     List<Realisateur> realisateurs = new ArrayList<>();
@@ -244,7 +272,7 @@ public class FilmServiceTests {
 
   @Test 
   void whenFindAll_thenShouldHaveAllFilms() throws ServiceException{
-    when(jdbcFilmDAO.findAll()).thenAnswer(invocation -> {
+    when(jpaFilmDAO.findAll()).thenAnswer(invocation -> {
       List<Film> allFilms = new ArrayList<>();
       allFilms.addAll(jamesCameron.getFilmRealises());
       allFilms.addAll(peterJackson.getFilmRealises());
@@ -259,25 +287,20 @@ public class FilmServiceTests {
   }
 
   @Test 
-<<<<<<< HEAD
-  void whenCreateFilm_thenShouldHaveCreatFilm() throws ServiceException {
-    when(jdbcRealisateurDAO.findById(Long.class)).thenAnswer(invocation -> {
-=======
-  void whenCreateFilm_thenShouldHaveCreateFilm() {
-    when(jdbcRealisateurDAO.findById(anyLong())).thenAnswer(invocation -> {
->>>>>>> e7bf419 (ajout de tests)
-      return mockJdbcRealisateurDAOFindById(invocation.getArgument(0));
+  void whenCreateFilm_thenShouldHaveCreateFilm() throws ServiceException {
+    when(jpaRealisateurDAO.findById(anyLong())).thenAnswer(invocation -> {
+      return mockJpaRealisateurDAOFindById(invocation.getArgument(0));
     });
 
-    when(jdbcFilmDAO.save(any(Film.class))).thenAnswer(invocation -> {
-      return mockJdbcFilmDAOSave(invocation.getArgument(0));
+    when(jpaFilmDAO.save(any(Film.class))).thenAnswer(invocation -> {
+      return mockJpaFilmDAOSave(invocation.getArgument(0));
     });
 
-    when(jdbcFilmDAO.findByRealisateurId(any(Long.class))).thenAnswer(invocation -> {
-      return mockJdbcFilmDAOFindByRealisateurId(invocation.getArgument(0));
+    when(jpaFilmDAO.findByRealisateurId(any(Long.class))).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindByRealisateurId(invocation.getArgument(0));
     });
     
-    when(jdbcRealisateurDAO.update(any(Realisateur.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    when(jpaRealisateurDAO.update(anyLong(), any(Realisateur.class))).thenAnswer(invocation -> invocation.getArgument(1));
 
     FilmForm onAttendPasPatrick1 = new FilmForm();
     onAttendPasPatrick1.setDuree(90);
@@ -297,9 +320,9 @@ public class FilmServiceTests {
     try {
       peterJackson = myFilmsServiceImpl.updateRealisateurCelebre(peterJackson);
       assertEquals(Boolean.FALSE, peterJackson.isCelebre());    
-      Film onAttendPasPatrick_1 = FilmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick1));
-      Film onAttendPasPatrick_2 = FilmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick2));
-      Film onAttendPasPatrick_3 = FilmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick3));
+      Film onAttendPasPatrick_1 = filmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick1));
+      Film onAttendPasPatrick_2 = filmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick2));
+      Film onAttendPasPatrick_3 = filmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick3));
       List<Film> onAttendPasPatrick = new ArrayList<>();
       onAttendPasPatrick.add(onAttendPasPatrick_1);
       onAttendPasPatrick.add(onAttendPasPatrick_2);
@@ -315,8 +338,8 @@ public class FilmServiceTests {
 
   @Test
   void whenFindFilmById_thenShouldHaveFilm() {
-    when(jdbcFilmDAO.findById(anyLong())).thenAnswer(invocation -> {
-      return mockJdbcFilmDAOFindById(invocation.getArgument(0));
+    when(jpaFilmDAO.findById(anyLong())).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindById(invocation.getArgument(0));
     });
 
     try {
@@ -331,8 +354,8 @@ public class FilmServiceTests {
 
   @Test 
   void whenFilmByTitle_thenShouldHaveFilm() {
-    when(jdbcFilmDAO.findByTitle(anyString())).thenAnswer(invocation -> {
-      return mockJdbcFilmDAOFindByTitle(invocation.getArgument(0));
+    when(jpaFilmDAO.findByTitle(anyString())).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindByTitle(invocation.getArgument(0));
     });
 
     try {

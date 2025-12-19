@@ -11,6 +11,7 @@ import com.ensta.myfilmlist.mapper.FilmMapper;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.security.Provider.Service;
 import java.util.Optional;
@@ -40,6 +41,10 @@ class FilmsDAOTests {
 
     private static final Logger logger = LoggerFactory.getLogger(FilmsDAOTests.class);
     private static int count = 0;
+
+    @Autowired
+    private FilmMapper filmMapper;
+
     @BeforeEach 
     void setUp() {
         System.out.println("\n");
@@ -73,7 +78,7 @@ class FilmsDAOTests {
         filmForm.setRealisateurId(2);
         filmForm.setTitre("titre");
         try {
-            filmDAO.save(FilmMapper.convertFilmFormToFilm(filmForm));
+            filmDAO.save(filmMapper.convertFilmFormToFilm(filmForm));
             assertEquals(5, filmDAO.findAll().size());
             Film newFilm = filmDAO.findById(5).get();
             assertEquals(15, newFilm.getDuree());
