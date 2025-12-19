@@ -20,35 +20,55 @@ function FilmForm(props) {
     }, []);
 
     return (
-        <Grid container spacing={2}>
-            <Container>
-                <TextField
-                    label="Titre"
-                    defaultValue={props.film.titre}
-                />
-
-                <TextField
-                    label="Durée"
-                    defaultValue={props.film.duree}
-                />
-
-                <TextField
-                    label="Réalisateur"
-                    select
-                    defaultValue={props.film.realisateurDTO.id}
+        <>
+            <Box
+                sx={{
+                    padding: 2
+                }}
+            >
+                <Grid
+                    container spacing={2}
                 >
-                    {realisateurs.map((real) => (
-                        <MenuItem key={real.id} value={real.id} >
-                            {real.prenom} {real.nom}
-                        </MenuItem>
-                    ))}
-                </TextField >
-            </Container>
+                    <Grid item xs={12} sm={3}>
+                        <TextField
+                            label="Titre"
+                            defaultValue={props.film.titre}
+                        />
+                    </Grid>
 
-            <Button onClick={() => {
-                alert('clicked');
-            }}>Enregistrer</Button>
-        </Grid>
+                    <Grid item xs={12} sm={3}>
+                        <TextField
+                            label="Durée"
+                            defaultValue={props.film.duree}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Box sx={{ display: 'flex', width: '100%', gap: 2 }}>
+                            <TextField
+                                label="Réalisateur"
+                                select
+                                defaultValue={props.film.realisateurDTO.id}
+                            >
+                                {realisateurs.map((real) => (
+                                    <MenuItem key={real.id} value={real.id} >
+                                        {real.prenom} {real.nom}
+                                    </MenuItem>
+                                ))}
+                            </TextField >
+                            <Button
+                                variant="contained"
+                                onClick={() => {
+                                    alert('clicked');
+                                }}
+                            >
+                                Enregistrer
+                            </Button>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Box>
+        </>
     )
 }
 
