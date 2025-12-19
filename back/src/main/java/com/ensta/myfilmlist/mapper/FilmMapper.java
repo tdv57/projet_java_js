@@ -22,11 +22,16 @@ import com.ensta.myfilmlist.model.Realisateur;
 @Component
 public class FilmMapper {
 
-	@Autowired
-	private  JpaRealisateurDAO jpaRealisateurDAO;
+	private final JpaRealisateurDAO jpaRealisateurDAO;
 
-	@Autowired
-	private JpaGenreDAO jpaGenreDAO;
+	private final JpaGenreDAO jpaGenreDAO;
+    
+	public FilmMapper(JpaRealisateurDAO jpaRealisateurDAO,
+                      JpaGenreDAO jpaGenreDAO) {
+        this.jpaRealisateurDAO = jpaRealisateurDAO;
+        this.jpaGenreDAO = jpaGenreDAO;
+    }
+
 	/**
 	 * Convertit une liste de films en liste de DTO.
 	 * 
