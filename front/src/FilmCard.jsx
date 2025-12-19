@@ -9,24 +9,21 @@ import DialogTitle from "@mui/material/DialogTitle"
 import DialogContent from "@mui/material/DialogContent"
 import { useState } from "react"
 import FilmForm from "./FilmForm"
-import Box from "@mui/material/Box"
 
 function FilmCard(props) {
-    const [open, setOpen] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
 
 
     const handleClickOnDeleteButton = () => {
-        console.log("delete");
+        deleteFilmById(props.film.id);
     }
 
     const handleClickOnEditButton = () => {
-        setOpen(true);
-        console.log("edit");
+        setOpenDialog(true);
     }
 
     const handleClose = () => {
-        setOpen(false);
-        console.log("close");
+        setOpenDialog(false);
     }
 
     return (
@@ -39,6 +36,9 @@ function FilmCard(props) {
                     <Typography variant="body1">
                         {props.film.duree} minutes
                     </Typography>
+                    <Typography variant="body1">
+                        {props.film.genre}
+                    </Typography>
                 </CardContent>
                 <IconButton onClick={handleClickOnDeleteButton}>
                     <DeleteIcon />
@@ -47,7 +47,7 @@ function FilmCard(props) {
                     <EditIcon />
                 </IconButton>
             </Card>
-            <Dialog onClose={handleClose} open={open}>
+            <Dialog onClose={handleClose} open={openDialog} fullWidth maxWidth="md">
                 <DialogTitle>Éditer un film</DialogTitle>
                 <DialogContent>
                     <FilmForm film={props.film} />
