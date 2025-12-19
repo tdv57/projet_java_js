@@ -1,6 +1,7 @@
 package com.ensta.myfilmlist.persistence.controller.impl;
 
 import com.ensta.myfilmlist.form.FilmForm;
+import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.persistence.controller.FilmController;
 import com.ensta.myfilmlist.service.MyFilmsService;
 import com.ensta.myfilmlist.dto.*;
@@ -34,21 +35,6 @@ public class FilmControllerImpl implements FilmController {
         }
     }
 
-
-    @Override
-    @PostMapping("/")
-    public ResponseEntity<FilmDTO> getFilmByTitle(@RequestParam String titre) throws ControllerException {
-        try {
-            FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmByTitle(titre));
-            if (filmDTO == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(filmDTO);
-        } catch (ServiceException e) {
-            throw new ControllerException("Impossible de trouver le film demandé", e);
-        }
-    }
-
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<FilmDTO> getFilmById(@PathVariable Long id) throws ControllerException {
@@ -64,7 +50,36 @@ public class FilmControllerImpl implements FilmController {
     }
 
     @Override
-    @PostMapping("/add")
+    @PostMapping("/titre")
+    public ResponseEntity<FilmDTO> getFilmByTitle(@RequestParam String titre) throws ControllerException {
+        try {
+            FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmByTitle(titre));
+            if (filmDTO == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(filmDTO);
+        } catch (ServiceException e) {
+            throw new ControllerException("Impossible de trouver le film demandé", e);
+        }
+    }
+
+    @Override
+    @GetMapping("/realisateur/{id}")
+    public ResponseEntity<List<FilmDTO>> getFilmByRealisateurId(@PathVariable long id) throws ControllerException {
+        try {
+            List<Film> filmList = myFilmsService.findFilmByRealisateurId(id);
+            List<FilmDTO> returnList = filmList.stream().map(FilmMapper::convertFilmToFilmDTO).toList();
+            if  (returnList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(returnList);
+        } catch (ServiceException e) {
+            throw new ControllerException("Impossible de trouver les films demandés", e);
+        }
+    }
+
+    @Override
+    @PostMapping("/")
     public ResponseEntity<FilmDTO> createFilm(@Valid @RequestBody FilmForm filmForm) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createFilm(filmForm));
@@ -74,7 +89,7 @@ public class FilmControllerImpl implements FilmController {
     }
 
     @Override
-    @PutMapping("/film/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<FilmDTO> updateFilm(@PathVariable Long id, @RequestBody FilmForm filmForm) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateFilm(id, filmForm));
@@ -83,15 +98,14 @@ public class FilmControllerImpl implements FilmController {
         }
     }
 
-
     @Override
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFilm(@PathVariable Long id) throws ControllerException {
         try {
             myFilmsService.deleteFilm(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (ServiceException e) {
-        throw new ControllerException("Impossible de supprimer le film demandé", e);
+            throw new ControllerException("Impossible de supprimer le film demandé", e);
         }
     }
 }

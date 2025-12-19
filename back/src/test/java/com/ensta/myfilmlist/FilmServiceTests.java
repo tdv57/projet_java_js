@@ -1,41 +1,29 @@
 package com.ensta.myfilmlist;
 
 import com.ensta.myfilmlist.dao.impl.*;
-import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.dao.*;
 import com.ensta.myfilmlist.model.*;
-import com.ensta.myfilmlist.service.MyFilmsService;
 import com.ensta.myfilmlist.service.impl.MyFilmsServiceImpl;
 import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
-import com.ensta.myfilmlist.exception.ServiceException;
 
-import java.beans.Transient;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.management.RuntimeErrorException;
-import javax.transaction.Transactional;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.exceptions.base.MockitoException;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.mockito.Mock;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations; // si tu initialises les mocks manuellement
+import org.mockito.MockitoAnnotations; // for initialize mock manually
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -226,7 +214,7 @@ public class FilmServiceTests {
   }
 
   @Test 
-  void whenCreateFilm_thenShouldHaveCreatFilm() {
+  void whenCreateFilm_thenShouldHaveCreatFilm() throws ServiceException {
     when(jdbcRealisateurDAO.findById(Long.class)).thenAnswer(invocation -> {
       return mockJdbcRealisateurDAOFindById(invocation.getArgument(0));
     });
@@ -239,9 +227,7 @@ public class FilmServiceTests {
       return mockJdbcFilmDAOFindByRealisateurId(invocation.getArgument(0));
     });
     
-    when(jdbcRealisateurDAO.update(any(Realisateur.class))).thenAnswer(invocation -> {
-        return invocation.getArgument(0);
-    });
+    when(jdbcRealisateurDAO.update(any(Realisateur.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     FilmForm onAttendPasPatrick1 = new FilmForm();
     filmForm.setDuree(90);

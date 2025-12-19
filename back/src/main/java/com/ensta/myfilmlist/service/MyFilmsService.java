@@ -15,6 +15,7 @@ public interface MyFilmsService {
     List<Film> findAll() throws ServiceException;
     Film findFilmById(long id) throws ServiceException;
     Film findFilmByTitle(String title) throws ServiceException;
+    List<Film> findFilmByRealisateurId(long id) throws ServiceException;
     FilmDTO updateFilm(long id, FilmForm filmForm) throws ServiceException;
     void deleteFilm(long id) throws ServiceException;
 
@@ -24,6 +25,12 @@ public interface MyFilmsService {
     Realisateur findRealisateurByNomAndPrenom(String nom, String prenom) throws ServiceException;
     Realisateur updateRealisateurCelebre(Realisateur realisateur) throws ServiceException;
     List<Realisateur> updateRealisateurCelebres(List<Realisateur> realisateurs) throws ServiceException;
+    RealisateurDTO updateRealisateur(long id, RealisateurForm realisateurForm) throws ServiceException;
+    void deleteRealisateur(long id) throws ServiceException;
+
+    List<Genre> findAllGenres() throws ServiceException;
+    Genre findGenreById(Long id) throws ServiceException;
+    GenreDTO updateGenre(long id, String nom) throws ServiceException;
 
     int calculerDureeTotale(List<Film> filmRealises);
     Optional<Double> calculerNoteMoyenne(List<Double> notes);

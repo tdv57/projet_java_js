@@ -22,11 +22,16 @@ public class Film {
     @JoinColumn(nullable = false)
 	private Realisateur realisateur;
 
-	public Film() {
+    @ManyToOne
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
+
+    public Film() {
 		this.id = 0;
 		this.titre = "";
 		this.duree = 0;
 		this.realisateur = null;
+        this.genre = null;
 	}
 
 	public Film(Film film) {
@@ -34,46 +39,47 @@ public class Film {
 		this.titre = film.titre;
 		this.duree = film.duree;
 		this.realisateur = film.realisateur;
+        this.genre = film.genre;
 	}
 
-	public Film(Long id, String titre, int duree, Realisateur realisateur) {
+	public Film(Long id, String titre, int duree, Realisateur realisateur, Genre genre) {
 		this.id = id;
 		this.titre = titre;
 		this.duree = duree;
 		this.realisateur = new Realisateur(realisateur);
-	}
-	
-	public long getId() {
-		return id;
+        this.genre = new Genre(genre);
 	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public long getId() {
+        return id;
+    }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public String getTitre() {
-		return titre;
-	}
-
-	public void setTitre(String titre) {
+    public String getTitre() {
+        return titre;
+    }
+    public void setTitre(String titre) {
 		this.titre = titre;
 	}
 
-	public int getDuree() {
-		return duree;
-	}
+    public int getDuree() {
+        return duree;
+    }
+    public void setDuree(int duree) {
+        this.duree = duree;
+    }
 
-	public void setDuree(int duree) {
-		this.duree = duree;
-	}
-
-	public void setRealisateur(Realisateur realisateur) {
+    public Realisateur getRealisateur() {
+        return this.realisateur;
+    }
+    public void setRealisateur(Realisateur realisateur) {
 		this.realisateur = realisateur;
 	}
 
-	public Realisateur getRealisateur() {
-		return this.realisateur;
-	}
+    public Genre getGenre() { return this.genre; }
+    public void setGenre(Genre genre) { this.genre = genre; }
 
 	@Override
 	public String toString() {

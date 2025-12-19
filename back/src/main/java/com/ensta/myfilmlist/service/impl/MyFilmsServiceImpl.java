@@ -1,11 +1,14 @@
 package com.ensta.myfilmlist.service.impl;
 
+import com.ensta.myfilmlist.dao.GenreDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.form.RealisateurForm;
 import com.ensta.myfilmlist.mapper.FilmMapper;
+import com.ensta.myfilmlist.mapper.GenreMapper;
 import com.ensta.myfilmlist.mapper.RealisateurMapper;
 import com.ensta.myfilmlist.model.Film;
+import com.ensta.myfilmlist.model.Genre;
 import com.ensta.myfilmlist.model.Realisateur;
 import com.ensta.myfilmlist.service.*;
 import com.ensta.myfilmlist.dao.impl.JdbcRealisateurDAO;
@@ -31,6 +34,9 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Autowired
     private RealisateurDAO realisateurDAO;
+
+    @Autowired
+    private GenreDAO genreDAO;
 
     @Override
     @Transactional
@@ -68,6 +74,15 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
+    public List<Film> findFilmByRealisateurId(long id) throws ServiceException {
+        List<Film> films = this.filmDAO.findByRealisateurId(id);
+        if (films.isEmpty()) {
+            throw new ServiceException("Le réalistauer n'a réalisé aucun film");
+        }
+        return films;
+    }
+
+    @Override
     @Transactional
     public FilmDTO updateFilm(long id, FilmForm filmForm) throws ServiceException {
         Film new_film = FilmMapper.convertFilmFormToFilm(filmForm);
@@ -94,27 +109,26 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override 
     public List<Realisateur> findAllRealisateurs() throws ServiceException {
-        JdbcRealisateurDAO jdbcRealisateurDAO = new JdbcRealisateurDAO();
-        return jdbcRealisateurDAO.findAll();
+        return this.realisateurDAO.findAll();
     }
 
     @Override
     public Realisateur findRealisateurById(Long id) throws ServiceException {
-        JdbcRealisateurDAO jdbcRealisateurDAO = new JdbcRealisateurDAO();
-        Optional<Realisateur> realisateur = jdbcRealisateurDAO.findById(id);
-        if (realisateur.isPresent()) {
-            return realisateur.get();
-        } else {
-            throw new ServiceException ("Le realisateur n'existe pas");
+        Optional<Realisateur> realisateur = this.realisateurDAO.findById(id);
+        if (realisateur.isEmpty()) {
+            throw new  ServiceException ("Le réalisateur demandé n'existe pas");
         }
+        return realisateur.get();
     }
 
     @Override
     public Realisateur findRealisateurByNomAndPrenom(String nom, String prenom) throws ServiceException {
-        JdbcRealisateurDAO jdbcRealisateurDAO = new JdbcRealisateurDAO();
-        return jdbcRealisateurDAO.findByNomAndPrenom(nom, prenom);
+        Optional<Realisateur> realisateur = this.realisateurDAO.findByNomAndPrenom(nom, prenom);
+        if (realisateur.isEmpty()) {
+            throw new  ServiceException ("Le réalisateur demandé n'existe pas");
+        }
+        return realisateur.get();
     }
-
 
     /**
      * La méthode prend en entrée un Realisateur non null, si le Realisateur a fait au moins 3 films indique celebre=true, le cas contraire celebre=false, renvoit le Realisateur modifié.
@@ -126,7 +140,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
             List<Film> filmsDuRealisateur = filmDAO.findByRealisateurId(realisateur.getId());
             realisateur.setFilmRealises(filmsDuRealisateur);
             realisateur.setCelebre(realisateur.getFilmRealises().size() >= NB_FILMS_MIN_REALISATEUR_CELEBRE);
-            return realisateurDAO.update(realisateur);
+            return realisateurDAO.update(realisateur.getId(), realisateur);
         } catch(Throwable e) {
             throw new ServiceException("Erreur lors de la mise à jour de la célébrité", e);
         }
@@ -152,15 +166,51 @@ public class MyFilmsServiceImpl implements MyFilmsService {
         }
     }
 
+    @Override
+    @Transactional
+    public RealisateurDTO updateRealisateur(long id, RealisateurForm realisateurForm) throws ServiceException {
+        Realisateur new_realisateur = RealisateurMapper.convertRealisateurFormToRealisateur(realisateurForm);
+        Realisateur realisateur = this.realisateurDAO.update(id, new_realisateur);
+        return RealisateurMapper.convertRealisateurToRealisateurDTO(realisateur);
+    }
+
+    @Override
+    @Transactional
+    public void deleteRealisateur(long id) throws ServiceException {
+        this.realisateurDAO.delete(id);
+    }
+
+
+    @Override
+    public List<Genre> findAllGenres() throws ServiceException {
+        return this.genreDAO.findAll();
+    }
+
+    @Override
+    public Genre findGenreById(Long id) throws ServiceException {
+        Optional<Genre> genre = this.genreDAO.findById(id);
+        if (genre.isEmpty()) {
+            throw new  ServiceException ("Le genre demandé n'existe pas");
+        }
+        return genre.get();
+    }
+
+    @Override
+    @Transactional
+    public GenreDTO updateGenre(long id, String nom) throws ServiceException {
+        Genre genre = this.genreDAO.update(id, nom);
+        return GenreMapper.convertGenreToGenreDTO(genre);
+    }
+
+
     /**
      * Prend une liste de Film et renvoie une int représentant la somme des durées de chaque film
      */
     @Override
     public int calculerDureeTotale(List<Film> filmRealises) {
-        int dureeTotale = filmRealises.stream()
+        return filmRealises.stream()
                 .map(Film::getDuree)
-                .reduce(0, (dureetotale, duree) -> dureetotale + duree);
-        return dureeTotale;
+                .reduce(0, Integer::sum);
     }
 
     /**
@@ -168,7 +218,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
      */
     @Override
     public Optional<Double> calculerNoteMoyenne(List<Double> notes) {
-        if (notes.size() == 0) {
+        if (notes.isEmpty()) {
             return Optional.empty();
         }
 

@@ -19,6 +19,9 @@ public class FilmForm {
 	@Min(value=1, message="L'id du realisateur doit être strictement positif")
 	private long realisateurId;
 
+    @Min(value=1, message="L'id du genre doit être strictement positif")
+    private long genreId;
+
 	public String getTitre() {
 		return titre;
 	}
@@ -43,4 +46,7 @@ public class FilmForm {
 		this.realisateurId = realisateurId;
 	}
 
+    public long getGenreId() {return genreId;}
+
+    public void setGenreId(long genreId) {this.genreId = genreId;}
 }

@@ -1,8 +1,5 @@
 package com.ensta.myfilmlist.dto;
 
-import com.ensta.myfilmlist.model.Film;
-import com.ensta.myfilmlist.model.Realisateur;
-
 /**
  * Contient les donnees d'un Film.
  */
@@ -16,11 +13,14 @@ public class FilmDTO {
 
 	private RealisateurDTO realisateurDTO;
 
+    private GenreDTO genreDTO;
+
 	public FilmDTO() {
 		this.id = 0;
-		this.titre = new String();
+		this.titre = "";
 		this.duree = 0;
 		this.realisateurDTO = new RealisateurDTO();
+        this.genreDTO = new GenreDTO();
 	}
 
 	public FilmDTO(FilmDTO filmDTO) {
@@ -28,6 +28,7 @@ public class FilmDTO {
 		this.titre = filmDTO.titre;
 		this.duree = filmDTO.duree;
 		this.realisateurDTO = filmDTO.realisateurDTO;
+        this.genreDTO = filmDTO.genreDTO;
 	}
 
 	public FilmDTO(Long id, String titre, int duree, RealisateurDTO realisateurDTO) {
@@ -35,6 +36,7 @@ public class FilmDTO {
 		this.titre = titre;
 		this.duree = duree;
 		this.realisateurDTO = new RealisateurDTO(realisateurDTO);
+        this.genreDTO = new GenreDTO();
 	}
 
 	public long getId() {
@@ -68,6 +70,10 @@ public class FilmDTO {
 	public RealisateurDTO getRealisateurDTO() {
 		return this.realisateurDTO;
 	}
+
+    public void setGenreDTO(GenreDTO genreDTO) {this.genreDTO = genreDTO;}
+
+    public GenreDTO getGenreDTO() {return this.genreDTO;}
 
 	@Override
 	public String toString() {

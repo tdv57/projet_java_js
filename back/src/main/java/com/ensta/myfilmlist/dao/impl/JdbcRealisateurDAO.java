@@ -56,7 +56,7 @@ public class JdbcRealisateurDAO implements RealisateurDAO {
         String query = "SELECT * FROM Realisateur WHERE id=?";
         try {
             Realisateur realisateur = jdbcTemplate.queryForObject(query, this.rowMapper, id);
-            return Optional.of(realisateur);
+            return Optional.ofNullable(realisateur);
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
             return Optional.empty();
         }

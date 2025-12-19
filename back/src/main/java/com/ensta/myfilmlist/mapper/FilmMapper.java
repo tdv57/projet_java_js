@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
+import com.ensta.myfilmlist.dao.impl.JpaGenreDAO;
+import com.ensta.myfilmlist.dao.impl.JpaRealisateurDAO;
 import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.model.Film;
-import com.ensta.myfilmlist.dao.impl.JdbcRealisateurDAO;
+import com.ensta.myfilmlist.model.Genre;
 import com.ensta.myfilmlist.model.Realisateur;
 /**
  * Effectue les conversions des Films entre les couches de l'application.
@@ -39,6 +41,7 @@ public class FilmMapper {
 		filmDTO.setTitre(film.getTitre());
 		filmDTO.setDuree(film.getDuree());
 		filmDTO.setRealisateurDTO(RealisateurMapper.convertRealisateurToRealisateurDTO(film.getRealisateur()));
+        filmDTO.setGenreDTO(GenreMapper.convertGenreToGenreDTO(film.getGenre()));
 		return filmDTO;
 	}
 
@@ -55,6 +58,7 @@ public class FilmMapper {
 		film.setTitre(filmDTO.getTitre());
 		film.setDuree(filmDTO.getDuree());
 		film.setRealisateur(RealisateurMapper.convertRealisateurDTOToRealisateur(filmDTO.getRealisateurDTO()));
+        film.setGenre(GenreMapper.convertGenreDTOToGenre(filmDTO.getGenreDTO()));
 		return film;
 	}
 
@@ -68,13 +72,21 @@ public class FilmMapper {
 		Film film = new Film();
 		film.setTitre(filmForm.getTitre());
 		film.setDuree(filmForm.getDuree());
-		JdbcRealisateurDAO jdbcRealisateurDAO = new JdbcRealisateurDAO();
-		Optional<Realisateur> optionalRealisateur= jdbcRealisateurDAO.findById(filmForm.getRealisateurId());
+        // TODO: again, jbdc usage but we should be in jpa?
+		JpaRealisateurDAO jpaRealisateurDAO = new JpaRealisateurDAO();
+		Optional<Realisateur> optionalRealisateur = jpaRealisateurDAO.findById(filmForm.getRealisateurId());
 		if (optionalRealisateur.isPresent()) {
 			film.setRealisateur(optionalRealisateur.get());
 		} else {
 			film.setRealisateur(null);
 		}
+        JpaGenreDAO jpaGenreDAO = new JpaGenreDAO();
+        Optional<Genre> optionalGenre = jpaGenreDAO.findById(filmForm.getGenreId());
+        if (optionalGenre.isPresent()) {
+            film.setGenre(optionalGenre.get());
+        } else {
+            film.setGenre(null);
+        }
 		return film;
 	}
 }
