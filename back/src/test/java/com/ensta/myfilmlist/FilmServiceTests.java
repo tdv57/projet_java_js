@@ -26,7 +26,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
+
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import org.mockito.Mock;
@@ -68,6 +71,18 @@ public class FilmServiceTests {
   private static Long realisateurId = Long.valueOf(1L);
   private static Long filmId = Long.valueOf(2L);
 
+  private Realisateur mockJpaRealisateurDAOUpdate(long id, Realisateur realisateur) throws ServiceException {
+    switch ((int)id) {
+      case 1:
+        jamesCameron = realisateur;
+        return jamesCameron;
+      case 2:
+        peterJackson = realisateur;
+        return peterJackson;
+      default:
+        throw new ServiceException("Impossible de mettre à jour le réalisateur");
+    }
+  }
 
   private Optional<Realisateur> mockJpaRealisateurDAOFindById(long id) {
     switch((int) id) {
@@ -94,7 +109,7 @@ public class FilmServiceTests {
       }
   }
 
-    private List<Film> mockJpaFilmDAOFindByRealisateurId(Long id) throws ServiceException {
+    private List<Film> mockJpaFilmDAOFindByRealisateurId(Long id) {
       if (id == 1L) {
         System.out.println("Cameron");
         return jamesCameron.getFilmRealises();
@@ -102,8 +117,7 @@ public class FilmServiceTests {
         System.out.println("Jackson");
         return peterJackson.getFilmRealises();
       } else {
-        System.out.println("Erreur");
-        throw new ServiceException("Erreur lors de l'update de célébrité du réalisateur");
+        return new ArrayList<>();
       }
   }
 
@@ -217,7 +231,7 @@ public class FilmServiceTests {
       return mockJpaFilmDAOFindByRealisateurId(invocation.getArgument(0));
     });
     when(jpaRealisateurDAO.update(anyLong(), any(Realisateur.class))).thenAnswer(invocation -> {
-        return invocation.getArgument(1);
+        return mockJpaRealisateurDAOUpdate(invocation.getArgument(0), invocation.getArgument(1));
     });
     jamesCameron = myFilmsServiceImpl.updateRealisateurCelebre(jamesCameron);
     assertEquals(Boolean.TRUE, jamesCameron.isCelebre());
@@ -249,11 +263,7 @@ public class FilmServiceTests {
   @Test 
   void whenRealisateurAmongRealisateursHasAtLeast3Movies_thenShouldBeCelebre() throws ServiceException{
       when(jpaFilmDAO.findByRealisateurId(any(Long.class))).thenAnswer(invocation -> {
-        try {
           return mockJpaFilmDAOFindByRealisateurId(invocation.getArgument(0));
-        } catch(ServiceException e) {
-            return new ArrayList<>();
-        }
       });
     
     when(jpaRealisateurDAO.update(anyLong(), any(Realisateur.class))).thenAnswer(invocation -> {
@@ -366,7 +376,31 @@ public class FilmServiceTests {
     } catch (ServiceException e) {
       System.out.println("whenFilmByTitle_thenShouldHaveFilm error");
     }
+  }
 
+  @Test
+  void whenFilmByRealisateurId_thenShouldHaveFilm() {
+    when(jpaFilmDAO.findByRealisateurId(anyLong())).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindByRealisateurId(invocation.getArgument(0));
+    });
+
+    try {
+      List<Film> filmFound = myFilmsServiceImpl.findFilmByRealisateurId(1);
+      assertEquals(filmFound, jamesCameron.getFilmRealises());
+      ServiceException e = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findFilmByRealisateurId(100));
+      assertEquals("Le réalistauer n'a réalisé aucun film", e.getMessage() );
+    } catch (ServiceException e) {
+      System.out.println("Erreur rencontrée");
+    }
+  }
+
+  @Test 
+  void whenUpdateRealisateur_thenShouldHaveUpdatedRealisateur() {
+    Realisateur francisCameron = new Realisateur(jamesCameron);
+    francisCameron.setPrenom("francis");
+    assertNotEquals(francisCameron, jamesCameron);
+    jamesCameron = myFilmsServiceImpl.updateRealisateur(jamesCameron.getId(), francisCameron);
+    
   }
 
 } 
