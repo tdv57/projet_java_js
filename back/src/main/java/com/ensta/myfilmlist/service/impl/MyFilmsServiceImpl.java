@@ -38,10 +38,13 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Autowired
     private GenreDAO genreDAO;
 
+    @Autowired
+    private FilmMapper filmMapper;
+
     @Override
     @Transactional
     public FilmDTO createFilm(FilmForm filmForm) throws ServiceException {
-        Film film = FilmMapper.convertFilmFormToFilm(filmForm);
+        Film film = filmMapper.convertFilmFormToFilm(filmForm);
         if (realisateurDAO.findById(filmForm.getRealisateurId()).isEmpty()) {
             throw new ServiceException("Le réalisateur n'existe pas");
         }
@@ -85,7 +88,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Override
     @Transactional
     public FilmDTO updateFilm(long id, FilmForm filmForm) throws ServiceException {
-        Film new_film = FilmMapper.convertFilmFormToFilm(filmForm);
+        Film new_film = filmMapper.convertFilmFormToFilm(filmForm);
         Film film = this.filmDAO.update(id, new_film);
         return FilmMapper.convertFilmToFilmDTO(film);
     }
