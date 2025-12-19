@@ -3,32 +3,30 @@ package com.ensta.myfilmlist.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 import com.ensta.myfilmlist.dao.impl.JpaGenreDAO;
-import com.ensta.myfilmlist.dao.impl.JpaRealisateurDAO;
+import com.ensta.myfilmlist.dao.impl.JpaDirectorDAO;
 import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Genre;
-import com.ensta.myfilmlist.model.Realisateur;
+import com.ensta.myfilmlist.model.Director;
 /**
  * Effectue les conversions des Films entre les couches de l'application.
  */
 @Component
 public class FilmMapper {
 
-	private final JpaRealisateurDAO jpaRealisateurDAO;
+	private final JpaDirectorDAO jpaDirectorDAO;
 
 	private final JpaGenreDAO jpaGenreDAO;
     
-	public FilmMapper(JpaRealisateurDAO jpaRealisateurDAO,
+	public FilmMapper(JpaDirectorDAO jpaDirectorDAO,
                       JpaGenreDAO jpaGenreDAO) {
-        this.jpaRealisateurDAO = jpaRealisateurDAO;
+        this.jpaDirectorDAO = jpaDirectorDAO;
         this.jpaGenreDAO = jpaGenreDAO;
     }
 
@@ -54,9 +52,9 @@ public class FilmMapper {
 		if (film == null) return null;
 		FilmDTO filmDTO = new FilmDTO();
 		filmDTO.setId(film.getId());
-		filmDTO.setTitre(film.getTitre());
-		filmDTO.setDuree(film.getDuree());
-		filmDTO.setRealisateurDTO(RealisateurMapper.convertRealisateurToRealisateurDTO(film.getRealisateur()));
+		filmDTO.setTitle(film.getTitle());
+		filmDTO.setDuration(film.getDuration());
+		filmDTO.setDirectorDTO(DirectorMapper.convertDirectorToDirectorDTO(film.getDirector()));
         filmDTO.setGenreDTO(GenreMapper.convertGenreToGenreDTO(film.getGenre()));
 		return filmDTO;
 	}
@@ -71,9 +69,9 @@ public class FilmMapper {
 		if (filmDTO == null) return null;
 		Film film = new Film();
 		film.setId(filmDTO.getId());
-		film.setTitre(filmDTO.getTitre());
-		film.setDuree(filmDTO.getDuree());
-		film.setRealisateur(RealisateurMapper.convertRealisateurDTOToRealisateur(filmDTO.getRealisateurDTO()));
+		film.setTitle(filmDTO.getTitle());
+		film.setDuration(filmDTO.getDuration());
+		film.setDirector(DirectorMapper.convertDirectorDTOToDirector(filmDTO.getDirectorDTO()));
         film.setGenre(GenreMapper.convertGenreDTOToGenre(filmDTO.getGenreDTO()));
 		return film;
 	}
@@ -86,14 +84,14 @@ public class FilmMapper {
 	 */
 	public Film convertFilmFormToFilm(FilmForm filmForm) {
 		Film film = new Film();
-		film.setTitre(filmForm.getTitre());
-		film.setDuree(filmForm.getDuree());
+		film.setTitle(filmForm.getTitle());
+		film.setDuration(filmForm.getDuration());
         // TODO: again, jbdc usage but we should be in jpa?
-		Optional<Realisateur> optionalRealisateur = this.jpaRealisateurDAO.findById(filmForm.getRealisateurId());
-		if (optionalRealisateur.isPresent()) {
-			film.setRealisateur(optionalRealisateur.get());
+		Optional<Director> optionalDirector = this.jpaDirectorDAO.findById(filmForm.getDirectorId());
+		if (optionalDirector.isPresent()) {
+			film.setDirector(optionalDirector.get());
 		} else {
-			film.setRealisateur(null);
+			film.setDirector(null);
 		}
         Optional<Genre> optionalGenre = this.jpaGenreDAO.findById(filmForm.getGenreId());
         if (optionalGenre.isPresent()) {

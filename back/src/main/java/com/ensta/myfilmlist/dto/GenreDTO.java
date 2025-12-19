@@ -4,16 +4,16 @@ public class GenreDTO {
 
     private Long id;
 
-    private String nom;
+    private String surname;
 
     public GenreDTO() {
         this.id = 0L;
-        this.nom = "";
+        this.surname = "";
     }
 
-    public GenreDTO(Long id, String nom) {
+    public GenreDTO(Long id, String surname) {
         this.id = id;
-        this.nom = nom;
+        this.surname = surname;
     }
 
     public Long getId() {
@@ -24,17 +24,17 @@ public class GenreDTO {
         this.id = id;
     }
 
-    public String getNom() {
-        return nom;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     @Override
     public String toString(){
-        return "GenreDTO [id=" + this.id + ", nom=" + this.nom + "]";
+        return "GenreDTO [id=" + this.id + ", surname=" + this.surname + "]";
     }
 
 }

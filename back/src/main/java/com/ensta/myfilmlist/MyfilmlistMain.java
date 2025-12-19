@@ -1,5 +1,4 @@
 package com.ensta.myfilmlist;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ensta.myfilmlist.persistence.ConnectionManager;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -24,16 +23,16 @@ public class MyfilmlistMain {
 		// ConnectionManager.createWebServer();
 
 		System.out.println("--------------------");
-		myFilmListTests.updateRealisateurCelebreTest();
+		myFilmListTests.updateDirectorFamousTest();
 
 		System.out.println("--------------------");
-		myFilmListTests.calculerDureeTotaleTest();
+		myFilmListTests.calculerDurationTotaleTest();
 
 		System.out.println("--------------------");
 		myFilmListTests.calculerNoteMoyenneTest();
 
 		System.out.println("--------------------");
-		myFilmListTests.updateRealisateursCelebresTest();
+		myFilmListTests.updateDirectorsFamoussTest();
 		
 		System.out.println("--------------------");
 		myFilmListTests.findAllFilmsTest();
@@ -48,7 +47,7 @@ public class MyfilmlistMain {
 		myFilmListTests.deleteFilmByIdTest();
 
 		System.out.println("--------------------");
-		myFilmListTests.updateRealisateurCelebre();
+		myFilmListTests.updateDirectorFamous();
 	}
 
 }

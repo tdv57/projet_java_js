@@ -9,41 +9,41 @@ import javax.validation.constraints.Min;
  */
 public class FilmForm {
 
-	@NotBlank(message = "Le titre ne peut pas être vide")
-	private String titre;
+	@NotBlank(message = "Le title ne peut pas être vide")
+	private String title;
 
 	@NotNull(message = "La durée doit être strictement supérieure à 0")
 	@Positive(message = "La durée doit être strictement supérieure à 0")
-	private int duree;
+	private int duration;
 
-	@Min(value=1, message="L'id du realisateur doit être strictement positif")
-	private long realisateurId;
+	@Min(value=1, message="L'id du director doit être strictement positif")
+	private long directorId;
 
     @Min(value=1, message="L'id du genre doit être strictement positif")
     private long genreId;
 
-	public String getTitre() {
-		return titre;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setTitre(String titre) {
-		this.titre = titre;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public int getDuree() {
-		return duree;
+	public int getDuration() {
+		return duration;
 	}
 
-	public void setDuree(int duree) {
-		this.duree = duree;
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 
-	public long getRealisateurId() {
-		return realisateurId;
+	public long getDirectorId() {
+		return directorId;
 	}
 
-	public void setRealisateurId(long realisateurId) {
-		this.realisateurId = realisateurId;
+	public void setDirectorId(long directorId) {
+		this.directorId = directorId;
 	}
 
     public long getGenreId() {return genreId;}

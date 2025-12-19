@@ -46,7 +46,7 @@ import static org.mockito.Mockito.*;
 public class FilmServiceTests {
 
   @MockBean 
-  private JpaRealisateurDAO jpaRealisateurDAO;
+  private JpaDirectorDAO jpaDirectorDAO;
 
   @MockBean 
   private JpaGenreDAO jpaGenreDAO;
@@ -60,31 +60,31 @@ public class FilmServiceTests {
   @Autowired 
   private MyFilmsServiceImpl myFilmsServiceImpl;
 
-  private Realisateur jamesCameron = new Realisateur();
-  private Realisateur peterJackson = new Realisateur();
+  private Director jamesCameron = new Director();
+  private Director peterJackson = new Director();
   private Film hihihi1 = new Film();
   private Film hihihi2 = new Film();
   private Film hihihi3 = new Film();
   private Film deBonMatin = new Film();
-  private Realisateur erreurInterne = new Realisateur();
+  private Director erreurInterne = new Director();
   private static int count = 0;
-  private static Long realisateurId = Long.valueOf(1L);
+  private static Long directorId = Long.valueOf(1L);
   private static Long filmId = Long.valueOf(2L);
 
-  private Realisateur mockJpaRealisateurDAOUpdate(long id, Realisateur realisateur) throws ServiceException {
+  private Director mockJpaDirectorDAOUpdate(long id, Director director) throws ServiceException {
     switch ((int)id) {
       case 1:
-        jamesCameron = realisateur;
+        jamesCameron = director;
         return jamesCameron;
       case 2:
-        peterJackson = realisateur;
+        peterJackson = director;
         return peterJackson;
       default:
         throw new ServiceException("Impossible de mettre à jour le réalisateur");
     }
   }
 
-  private Optional<Realisateur> mockJpaRealisateurDAOFindById(long id) {
+  private Optional<Director> mockJpaDirectorDAOFindById(long id) {
     switch((int) id) {
       case 1:
         return Optional.of(jamesCameron);
@@ -99,7 +99,7 @@ public class FilmServiceTests {
     return Optional.empty();
   }
 
-  private Optional<Realisateur> mockJpaRealisateurDAOFindById(Long id) {
+  private Optional<Director> mockJpaDirectorDAOFindById(Long id) {
       if (id == Long.valueOf(1)) {
         return Optional.of(jamesCameron);
       } else if (id == Long.valueOf(2)) {
@@ -109,13 +109,13 @@ public class FilmServiceTests {
       }
   }
 
-    private List<Film> mockJpaFilmDAOFindByRealisateurId(Long id) {
+    private List<Film> mockJpaFilmDAOFindByDirectorId(Long id) {
       if (id == 1L) {
         System.out.println("Cameron");
-        return jamesCameron.getFilmRealises();
+        return jamesCameron.getfilmsProduced();
       } else if (id == 2L) {
         System.out.println("Jackson");
-        return peterJackson.getFilmRealises();
+        return peterJackson.getfilmsProduced();
       } else {
         return new ArrayList<>();
       }
@@ -158,8 +158,8 @@ public class FilmServiceTests {
 
   @BeforeEach 
   void setUp() {
-    when(jpaRealisateurDAO.findById(anyLong())).thenAnswer(invocation -> {
-      return mockJpaRealisateurDAOFindById(invocation.getArgument(0));
+    when(jpaDirectorDAO.findById(anyLong())).thenAnswer(invocation -> {
+      return mockJpaDirectorDAOFindById(invocation.getArgument(0));
     });
 
     when(jpaGenreDAO.findById(anyLong())).thenAnswer(invocation -> {
@@ -169,39 +169,39 @@ public class FilmServiceTests {
     System.out.println("\n");
     System.out.println("Debut test n°" + count);
     System.out.println("\n");
-    jamesCameron.setCelebre(false);
-    jamesCameron.setDateNaissance(LocalDate.of(1950, 03, 20));
+    jamesCameron.setFamous(false);
+    jamesCameron.setBirthdate(LocalDate.of(1950, 03, 20));
     jamesCameron.setId(Long.valueOf(1L));
-    jamesCameron.setNom("Cameron");
-    jamesCameron.setPrenom("James");
+    jamesCameron.setSurname("Cameron");
+    jamesCameron.setName("James");
 
-    peterJackson.setCelebre(false);
-    peterJackson.setDateNaissance(LocalDate.of(1980,02,02));
+    peterJackson.setFamous(false);
+    peterJackson.setBirthdate(LocalDate.of(1980,02,02));
     peterJackson.setId(Long.valueOf(2L));
-    peterJackson.setNom("Jackson");
-    peterJackson.setPrenom("Peter");
+    peterJackson.setSurname("Jackson");
+    peterJackson.setName("Peter");
     
-    realisateurId = Long.valueOf(3L);
+    directorId = Long.valueOf(3L);
 
-    hihihi1.setDuree(60);
-    hihihi1.setRealisateur(jamesCameron);
-    hihihi1.setTitre("hihihi1");
+    hihihi1.setDuration(60);
+    hihihi1.setDirector(jamesCameron);
+    hihihi1.setTitle("hihihi1");
     hihihi1.setId(Long.valueOf(1L));
 
-    hihihi2.setDuree(61);
-    hihihi2.setRealisateur(jamesCameron);
-    hihihi2.setTitre("hihihi2");
+    hihihi2.setDuration(61);
+    hihihi2.setDirector(jamesCameron);
+    hihihi2.setTitle("hihihi2");
     hihihi2.setId(Long.valueOf(2L));
 
-    hihihi3.setDuree(62);
-    hihihi3.setRealisateur(jamesCameron);
-    hihihi3.setTitre("hihihi3");
+    hihihi3.setDuration(62);
+    hihihi3.setDirector(jamesCameron);
+    hihihi3.setTitle("hihihi3");
     hihihi3.setId(Long.valueOf(3L));
 
-    deBonMatin.setDuree(90);
+    deBonMatin.setDuration(90);
     deBonMatin.setId(Long.valueOf(4L));
-    deBonMatin.setRealisateur(peterJackson);
-    deBonMatin.setTitre("de bon matin");
+    deBonMatin.setDirector(peterJackson);
+    deBonMatin.setTitle("de bon matin");
     
     filmId = Long.valueOf(5L);
 
@@ -209,11 +209,11 @@ public class FilmServiceTests {
     jamesCameronFilms.add(hihihi1);
     jamesCameronFilms.add(hihihi2);
     jamesCameronFilms.add(hihihi3);
-    jamesCameron.setFilmRealises(jamesCameronFilms);
+    jamesCameron.setfilmsProduced(jamesCameronFilms);
     
     List<Film> peterJacksonFilms = new ArrayList<>();
     peterJacksonFilms.add(deBonMatin);
-    peterJackson.setFilmRealises(peterJacksonFilms);
+    peterJackson.setfilmsProduced(peterJacksonFilms);
 
     erreurInterne.setId(Long.valueOf(1000L));
   }
@@ -226,25 +226,25 @@ public class FilmServiceTests {
     System.out.println("\n");
   }
   @Test 
-  void whenRealisateurHasAtLeast3Movies_thenShouldBeCelebre() throws ServiceException{
-    when(jpaFilmDAO.findByRealisateurId(any(Long.class))).thenAnswer(invocation -> {
-      return mockJpaFilmDAOFindByRealisateurId(invocation.getArgument(0));
+  void whenDirectorHasAtLeast3Movies_thenShouldBeFamous() throws ServiceException{
+    when(jpaFilmDAO.findByDirectorId(any(Long.class))).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindByDirectorId(invocation.getArgument(0));
     });
-    when(jpaRealisateurDAO.update(anyLong(), any(Realisateur.class))).thenAnswer(invocation -> {
-        return mockJpaRealisateurDAOUpdate(invocation.getArgument(0), invocation.getArgument(1));
+    when(jpaDirectorDAO.update(anyLong(), any(Director.class))).thenAnswer(invocation -> {
+        return mockJpaDirectorDAOUpdate(invocation.getArgument(0), invocation.getArgument(1));
     });
-    jamesCameron = myFilmsServiceImpl.updateRealisateurCelebre(jamesCameron);
-    assertEquals(Boolean.TRUE, jamesCameron.isCelebre());
-    peterJackson = myFilmsServiceImpl.updateRealisateurCelebre(peterJackson);
-    assertEquals(Boolean.FALSE, peterJackson.isCelebre());
+    jamesCameron = myFilmsServiceImpl.updateDirectorFamous(jamesCameron);
+    assertEquals(Boolean.TRUE, jamesCameron.isFamous());
+    peterJackson = myFilmsServiceImpl.updateDirectorFamous(peterJackson);
+    assertEquals(Boolean.FALSE, peterJackson.isFamous());
     Exception exception = assertThrows(ServiceException.class, () -> {
-        myFilmsServiceImpl.updateRealisateurCelebre(erreurInterne);
+        myFilmsServiceImpl.updateDirectorFamous(erreurInterne);
     });
     assertEquals("Erreur lors de la mise à jour de la célébrité",exception.getMessage());
   }
 
   @Test
-  void whenCalculerDureeTotale_thenShouldHaveLaDureeTotale() {
+  void whenCalculerDurationTotale_thenShouldHaveLaDurationTotale() {
     List<Double> pasDeNote = new ArrayList<>();
     List<Double> troisNotes=  new ArrayList<>();
     troisNotes.add(Double.valueOf(11f)); 
@@ -261,75 +261,75 @@ public class FilmServiceTests {
   }
 
   @Test 
-  void whenRealisateurAmongRealisateursHasAtLeast3Movies_thenShouldBeCelebre() throws ServiceException{
-      when(jpaFilmDAO.findByRealisateurId(any(Long.class))).thenAnswer(invocation -> {
-          return mockJpaFilmDAOFindByRealisateurId(invocation.getArgument(0));
+  void whenDirectorAmongRealisateursHasAtLeast3Movies_thenShouldBeFamous() throws ServiceException{
+      when(jpaFilmDAO.findByDirectorId(any(Long.class))).thenAnswer(invocation -> {
+          return mockJpaFilmDAOFindByDirectorId(invocation.getArgument(0));
       });
     
-    when(jpaRealisateurDAO.update(anyLong(), any(Realisateur.class))).thenAnswer(invocation -> {
+    when(jpaDirectorDAO.update(anyLong(), any(Director.class))).thenAnswer(invocation -> {
         return invocation.getArgument(1);
     });
 
-    List<Realisateur> realisateurs = new ArrayList<>();
-    realisateurs.add(jamesCameron);
-    realisateurs.add(peterJackson);
+    List<Director> directors = new ArrayList<>();
+    directors.add(jamesCameron);
+    directors.add(peterJackson);
 
-    List <Realisateur> realisateursCelebres = myFilmsServiceImpl.updateRealisateurCelebres(realisateurs);
-    assertEquals(1, realisateursCelebres.size());
-    assertEquals(Boolean.TRUE, jamesCameron.isCelebre());
-    assertEquals(Boolean.FALSE, peterJackson.isCelebre());
+    List <Director> directorsFamouss = myFilmsServiceImpl.updateDirectorFamouss(directors);
+    assertEquals(1, directorsFamouss.size());
+    assertEquals(Boolean.TRUE, jamesCameron.isFamous());
+    assertEquals(Boolean.FALSE, peterJackson.isFamous());
   }
 
   @Test 
   void whenFindAll_thenShouldHaveAllFilms() throws ServiceException{
     when(jpaFilmDAO.findAll()).thenAnswer(invocation -> {
       List<Film> allFilms = new ArrayList<>();
-      allFilms.addAll(jamesCameron.getFilmRealises());
-      allFilms.addAll(peterJackson.getFilmRealises());
+      allFilms.addAll(jamesCameron.getfilmsProduced());
+      allFilms.addAll(peterJackson.getfilmsProduced());
       return allFilms;
     });
 
     List<Film> allFilmsExpected = new ArrayList<>();
-    allFilmsExpected.addAll(jamesCameron.getFilmRealises());
-    allFilmsExpected.addAll(peterJackson.getFilmRealises());
+    allFilmsExpected.addAll(jamesCameron.getfilmsProduced());
+    allFilmsExpected.addAll(peterJackson.getfilmsProduced());
     List<Film> allFilms = myFilmsServiceImpl.findAll();
     assertEquals(allFilmsExpected, allFilms);
   }
 
   @Test 
   void whenCreateFilm_thenShouldHaveCreateFilm() throws ServiceException {
-    when(jpaRealisateurDAO.findById(anyLong())).thenAnswer(invocation -> {
-      return mockJpaRealisateurDAOFindById(invocation.getArgument(0));
+    when(jpaDirectorDAO.findById(anyLong())).thenAnswer(invocation -> {
+      return mockJpaDirectorDAOFindById(invocation.getArgument(0));
     });
 
     when(jpaFilmDAO.save(any(Film.class))).thenAnswer(invocation -> {
       return mockJpaFilmDAOSave(invocation.getArgument(0));
     });
 
-    when(jpaFilmDAO.findByRealisateurId(any(Long.class))).thenAnswer(invocation -> {
-      return mockJpaFilmDAOFindByRealisateurId(invocation.getArgument(0));
+    when(jpaFilmDAO.findByDirectorId(any(Long.class))).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindByDirectorId(invocation.getArgument(0));
     });
     
-    when(jpaRealisateurDAO.update(anyLong(), any(Realisateur.class))).thenAnswer(invocation -> invocation.getArgument(1));
+    when(jpaDirectorDAO.update(anyLong(), any(Director.class))).thenAnswer(invocation -> invocation.getArgument(1));
 
     FilmForm onAttendPasPatrick1 = new FilmForm();
-    onAttendPasPatrick1.setDuree(90);
-    onAttendPasPatrick1.setRealisateurId(2);
-    onAttendPasPatrick1.setTitre("on attend pas Patrick 1");
+    onAttendPasPatrick1.setDuration(90);
+    onAttendPasPatrick1.setDirectorId(2);
+    onAttendPasPatrick1.setTitle("on attend pas Patrick 1");
 
     FilmForm onAttendPasPatrick2 = new FilmForm();
-    onAttendPasPatrick2.setDuree(90);
-    onAttendPasPatrick2.setRealisateurId(2);
-    onAttendPasPatrick2.setTitre("on attend pas Patrick 2");
+    onAttendPasPatrick2.setDuration(90);
+    onAttendPasPatrick2.setDirectorId(2);
+    onAttendPasPatrick2.setTitle("on attend pas Patrick 2");
 
     FilmForm onAttendPasPatrick3 = new FilmForm();
-    onAttendPasPatrick3.setDuree(90);
-    onAttendPasPatrick3.setRealisateurId(2);
-    onAttendPasPatrick3.setTitre("on attend pas Patrick 3");
+    onAttendPasPatrick3.setDuration(90);
+    onAttendPasPatrick3.setDirectorId(2);
+    onAttendPasPatrick3.setTitle("on attend pas Patrick 3");
 
     try {
-      peterJackson = myFilmsServiceImpl.updateRealisateurCelebre(peterJackson);
-      assertEquals(Boolean.FALSE, peterJackson.isCelebre());    
+      peterJackson = myFilmsServiceImpl.updateDirectorFamous(peterJackson);
+      assertEquals(Boolean.FALSE, peterJackson.isFamous());
       Film onAttendPasPatrick_1 = filmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick1));
       Film onAttendPasPatrick_2 = filmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick2));
       Film onAttendPasPatrick_3 = filmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick3));
@@ -337,13 +337,13 @@ public class FilmServiceTests {
       onAttendPasPatrick.add(onAttendPasPatrick_1);
       onAttendPasPatrick.add(onAttendPasPatrick_2);
       onAttendPasPatrick.add(onAttendPasPatrick_3);
-      peterJackson.setFilmRealises(onAttendPasPatrick);
-      peterJackson = myFilmsServiceImpl.updateRealisateurCelebre(peterJackson);
+      peterJackson.setfilmsProduced(onAttendPasPatrick);
+      peterJackson = myFilmsServiceImpl.updateDirectorFamous(peterJackson);
     } catch (ServiceException e) {
       System.out.println("whenCreateFilm_thenShouldHaveCreatFilm error");
     }
 
-    assertEquals(Boolean.TRUE, peterJackson.isCelebre());  
+    assertEquals(Boolean.TRUE, peterJackson.isFamous());
   }
 
   @Test
@@ -376,31 +376,7 @@ public class FilmServiceTests {
     } catch (ServiceException e) {
       System.out.println("whenFilmByTitle_thenShouldHaveFilm error");
     }
-  }
 
-  @Test
-  void whenFilmByRealisateurId_thenShouldHaveFilm() {
-    when(jpaFilmDAO.findByRealisateurId(anyLong())).thenAnswer(invocation -> {
-      return mockJpaFilmDAOFindByRealisateurId(invocation.getArgument(0));
-    });
-
-    try {
-      List<Film> filmFound = myFilmsServiceImpl.findFilmByRealisateurId(1);
-      assertEquals(filmFound, jamesCameron.getFilmRealises());
-      ServiceException e = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findFilmByRealisateurId(100));
-      assertEquals("Le réalistauer n'a réalisé aucun film", e.getMessage() );
-    } catch (ServiceException e) {
-      System.out.println("Erreur rencontrée");
-    }
-  }
-
-  @Test 
-  void whenUpdateRealisateur_thenShouldHaveUpdatedRealisateur() {
-    Realisateur francisCameron = new Realisateur(jamesCameron);
-    francisCameron.setPrenom("francis");
-    assertNotEquals(francisCameron, jamesCameron);
-    jamesCameron = myFilmsServiceImpl.updateRealisateur(jamesCameron.getId(), francisCameron);
-    
   }
 
 } 

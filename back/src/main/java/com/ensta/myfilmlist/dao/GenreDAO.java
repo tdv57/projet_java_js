@@ -7,5 +7,5 @@ import com.ensta.myfilmlist.model.*;
 public interface GenreDAO {
     List<Genre> findAll() throws ServiceException;
     Optional<Genre> findById(long id);
-    Genre update(long id, String nom) throws ServiceException;
+    Genre update(long id, String surname) throws ServiceException;
 }

@@ -3,17 +3,16 @@ package com.ensta.myfilmlist.service.impl;
 import com.ensta.myfilmlist.dao.GenreDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.FilmForm;
-import com.ensta.myfilmlist.form.RealisateurForm;
+import com.ensta.myfilmlist.form.DirectorForm;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.mapper.GenreMapper;
-import com.ensta.myfilmlist.mapper.RealisateurMapper;
+import com.ensta.myfilmlist.mapper.DirectorMapper;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Genre;
-import com.ensta.myfilmlist.model.Realisateur;
+import com.ensta.myfilmlist.model.Director;
 import com.ensta.myfilmlist.service.*;
-import com.ensta.myfilmlist.dao.impl.JdbcRealisateurDAO;
 import com.ensta.myfilmlist.dao.FilmDAO;
-import com.ensta.myfilmlist.dao.RealisateurDAO;
+import com.ensta.myfilmlist.dao.DirectorDAO;
 import com.ensta.myfilmlist.dto.*;
 
 import java.util.*;
@@ -28,12 +27,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class MyFilmsServiceImpl implements MyFilmsService {
-    public static final int NB_FILMS_MIN_REALISATEUR_CELEBRE = 3; 
+    public static final int MIN_NB_FILMS_FAMOUS_DIRECTOR = 3;
     @Autowired
     private FilmDAO filmDAO;
 
     @Autowired
-    private RealisateurDAO realisateurDAO;
+    private DirectorDAO directorDAO;
 
     @Autowired
     private GenreDAO genreDAO;
@@ -45,11 +44,11 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Transactional
     public FilmDTO createFilm(FilmForm filmForm) throws ServiceException {
         Film film = filmMapper.convertFilmFormToFilm(filmForm);
-        if (realisateurDAO.findById(filmForm.getRealisateurId()).isEmpty()) {
+        if (directorDAO.findById(filmForm.getDirectorId()).isEmpty()) {
             throw new ServiceException("Le réalisateur n'existe pas");
         }
         film = this.filmDAO.save(film);
-        film.setRealisateur(updateRealisateurCelebre(film.getRealisateur()));
+        film.setDirector(updateDirectorFamous(film.getDirector()));
         return FilmMapper.convertFilmToFilmDTO(film);
     }
 
@@ -77,8 +76,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public List<Film> findFilmByRealisateurId(long id) throws ServiceException {
-        List<Film> films = this.filmDAO.findByRealisateurId(id);
+    public List<Film> findFilmByDirectorId(long id) throws ServiceException {
+        List<Film> films = this.filmDAO.findByDirectorId(id);
         if (films.isEmpty()) {
             throw new ServiceException("Le réalistauer n'a réalisé aucun film");
         }
@@ -98,52 +97,52 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     public void deleteFilm(long id) throws ServiceException {
         Film film = findFilmById(id);
         this.filmDAO.delete(film);
-        updateRealisateurCelebre(film.getRealisateur());
+        updateDirectorFamous(film.getDirector());
     }
 
 
     @Override
     @Transactional
-    public RealisateurDTO createRealisateur(RealisateurForm realisateurForm) throws ServiceException {
-        Realisateur realisateur = RealisateurMapper.convertRealisateurFormToRealisateur(realisateurForm);
-        realisateur = this.realisateurDAO.save(realisateur);
-        return RealisateurMapper.convertRealisateurToRealisateurDTO(realisateur);
+    public DirectorDTO createDirector(DirectorForm directorForm) throws ServiceException {
+        Director director = DirectorMapper.convertDirectorFormToDirector(directorForm);
+        director = this.directorDAO.save(director);
+        return DirectorMapper.convertDirectorToDirectorDTO(director);
     }
 
     @Override 
-    public List<Realisateur> findAllRealisateurs() throws ServiceException {
-        return this.realisateurDAO.findAll();
+    public List<Director> findAllDirectors() throws ServiceException {
+        return this.directorDAO.findAll();
     }
 
     @Override
-    public Realisateur findRealisateurById(Long id) throws ServiceException {
-        Optional<Realisateur> realisateur = this.realisateurDAO.findById(id);
-        if (realisateur.isEmpty()) {
+    public Director findDirectorById(Long id) throws ServiceException {
+        Optional<Director> director = this.directorDAO.findById(id);
+        if (director.isEmpty()) {
             throw new  ServiceException ("Le réalisateur demandé n'existe pas");
         }
-        return realisateur.get();
+        return director.get();
     }
 
     @Override
-    public Realisateur findRealisateurByNomAndPrenom(String nom, String prenom) throws ServiceException {
-        Optional<Realisateur> realisateur = this.realisateurDAO.findByNomAndPrenom(nom, prenom);
-        if (realisateur.isEmpty()) {
+    public Director findDirectorBySurnameAndName(String surname, String name) throws ServiceException {
+        Optional<Director> director = this.directorDAO.findBySurnameAndName(surname, name);
+        if (director.isEmpty()) {
             throw new  ServiceException ("Le réalisateur demandé n'existe pas");
         }
-        return realisateur.get();
+        return director.get();
     }
 
     /**
-     * La méthode prend en entrée un Realisateur non null, si le Realisateur a fait au moins 3 films indique celebre=true, le cas contraire celebre=false, renvoit le Realisateur modifié.
+     * La méthode prend en entrée un Director non null, si le Director a fait au moins 3 films indique famous=true, le cas contraire famous=false, renvoit le Director modifié.
      */
     @Override
     @Transactional
-    public Realisateur updateRealisateurCelebre(Realisateur realisateur) throws ServiceException {
+    public Director updateDirectorFamous(Director director) throws ServiceException {
         try {
-            List<Film> filmsDuRealisateur = filmDAO.findByRealisateurId(realisateur.getId());
-            realisateur.setFilmRealises(filmsDuRealisateur);
-            realisateur.setCelebre(realisateur.getFilmRealises().size() >= NB_FILMS_MIN_REALISATEUR_CELEBRE);
-            return realisateurDAO.update(realisateur.getId(), realisateur);
+            List<Film> filmsDuDirector = filmDAO.findByDirectorId(director.getId());
+            director.setfilmsProduced(filmsDuDirector);
+            director.setFamous(director.getfilmsProduced().size() >= MIN_NB_FILMS_FAMOUS_DIRECTOR);
+            return directorDAO.update(director.getId(), director);
         } catch(Throwable e) {
             throw new ServiceException("Erreur lors de la mise à jour de la célébrité", e);
         }
@@ -152,17 +151,17 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
-    public List<Realisateur> updateRealisateurCelebres(List<Realisateur> realisateurs) throws ServiceException {
+    public List<Director> updateDirectorFamouss(List<Director> directors) throws ServiceException {
         try {
-            return realisateurs.stream()
-                    .map(realisateur -> {
+            return directors.stream()
+                    .map(director -> {
                         try {
-                            return updateRealisateurCelebre(realisateur);
+                            return updateDirectorFamous(director);
                         } catch(ServiceException e) {
                             throw new RuntimeException(e);
                         }
                     })
-                    .filter(Realisateur::isCelebre)
+                    .filter(Director::isFamous)
                     .collect(Collectors.toList());
         } catch (Throwable e) {
             throw new ServiceException("Erreur dans la mise à jour de la célébrité", e);
@@ -171,16 +170,16 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
-    public RealisateurDTO updateRealisateur(long id, RealisateurForm realisateurForm) throws ServiceException {
-        Realisateur new_realisateur = RealisateurMapper.convertRealisateurFormToRealisateur(realisateurForm);
-        Realisateur realisateur = this.realisateurDAO.update(id, new_realisateur);
-        return RealisateurMapper.convertRealisateurToRealisateurDTO(realisateur);
+    public DirectorDTO updateDirector(long id, DirectorForm directorForm) throws ServiceException {
+        Director new_director = DirectorMapper.convertDirectorFormToDirector(directorForm);
+        Director director = this.directorDAO.update(id, new_director);
+        return DirectorMapper.convertDirectorToDirectorDTO(director);
     }
 
     @Override
     @Transactional
-    public void deleteRealisateur(long id) throws ServiceException {
-        this.realisateurDAO.delete(id);
+    public void deleteDirector(long id) throws ServiceException {
+        this.directorDAO.delete(id);
     }
 
 
@@ -200,8 +199,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
-    public GenreDTO updateGenre(long id, String nom) throws ServiceException {
-        Genre genre = this.genreDAO.update(id, nom);
+    public GenreDTO updateGenre(long id, String surname) throws ServiceException {
+        Genre genre = this.genreDAO.update(id, surname);
         return GenreMapper.convertGenreToGenreDTO(genre);
     }
 
@@ -210,9 +209,9 @@ public class MyFilmsServiceImpl implements MyFilmsService {
      * Prend une liste de Film et renvoie une int représentant la somme des durées de chaque film
      */
     @Override
-    public int calculerDureeTotale(List<Film> filmRealises) {
-        return filmRealises.stream()
-                .map(Film::getDuree)
+    public int calculerDurationTotale(List<Film> filmsProduced) {
+        return filmsProduced.stream()
+                .map(Film::getDuration)
                 .reduce(0, Integer::sum);
     }
 

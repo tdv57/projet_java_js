@@ -9,7 +9,7 @@ public interface FilmDAO {
     Film save(Film film);
     Optional<Film> findById(long id);
     Optional<Film> findByTitle(String title);
-    List<Film> findByRealisateurId(long realisateur_id);
+    List<Film> findByDirectorId(long director_id);
     Film update(long id, Film film) throws ServiceException;
     void delete(Film film);
 }

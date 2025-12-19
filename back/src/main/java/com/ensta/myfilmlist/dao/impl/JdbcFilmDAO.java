@@ -29,21 +29,21 @@ public class JdbcFilmDAO implements FilmDAO {
     private final RowMapper<Film> rowMapper = (ResultSet resultSet, int rowNum) -> {
         Film film = new Film();
         film.setId(resultSet.getLong("id"));
-        film.setTitre(resultSet.getString("titre"));
-        film.setDuree(resultSet.getInt("duree"));
-        Realisateur realisateur = new Realisateur();
-        realisateur.setCelebre(resultSet.getBoolean("celebre"));
-        realisateur.setDateNaissance(resultSet.getTimestamp("date_naissance").toLocalDateTime().toLocalDate());
-        realisateur.setId(resultSet.getLong("realisateur_id"));
-        realisateur.setNom(resultSet.getString("nom"));
-        realisateur.setPrenom(resultSet.getString("prenom"));
-        film.setRealisateur(realisateur);
+        film.setTitle(resultSet.getString("title"));
+        film.setDuration(resultSet.getInt("duration"));
+        Director director = new Director();
+        director.setFamous(resultSet.getBoolean("famous"));
+        director.setBirthdate(resultSet.getTimestamp("birthdate").toLocalDateTime().toLocalDate());
+        director.setId(resultSet.getLong("director_id"));
+        director.setSurname(resultSet.getString("surname"));
+        director.setName(resultSet.getString("name"));
+        film.setDirector(director);
         return film;
     };
 
     @Override
     public List<Film> findAll() throws ServiceException {
-        String query = "SELECT * FROM Film JOIN Realisateur ON Realisateur.id = Film.realisateur_id;";
+        String query = "SELECT * FROM Film JOIN Director ON Director.id = Film.director_id;";
         try {
             List<Film> films = this.jdbcTemplate.query(query, this.rowMapper);
             if (films.isEmpty()) {
@@ -57,13 +57,13 @@ public class JdbcFilmDAO implements FilmDAO {
 
     @Override
     public Film save(Film film) {
-        String query = "INSERT INTO Film(titre, duree, realisateur_id) VALUES(?, ?, ?)";
+        String query = "INSERT INTO Film(title, duration, director_id) VALUES(?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         PreparedStatementCreator creator = conn -> {
             PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, film.getTitre());
-            statement.setInt(2, film.getDuree());
-            statement.setLong(3, film.getRealisateur().getId());
+            statement.setString(1, film.getTitle());
+            statement.setInt(2, film.getDuration());
+            statement.setLong(3, film.getDirector().getId());
             return statement;
         };
         jdbcTemplate.update(creator, keyHolder);
@@ -73,7 +73,7 @@ public class JdbcFilmDAO implements FilmDAO {
 
     @Override
     public Optional<Film> findById(long id) {
-        String query = "SELECT * FROM Film JOIN Realisateur ON Film.realisateur_id = Realisateur.id WHERE Film.id=?";
+        String query = "SELECT * FROM Film JOIN Director ON Film.director_id = Director.id WHERE Film.id=?";
         try {
             Film film = this.jdbcTemplate.queryForObject(query, this.rowMapper, id);
             return Optional.of(film);
@@ -84,7 +84,7 @@ public class JdbcFilmDAO implements FilmDAO {
 
     @Override
     public Optional<Film> findByTitle(String title) {
-        String query = "SELECT * FROM Film JOIN Realisateur ON Film.realisateur_id = Realisateur.id WHERE Film.titre=?";
+        String query = "SELECT * FROM Film JOIN Director ON Film.director_id = Director.id WHERE Film.title=?";
         try {
             Film film = this.jdbcTemplate.queryForObject(query, this.rowMapper, title);
             return Optional.of(film);
@@ -94,9 +94,9 @@ public class JdbcFilmDAO implements FilmDAO {
     }
 
     @Override
-    public List<Film> findByRealisateurId(long realisateur_id) {
-        String query = "SELECT * FROM Realisateur JOIN Film ON Film.realisateur_id = Realisateur.id WHERE Realisateur.id=?";
-        return this.jdbcTemplate.query(query, this.rowMapper, realisateur_id);
+    public List<Film> findByDirectorId(long director_id) {
+        String query = "SELECT * FROM Director JOIN Film ON Film.director_id = Director.id WHERE Director.id=?";
+        return this.jdbcTemplate.query(query, this.rowMapper, director_id);
     }
 
     @Override

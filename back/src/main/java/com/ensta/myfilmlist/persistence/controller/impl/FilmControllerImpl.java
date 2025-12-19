@@ -50,10 +50,10 @@ public class FilmControllerImpl implements FilmController {
     }
 
     @Override
-    @PostMapping("/titre")
-    public ResponseEntity<FilmDTO> getFilmByTitle(@RequestParam String titre) throws ControllerException {
+    @PostMapping("/title")
+    public ResponseEntity<FilmDTO> getFilmByTitle(@RequestParam String title) throws ControllerException {
         try {
-            FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmByTitle(titre));
+            FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmByTitle(title));
             if (filmDTO == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
@@ -64,10 +64,10 @@ public class FilmControllerImpl implements FilmController {
     }
 
     @Override
-    @GetMapping("/realisateur/{id}")
-    public ResponseEntity<List<FilmDTO>> getFilmByRealisateurId(@PathVariable long id) throws ControllerException {
+    @GetMapping("/director/{id}")
+    public ResponseEntity<List<FilmDTO>> getFilmByDirectorId(@PathVariable long id) throws ControllerException {
         try {
-            List<Film> filmList = myFilmsService.findFilmByRealisateurId(id);
+            List<Film> filmList = myFilmsService.findFilmByDirectorId(id);
             List<FilmDTO> returnList = filmList.stream().map(FilmMapper::convertFilmToFilmDTO).toList();
             if  (returnList.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

@@ -14,13 +14,13 @@ public class Film {
 	private long id;
 
     @Column
-	private String titre;
+	private String title;
 
-	private int duree;
+	private int duration;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-	private Realisateur realisateur;
+	private Director director;
 
     @ManyToOne
     @JoinColumn(name = "genre_id")
@@ -28,25 +28,25 @@ public class Film {
 
     public Film() {
 		this.id = 0;
-		this.titre = "";
-		this.duree = 0;
-		this.realisateur = null;
+		this.title = "";
+		this.duration = 0;
+		this.director = null;
         this.genre = null;
 	}
 
 	public Film(Film film) {
 		this.id = film.id;
-		this.titre = film.titre;
-		this.duree = film.duree;
-		this.realisateur = film.realisateur;
+		this.title = film.title;
+		this.duration = film.duration;
+		this.director = film.director;
         this.genre = film.genre;
 	}
 
-	public Film(Long id, String titre, int duree, Realisateur realisateur, Genre genre) {
+	public Film(Long id, String title, int duration, Director director, Genre genre) {
 		this.id = id;
-		this.titre = titre;
-		this.duree = duree;
-		this.realisateur = new Realisateur(realisateur);
+		this.title = title;
+		this.duration = duration;
+		this.director = new Director(director);
         this.genre = new Genre(genre);
 	}
 
@@ -57,25 +57,25 @@ public class Film {
         this.id = id;
     }
 
-    public String getTitre() {
-        return titre;
+    public String getTitle() {
+        return title;
     }
-    public void setTitre(String titre) {
-		this.titre = titre;
+    public void setTitle(String title) {
+		this.title = title;
 	}
 
-    public int getDuree() {
-        return duree;
+    public int getDuration() {
+        return duration;
     }
-    public void setDuree(int duree) {
-        this.duree = duree;
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
-    public Realisateur getRealisateur() {
-        return this.realisateur;
+    public Director getDirector() {
+        return this.director;
     }
-    public void setRealisateur(Realisateur realisateur) {
-		this.realisateur = realisateur;
+    public void setDirector(Director director) {
+		this.director = director;
 	}
 
     public Genre getGenre() { return this.genre; }
@@ -83,10 +83,10 @@ public class Film {
 
 	@Override
 	public String toString() {
-		String realisateurPrenomEtNom = "";
-		if (!(this.realisateur == null)) {
-			realisateurPrenomEtNom = ", realisateur=" + this.realisateur.getPrenom() + " " + this.realisateur.getNom();
+		String directorNameEtSurname = "";
+		if (!(this.director == null)) {
+			directorNameEtSurname = ", director=" + this.director.getName() + " " + this.director.getSurname();
 		}
-		return "Film [id=" + id + ", titre=" + titre + ", duree=" + duree + realisateurPrenomEtNom + "]";
+		return "Film [id=" + id + ", title=" + title + ", duration=" + duration + directorNameEtSurname + "]";
 	}
 }

@@ -1,19 +1,15 @@
 package com.ensta.myfilmlist;
 
 import com.ensta.myfilmlist.dao.impl.*;
-import com.ensta.myfilmlist.dto.RealisateurDTO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.dao.*;
 import com.ensta.myfilmlist.model.*;
-import com.ensta.myfilmlist.service.MyFilmsService;
 import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
-import java.security.Provider.Service;
 import java.util.Optional;
 import java.util.List;
 
@@ -24,9 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.exceptions.base.MockitoException;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -37,7 +30,7 @@ class FilmsDAOTests {
     @Autowired
     private FilmDAO filmDAO;
     @Autowired
-    private RealisateurDAO realisateurDAO;
+    private DirectorDAO directorDAO;
 
     private static final Logger logger = LoggerFactory.getLogger(FilmsDAOTests.class);
     private static int count = 0;
@@ -63,9 +56,9 @@ class FilmsDAOTests {
     @Test  
     void printDatabaseTest() {
         try {
-        filmDAO.findAll().forEach(film -> System.out.println(film));
+        filmDAO.findAll().forEach(System.out::println);
         System.out.println("\n");
-        realisateurDAO.findAll().forEach(realisateur -> System.out.println(realisateur));
+        directorDAO.findAll().forEach(System.out::println);
         } catch (ServiceException e) {
             System.out.println("Erreur interne");
         }
@@ -74,17 +67,17 @@ class FilmsDAOTests {
     @Test 
     void whenCreateFilm_thenShouldHaveNewFilmInDB() {
         FilmForm filmForm = new FilmForm();
-        filmForm.setDuree(15);
-        filmForm.setRealisateurId(2);
-        filmForm.setTitre("titre");
+        filmForm.setDuration(15);
+        filmForm.setDirectorId(2);
+        filmForm.setTitle("title");
         try {
             filmDAO.save(filmMapper.convertFilmFormToFilm(filmForm));
             assertEquals(5, filmDAO.findAll().size());
             Film newFilm = filmDAO.findById(5).get();
-            assertEquals(15, newFilm.getDuree());
+            assertEquals(15, newFilm.getDuration());
             assertEquals(5, newFilm.getId());
-            assertEquals(2, newFilm.getRealisateur().getId());
-            assertEquals("titre", newFilm.getTitre());
+            assertEquals(2, newFilm.getDirector().getId());
+            assertEquals("title", newFilm.getTitle());
         } catch (ServiceException serviceException) {
             throw new RuntimeErrorException(null);
         }
@@ -104,13 +97,13 @@ class FilmsDAOTests {
     }
 
     @Test
-    void whenFindByRealisateurId_thenShouldHaveTheGoodList() {
-        List<Film> filmsDeCameron = filmDAO.findByRealisateurId(1);
+    void whenFindByDirectorId_thenShouldHaveTheGoodList() {
+        List<Film> filmsDeCameron = filmDAO.findByDirectorId(1);
         assertEquals(1, filmsDeCameron.size());
-        List<Film> filmsDeJackson = filmDAO.findByRealisateurId(2);
+        List<Film> filmsDeJackson = filmDAO.findByDirectorId(2);
         assertEquals(3, filmsDeJackson.size());
-        List<Film> filmsSansRealisateurs = filmDAO.findByRealisateurId(3);
-        assertEquals(0, filmsSansRealisateurs.size());
+        List<Film> filmsSansDirectors = filmDAO.findByDirectorId(3);
+        assertEquals(0, filmsSansDirectors.size());
     }
 
     @Test 
@@ -121,8 +114,8 @@ class FilmsDAOTests {
         assertEquals(Boolean.FALSE, filmExistant.isEmpty() );
         Film film = filmExistant.get();
         System.out.println(film);
-        assertEquals("avatar", film.getTitre());
-        assertEquals(162, film.getDuree());
-        assertEquals(1, film.getRealisateur().getId());
+        assertEquals("avatar", film.getTitle());
+        assertEquals(162, film.getDuration());
+        assertEquals(1, film.getDirector().getId());
     }
 }

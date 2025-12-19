@@ -61,29 +61,29 @@ public class JpaFilmDAO implements FilmDAO {
     /**
      * Returns the Film corresponding to the title argument (or an empty option if there is none)
      *
-     * @param  titre    the title of the film to return
+     * @param  title    the title of the film to return
      * @return          the corresponding film
      */
     @Override
-    public Optional<Film> findByTitle(String titre){
+    public Optional<Film> findByTitle(String title){
         List<Film> films = entityManager
-                .createQuery("SELECT f FROM Film f WHERE f.titre = :titre")
-                .setParameter("titre", titre)
+                .createQuery("SELECT f FROM Film f WHERE f.title = :title")
+                .setParameter("title", title)
                 .getResultList();
         return Optional.ofNullable(films.get(0));
     }
 
     /**
-     * Returns the list of Films that were realised by the Realisateur correpsonding to the realisateur_id argument.
+     * Returns the list of Films that were realised by the Director correpsonding to the director_id argument.
      *
-     * @param  realisateur_id   the id of the Realisateur
+     * @param  director_id   the id of the Director
      * @return                  the corresponding films
      */
     @Override
-    public List<Film> findByRealisateurId(long realisateur_id){
+    public List<Film> findByDirectorId(long director_id){
       return entityManager
-              .createQuery("SELECT f FROM Film f WHERE realisateur.id = :realisateur_id")
-              .setParameter("realisateur_id", realisateur_id)
+              .createQuery("SELECT f FROM Film f WHERE director.id = :director_id")
+              .setParameter("director_id", director_id)
               .getResultList();
     }
 
@@ -101,9 +101,9 @@ public class JpaFilmDAO implements FilmDAO {
             throw new ServiceException("Impossible de mettre à jour le film");
         }
         Film film_to_modify = entityManager.merge(prev_film.get());
-        film_to_modify.setTitre(film.getTitre());
-        film_to_modify.setDuree(film.getDuree());
-        film_to_modify.setRealisateur(film.getRealisateur());
+        film_to_modify.setTitle(film.getTitle());
+        film_to_modify.setDuration(film.getDuration());
+        film_to_modify.setDirector(film.getDirector());
         entityManager.merge(film_to_modify);
         return film_to_modify;
     }

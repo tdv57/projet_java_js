@@ -29,10 +29,10 @@ public interface GenreController {
     })
     ResponseEntity<GenreDTO> getGenreById(Long id) throws ControllerException;
 
-    @ApiOperation(value = "Éditer un genre", notes = "Permet d'éditer le nom d'un genre.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Éditer un genre", notes = "Permet d'éditer le surname d'un genre.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le genre a bien été édité"),
             @ApiResponse(code = 404, message = "Le genre n'a pas pu être édité")
     })
-    ResponseEntity<GenreDTO> updateGenre(Long id, String nom) throws ControllerException;
+    ResponseEntity<GenreDTO> updateGenre(Long id, String surname) throws ControllerException;
 }

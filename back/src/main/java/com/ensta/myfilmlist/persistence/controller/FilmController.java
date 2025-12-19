@@ -32,7 +32,7 @@ public interface FilmController {
     })
     ResponseEntity<FilmDTO> getFilmById(Long id) throws ControllerException;
 
-    @ApiOperation(value = "Rechercher un film par son titre", notes = "Permet de renvoyer les détails d'un film grâce à son titre.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Rechercher un film par son title", notes = "Permet de renvoyer les détails d'un film grâce à son title.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le film demandé a été trouvé"),
             @ApiResponse(code = 404, message = "Le film demandé n'existe pas")
@@ -44,7 +44,7 @@ public interface FilmController {
             @ApiResponse(code = 200, message = "Le(s) film(s) demandé(s) a(ont) été trouvé"),
             @ApiResponse(code = 404, message = "Le(s) film(s) demandé(s) n'existe(nt) pas")
     })
-    ResponseEntity<List<FilmDTO>> getFilmByRealisateurId(@PathVariable long id) throws ControllerException;
+    ResponseEntity<List<FilmDTO>> getFilmByDirectorId(@PathVariable long id) throws ControllerException;
 
     @ApiOperation(value = "Ajouter un film", notes = "Permet d'ajouter un film d'après un formulaire.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
