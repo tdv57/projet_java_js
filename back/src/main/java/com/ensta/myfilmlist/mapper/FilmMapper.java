@@ -2,6 +2,10 @@ package com.ensta.myfilmlist.mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
 import com.ensta.myfilmlist.dao.impl.JpaGenreDAO;
@@ -14,8 +18,14 @@ import com.ensta.myfilmlist.model.Realisateur;
 /**
  * Effectue les conversions des Films entre les couches de l'application.
  */
+@Repository
 public class FilmMapper {
 
+	@Autowired
+	private  JpaRealisateurDAO jpaRealisateurDAO;
+
+	@Autowired
+	private JpaGenreDAO jpaGenreDAO;
 	/**
 	 * Convertit une liste de films en liste de DTO.
 	 * 
@@ -68,20 +78,18 @@ public class FilmMapper {
 	 * @param filmForm le Form à convertir
 	 * @return Un Film construit à partir des données du Form.
 	 */
-	public static Film convertFilmFormToFilm(FilmForm filmForm) {
+	public Film convertFilmFormToFilm(FilmForm filmForm) {
 		Film film = new Film();
 		film.setTitre(filmForm.getTitre());
 		film.setDuree(filmForm.getDuree());
         // TODO: again, jbdc usage but we should be in jpa?
-		JpaRealisateurDAO jpaRealisateurDAO = new JpaRealisateurDAO();
-		Optional<Realisateur> optionalRealisateur = jpaRealisateurDAO.findById(filmForm.getRealisateurId());
+		Optional<Realisateur> optionalRealisateur = this.jpaRealisateurDAO.findById(filmForm.getRealisateurId());
 		if (optionalRealisateur.isPresent()) {
 			film.setRealisateur(optionalRealisateur.get());
 		} else {
 			film.setRealisateur(null);
 		}
-        JpaGenreDAO jpaGenreDAO = new JpaGenreDAO();
-        Optional<Genre> optionalGenre = jpaGenreDAO.findById(filmForm.getGenreId());
+        Optional<Genre> optionalGenre = this.jpaGenreDAO.findById(filmForm.getGenreId());
         if (optionalGenre.isPresent()) {
             film.setGenre(optionalGenre.get());
         } else {
