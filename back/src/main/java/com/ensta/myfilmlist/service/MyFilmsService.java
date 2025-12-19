@@ -30,7 +30,7 @@ public interface MyFilmsService {
 
     List<Genre> findAllGenres() throws ServiceException;
     Genre findGenreById(Long id) throws ServiceException;
-    GenreDTO updateGenre(long id, String surname) throws ServiceException;
+    GenreDTO updateGenre(long id, String name) throws ServiceException;
 
     int calculerDurationTotale(List<Film> filmsProduced);
     Optional<Double> calculerNoteMoyenne(List<Double> notes);

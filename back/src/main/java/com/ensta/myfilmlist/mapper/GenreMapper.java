@@ -12,7 +12,7 @@ public class GenreMapper {
         if (genreDTO == null) return null;
         Genre genre = new Genre();
         genre.setId(genreDTO.getId());
-        genre.setSurname(genreDTO.getSurname());
+        genre.setName(genreDTO.getName());
         return genre;
     }
 
@@ -20,7 +20,7 @@ public class GenreMapper {
         if (genre == null) return null;
         GenreDTO genreDTO = new GenreDTO();
         genreDTO.setId(genre.getId());
-        genreDTO.setSurname(genre.getSurname());
+        genreDTO.setName(genre.getName());
         return genreDTO;
     }
 

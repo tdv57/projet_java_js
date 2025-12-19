@@ -38,7 +38,7 @@ public class JpaDirectorDAO implements DirectorDAO {
      */
     @Override
     public Optional<Director> findBySurnameAndName(String surname, String name){
-        int director_id =  entityManager.createQuery("SELECT r FROM Realisteur r WHERE surname = :surname AND name = :name").getFirstResult();
+        int director_id =  entityManager.createQuery("SELECT r FROM Director r WHERE surname = :surname AND name = :name").getFirstResult();
         return Optional.ofNullable(entityManager.find(Director.class, director_id));
     }
 

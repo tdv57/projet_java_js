@@ -199,8 +199,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
-    public GenreDTO updateGenre(long id, String surname) throws ServiceException {
-        Genre genre = this.genreDAO.update(id, surname);
+    public GenreDTO updateGenre(long id, String name) throws ServiceException {
+        Genre genre = this.genreDAO.update(id, name);
         return GenreMapper.convertGenreToGenreDTO(genre);
     }
 

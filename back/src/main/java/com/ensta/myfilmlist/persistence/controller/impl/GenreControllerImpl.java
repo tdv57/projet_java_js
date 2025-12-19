@@ -48,9 +48,9 @@ public class GenreControllerImpl implements GenreController {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<GenreDTO> updateGenre(@PathVariable Long id, @RequestBody String surname) throws ControllerException {
+    public ResponseEntity<GenreDTO> updateGenre(@PathVariable Long id, @RequestBody String name) throws ControllerException {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateGenre(id, surname));
+            return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateGenre(id, name));
         } catch (ServiceException e) {
             throw new ControllerException("Impossible d'éditer le genre demandé", e);
         }

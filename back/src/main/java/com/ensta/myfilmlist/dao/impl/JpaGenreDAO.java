@@ -49,17 +49,17 @@ public class JpaGenreDAO implements GenreDAO {
      * Updates the Genre corresponding to the id argument with a new name
      *
      * @param  id   the id of the genre to update
-     * @param  surname  the new name to give to the genre
+     * @param  name  the new name to give to the genre
      * @return      the corresponding genrea
      */
     @Override
-    public Genre update(long id, String surname) throws ServiceException{
+    public Genre update(long id, String name) throws ServiceException{
         Optional<Genre> prev_genre = this.findById(id);
         if  (prev_genre.isEmpty()) {
             throw new ServiceException("Impossible de mettre à jour le genre");
         }
         Genre genre_to_modify = entityManager.merge(prev_genre.get());
-        genre_to_modify.setSurname(surname);
+        genre_to_modify.setName(name);
         entityManager.merge(genre_to_modify);
         return genre_to_modify;
     }

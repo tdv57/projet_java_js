@@ -11,16 +11,16 @@ public class Genre {
     private long id;
 
     @Column
-    private String surname;
+    private String name;
 
     public Genre() {
         this.id = 0;
-        this.surname = "";
+        this.name = "";
     }
 
     public Genre(Genre genre) {
         this.id = genre.getId();
-        this.surname = genre.getSurname();
+        this.name = genre.getName();
     }
 
     public long getId() {
@@ -28,13 +28,13 @@ public class Genre {
     }
     public void setId(long id) {this.id = id; }
 
-    public String getSurname() {
-        return this.surname;
+    public String getName() {
+        return this.name;
     }
-    public void setSurname(String surname) {this.surname = surname; }
+    public void setName(String name) {this.name = name; }
 
     @Override
     public String toString() {
-        return "Genre{" + "id=" + id + ", surname=" + surname + '}';
+        return "Genre{" + "id=" + id + ", name=" + name + '}';
     }
 }

@@ -261,7 +261,7 @@ public class FilmServiceTests {
   }
 
   @Test 
-  void whenDirectorAmongRealisateursHasAtLeast3Movies_thenShouldBeFamous() throws ServiceException{
+  void whenDirectorAmongDirectorsHasAtLeast3Movies_thenShouldBeFamous() throws ServiceException{
       when(jpaFilmDAO.findByDirectorId(any(Long.class))).thenAnswer(invocation -> {
           return mockJpaFilmDAOFindByDirectorId(invocation.getArgument(0));
       });
