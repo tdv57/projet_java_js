@@ -7,6 +7,11 @@ import com.ensta.myfilmlist.model.*;
 import com.ensta.myfilmlist.service.impl.MyFilmsServiceImpl;
 import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
+<<<<<<< HEAD
+=======
+import com.ensta.myfilmlist.exception.ServiceException;
+import com.ensta.myfilmlist.form.*;
+>>>>>>> e7bf419 (ajout de tests)
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,11 +24,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.mockito.Mock;
 import org.mockito.InjectMocks;
+<<<<<<< HEAD
 import org.mockito.MockitoAnnotations; // for initialize mock manually
+=======
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations; // si tu initialises les mocks manuellement
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+>>>>>>> e7bf419 (ajout de tests)
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,6 +89,36 @@ public class FilmServiceTests {
   private Film mockJdbcFilmDAOSave(Film film) {
     film.setId(filmId++);
     return film;
+  }
+
+  private Optional<Film> mockJdbcFilmDAOFindById(long id) {
+    switch ((int)id) {
+      case 1:
+        return Optional.of(hihihi1);
+      case 2:
+        return Optional.of(hihihi2);
+      case 3:
+        return Optional.of(hihihi3);
+      case 4:
+        return Optional.of(deBonMatin);
+      default: 
+        return Optional.empty();
+    }
+  }
+
+  private Optional<Film> mockJdbcFilmDAOFindByTitle(String title) {
+    switch (title) {
+      case "hihihi1":
+        return Optional.of(hihihi1);
+      case "hihihi2":
+        return Optional.of(hihihi2);
+      case "hihihi3":
+        return Optional.of(hihihi3);
+      case "de bon matin":
+        return Optional.of(deBonMatin);
+      default:
+        return Optional.empty();
+    }
   }
 
   @BeforeEach 
@@ -214,8 +259,13 @@ public class FilmServiceTests {
   }
 
   @Test 
+<<<<<<< HEAD
   void whenCreateFilm_thenShouldHaveCreatFilm() throws ServiceException {
     when(jdbcRealisateurDAO.findById(Long.class)).thenAnswer(invocation -> {
+=======
+  void whenCreateFilm_thenShouldHaveCreateFilm() {
+    when(jdbcRealisateurDAO.findById(anyLong())).thenAnswer(invocation -> {
+>>>>>>> e7bf419 (ajout de tests)
       return mockJdbcRealisateurDAOFindById(invocation.getArgument(0));
     });
 
@@ -230,26 +280,70 @@ public class FilmServiceTests {
     when(jdbcRealisateurDAO.update(any(Realisateur.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     FilmForm onAttendPasPatrick1 = new FilmForm();
-    filmForm.setDuree(90);
-    filmForm.setRealisateurId(2);
-    filmForm.setTitre("on attend pas Patrick 1");
+    onAttendPasPatrick1.setDuree(90);
+    onAttendPasPatrick1.setRealisateurId(2);
+    onAttendPasPatrick1.setTitre("on attend pas Patrick 1");
 
     FilmForm onAttendPasPatrick2 = new FilmForm();
-    filmForm.setDuree(90);
-    filmForm.setRealisateurId(2);
-    filmForm.setTitre("on attend pas Patrick 2");
+    onAttendPasPatrick2.setDuree(90);
+    onAttendPasPatrick2.setRealisateurId(2);
+    onAttendPasPatrick2.setTitre("on attend pas Patrick 2");
 
     FilmForm onAttendPasPatrick3 = new FilmForm();
-    filmForm.setDuree(90);
-    filmForm.setRealisateurId(2);
-    filmForm.setTitre("on attend pas Patrick 3");
+    onAttendPasPatrick3.setDuree(90);
+    onAttendPasPatrick3.setRealisateurId(2);
+    onAttendPasPatrick3.setTitre("on attend pas Patrick 3");
 
-    peterJackson = myFilmsServiceImpl.updateRealisateurCelebre(peterJackson);
-    assertEquals(Boolean.FALSE, peterJackson.isCelebre());    
-    Film onAttendPasPatrick_1 = FilmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick1));
-    Film onAttendPasPatrick_2 = FilmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick2));
-    Film onAttendPasPatrick_3 = FilmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick3));
-    peterJackson = myFilmsServiceImpl.updateRealisateurCelebre(peterJackson);
+    try {
+      peterJackson = myFilmsServiceImpl.updateRealisateurCelebre(peterJackson);
+      assertEquals(Boolean.FALSE, peterJackson.isCelebre());    
+      Film onAttendPasPatrick_1 = FilmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick1));
+      Film onAttendPasPatrick_2 = FilmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick2));
+      Film onAttendPasPatrick_3 = FilmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick3));
+      List<Film> onAttendPasPatrick = new ArrayList<>();
+      onAttendPasPatrick.add(onAttendPasPatrick_1);
+      onAttendPasPatrick.add(onAttendPasPatrick_2);
+      onAttendPasPatrick.add(onAttendPasPatrick_3);
+      peterJackson.setFilmRealises(onAttendPasPatrick);
+      peterJackson = myFilmsServiceImpl.updateRealisateurCelebre(peterJackson);
+    } catch (ServiceException e) {
+      System.out.println("whenCreateFilm_thenShouldHaveCreatFilm error");
+    }
+
     assertEquals(Boolean.TRUE, peterJackson.isCelebre());  
   }
+
+  @Test
+  void whenFindFilmById_thenShouldHaveFilm() {
+    when(jdbcFilmDAO.findById(anyLong())).thenAnswer(invocation -> {
+      return mockJdbcFilmDAOFindById(invocation.getArgument(0));
+    });
+
+    try {
+      Film filmFound = myFilmsServiceImpl.findFilmById(1);
+      ServiceException filmNotFoundError = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findFilmById(100));
+      assertEquals(hihihi1, filmFound);
+      assertEquals("Le film demandé n'existe pas", filmNotFoundError.getMessage());
+    } catch (ServiceException e) {
+      System.out.println("whenFindFilmById_thenShouldHaveFilm error");
+    }
+  }
+
+  @Test 
+  void whenFilmByTitle_thenShouldHaveFilm() {
+    when(jdbcFilmDAO.findByTitle(anyString())).thenAnswer(invocation -> {
+      return mockJdbcFilmDAOFindByTitle(invocation.getArgument(0));
+    });
+
+    try {
+      Film filmFound = myFilmsServiceImpl.findFilmByTitle("hihihi1");
+      ServiceException filmNotFoundError = assertThrows(ServiceException.class,() -> myFilmsServiceImpl.findFilmByTitle("not existing"));
+      assertEquals(hihihi1, filmFound);
+      assertEquals("Le film demandé n'existe pas", filmNotFoundError.getMessage());
+    } catch (ServiceException e) {
+      System.out.println("whenFilmByTitle_thenShouldHaveFilm error");
+    }
+
+  }
+
 } 
