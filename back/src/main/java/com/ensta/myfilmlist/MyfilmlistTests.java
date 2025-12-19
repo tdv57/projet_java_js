@@ -28,6 +28,8 @@ public class MyfilmlistTests{
 	@Autowired
 	private MyFilmsService myFilmsService;
 
+	@Autowired
+	private FilmMapper filmMapper;
 	/**
 	 * Permet de tester la mise a jour du statut "celebre" d'un RealisateurDTO en fonction du nombre de films realises.
 	 */
@@ -54,25 +56,25 @@ public class MyfilmlistTests{
 			avatarForm.setTitre("Avatar");
 			avatarForm.setDuree(162);
 			avatarForm.setRealisateurId(jamesCameron.getId());
-			Film avatar = FilmMapper.convertFilmFormToFilm(avatarForm);		// Affectation des films aux realisateurs
+			Film avatar = filmMapper.convertFilmFormToFilm(avatarForm);		// Affectation des films aux realisateurs
 
 			FilmForm laCommunauteDeLAnneauForm = new FilmForm();
 			laCommunauteDeLAnneauForm.setTitre("La communauté de l'anneau");
 			laCommunauteDeLAnneauForm.setDuree(178);
 			laCommunauteDeLAnneauForm.setRealisateurId(peterJackson.getId());
-			Film laCommunauteDeLAnneau = FilmMapper.convertFilmFormToFilm(laCommunauteDeLAnneauForm);		// Affectation des films aux realisateurs
+			Film laCommunauteDeLAnneau = filmMapper.convertFilmFormToFilm(laCommunauteDeLAnneauForm);		// Affectation des films aux realisateurs
 
 			FilmForm lesDeuxToursForm = new FilmForm();
 			lesDeuxToursForm.setTitre("Les deux tours");
 			lesDeuxToursForm.setDuree(179);
 			lesDeuxToursForm.setRealisateurId(peterJackson.getId());
-			Film lesDeuxTours = FilmMapper.convertFilmFormToFilm(lesDeuxToursForm);		// Affectation des films aux realisateurs
+			Film lesDeuxTours = filmMapper.convertFilmFormToFilm(lesDeuxToursForm);		// Affectation des films aux realisateurs
 
 			FilmForm leRetourDuRoiForm = new FilmForm();
 			leRetourDuRoiForm.setTitre("Le retour du roi");
 			leRetourDuRoiForm.setDuree(201);
 			leRetourDuRoiForm.setRealisateurId(peterJackson.getId());
-			Film leRetourDuRoi = FilmMapper.convertFilmFormToFilm(leRetourDuRoiForm);		// Affectation des films aux realisateurs
+			Film leRetourDuRoi = filmMapper.convertFilmFormToFilm(leRetourDuRoiForm);		// Affectation des films aux realisateurs
 
 			List<Film> peterJacksonFilms = new ArrayList<>();
 			peterJacksonFilms.add(laCommunauteDeLAnneau);
@@ -168,28 +170,28 @@ public class MyfilmlistTests{
 			avatarForm.setTitre("Avatar");
 			avatarForm.setDuree(162);
 			avatarForm.setRealisateurId(jamesCameron.getId());
-			Film avatar = FilmMapper.convertFilmFormToFilm(avatarForm);
+			Film avatar = filmMapper.convertFilmFormToFilm(avatarForm);
 			// Film avatar = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(avatarForm));
 
 			FilmForm laCommunauteDeLAnneauForm = new FilmForm();
 			laCommunauteDeLAnneauForm.setTitre("La communauté de l'anneau");
 			laCommunauteDeLAnneauForm.setDuree(178);
 			laCommunauteDeLAnneauForm.setRealisateurId(peterJackson.getId());
-			Film laCommunauteDeLAnneau = FilmMapper.convertFilmFormToFilm(laCommunauteDeLAnneauForm);
+			Film laCommunauteDeLAnneau = filmMapper.convertFilmFormToFilm(laCommunauteDeLAnneauForm);
 			// Film laCommunauteDeLAnneau = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(laCommunauteDeLAnneauForm));
 
 			FilmForm lesDeuxToursForm = new FilmForm();
 			lesDeuxToursForm.setTitre("Les deux tours");
 			lesDeuxToursForm.setDuree(179);
 			lesDeuxToursForm.setRealisateurId(peterJackson.getId());
-			Film lesDeuxTours = FilmMapper.convertFilmFormToFilm(lesDeuxToursForm);
+			Film lesDeuxTours = filmMapper.convertFilmFormToFilm(lesDeuxToursForm);
 			// Film lesDeuxTours = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(lesDeuxToursForm));
 
 			FilmForm leRetourDuRoiForm = new FilmForm();
 			leRetourDuRoiForm.setTitre("Le retour du roi");
 			leRetourDuRoiForm.setDuree(201);
 			leRetourDuRoiForm.setRealisateurId(peterJackson.getId());
-			Film leRetourDuRoi = FilmMapper.convertFilmFormToFilm(leRetourDuRoiForm);
+			Film leRetourDuRoi = filmMapper.convertFilmFormToFilm(leRetourDuRoiForm);
 			// Film leRetourDuRoi = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(leRetourDuRoiForm));
 
 			// Affectation des films aux realisateurs
@@ -270,7 +272,7 @@ public class MyfilmlistTests{
 	 */
 	public void findFilmByIdTest() {
 		try {
-			FilmDTO avatar = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(1));
+			FilmDTO avatar = filmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(1));
 			System.out.println("Le film avec l'identifiant 1 est : " + avatar);
 		} catch (ServiceException e) {
 			e.printStackTrace();
@@ -282,10 +284,10 @@ public class MyfilmlistTests{
 	 */
 	public void deleteFilmByIdTest() {
 		try {
-			FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(5));
+			FilmDTO filmDTO = filmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(5));
 			System.out.println("Le film avec l'identifiant 5 est : " + filmDTO);
 			myFilmsService.deleteFilm(5);
-			filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(5));
+			filmDTO = filmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(5));
 
 			System.out.println("Suppression du film avec l'identifiant 5...");
 			System.out.println("Le film avec l'identifiant 5 est : " + filmDTO);
