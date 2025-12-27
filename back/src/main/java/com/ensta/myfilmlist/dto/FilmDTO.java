@@ -16,7 +16,7 @@ public class FilmDTO {
     private GenreDTO genreDTO;
 
 	public FilmDTO() {
-		this.id = 0;
+		this.id = 0L;
 		this.title = "";
 		this.duration = 0;
 		this.directorDTO = new DirectorDTO();
@@ -31,7 +31,7 @@ public class FilmDTO {
         this.genreDTO = filmDTO.genreDTO;
 	}
 
-	public FilmDTO(Long id, String title, int duration, DirectorDTO directorDTO) {
+	public FilmDTO(long id, String title, int duration, DirectorDTO directorDTO) {
 		this.id = id;
 		this.title = title;
 		this.duration = duration;

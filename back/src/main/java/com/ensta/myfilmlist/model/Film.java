@@ -29,7 +29,7 @@ public class Film {
     private Genre genre;
 
     public Film() {
-		this.id = 0;
+		this.id = 0L;
 		this.title = "";
 		this.duration = 0;
 		this.director = null;
@@ -44,7 +44,7 @@ public class Film {
         this.genre = film.genre;
 	}
 
-	public Film(Long id, String title, int duration, Director director, Genre genre) {
+	public Film(long id, String title, int duration, Director director, Genre genre) {
 		this.id = id;
 		this.title = title;
 		this.duration = duration;

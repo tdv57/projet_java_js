@@ -26,9 +26,9 @@ public class JpaFilmDAO implements FilmDAO {
      */
     @Override
     public List<Film> findAll() throws ServiceException {
-        List<Film> films =  entityManager
-                .createQuery("SELECT f FROM Film f")
-                .getResultList();
+        List<Film> films = entityManager
+                    .createQuery("SELECT f FROM Film f", Film.class)
+                    .getResultList();
         if (films.isEmpty()) {
             throw new ServiceException("Impossible de trouver les films");
         }
@@ -67,7 +67,7 @@ public class JpaFilmDAO implements FilmDAO {
     @Override
     public Optional<Film> findByTitle(String title){
         List<Film> films = entityManager
-                .createQuery("SELECT f FROM Film f WHERE f.title = :title")
+                .createQuery("SELECT f FROM Film f WHERE f.title = :title", Film.class)
                 .setParameter("title", title)
                 .getResultList();
         if (films.size() == 0) return Optional.empty();
@@ -83,7 +83,7 @@ public class JpaFilmDAO implements FilmDAO {
     @Override
     public List<Film> findByDirectorId(long director_id){
       return entityManager
-              .createQuery("SELECT f FROM Film f WHERE director.id = :director_id")
+              .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
               .setParameter("director_id", director_id)
               .getResultList();
     }

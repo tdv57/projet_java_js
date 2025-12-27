@@ -27,7 +27,7 @@ public interface DirectorController {
             @ApiResponse(code = 200, message = "Le réalisateur demandé a été trouvé"),
             @ApiResponse(code = 404, message = "Le réalisateur demandé n'existe pas")
     })
-    ResponseEntity<DirectorDTO> getDirectorById(Long id) throws ControllerException;
+    ResponseEntity<DirectorDTO> getDirectorById(long id) throws ControllerException;
 
     @ApiOperation(value = "Recherche un réalisateur par son surname et présurname", notes = "Permet de renvoyer les détails d'un réalisateur grâce à son surname et présurname.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
@@ -48,7 +48,7 @@ public interface DirectorController {
             @ApiResponse(code = 200, message = "Le réalisateur a bien été édité"),
             @ApiResponse(code = 404, message = "Le réalisateur n'a pas pu être édité")
     })
-    ResponseEntity<DirectorDTO> updateDirector(Long id, DirectorForm directorForm) throws ControllerException;
+    ResponseEntity<DirectorDTO> updateDirector(long id, DirectorForm directorForm) throws ControllerException;
 
 
     @ApiOperation(value = "Supprimer un réalisateur", notes = "Permet de supprimer un réalisateur d'après son identifiant.")
@@ -56,6 +56,6 @@ public interface DirectorController {
             @ApiResponse(code = 204, message = "Le réalisateur a bien été supprimé"),
             @ApiResponse(code = 404, message = "Le réalisateur n'a pas pu être supprimé")
     })
-    ResponseEntity<?> deleteDirector(Long id) throws ControllerException;
+    ResponseEntity<?> deleteDirector(long id) throws ControllerException;
 
 }

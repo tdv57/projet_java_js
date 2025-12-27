@@ -22,7 +22,7 @@ public class JpaHistoryDAO implements HistoryDAO {
 
     Optional<History> findHistoryByUserIdAndFilmId(long userId, long filmId) {
         List<History> histories = entityManager
-                    .createQuery("SELECT h FROM History h WHERE h.user.id = :user_id AND  h.film.id = :film_id")
+                    .createQuery("SELECT h FROM History h WHERE h.user.id = :user_id AND  h.film.id = :film_id", History.class)
                     .setParameter("user_id", userId)
                     .setParameter("film_id", filmId)
                     .getResultList();
@@ -31,17 +31,15 @@ public class JpaHistoryDAO implements HistoryDAO {
     }
 
     @Override
-    public List<Film> getWatchList(long userId) throws ServiceException {
-        List<Film> filmIds = entityManager
-                .createQuery("SELECT h.film FROM History h WHERE h.user.id = :user_id")
+    public List<Film> getWatchList(long userId) {
+        return entityManager
+                .createQuery("SELECT h.film FROM History h WHERE h.user.id = :user_id", Film.class)
                 .setParameter("user_id", userId)
                 .getResultList();
-        return filmIds;
-
     }
 
     @Override
-    public History addFilmToWatchList(long userId, long filmId) throws ServiceException {
+    public History addFilmToWatchList(long userId, long filmId) {
         User user = entityManager.find(User.class, userId);
         Film film = entityManager.find(Film.class, filmId);
         History history = new History(user, film);
@@ -50,7 +48,7 @@ public class JpaHistoryDAO implements HistoryDAO {
     }
 
     @Override
-    public void deleteFilm(long userId, long filmId) throws ServiceException {
+    public void deleteFilm(long userId, long filmId) {
         Optional<History> history = findHistoryByUserIdAndFilmId(userId, filmId);
         if (history.isPresent()) {
             entityManager.remove(history);
@@ -73,7 +71,7 @@ public class JpaHistoryDAO implements HistoryDAO {
     public Optional<Integer> getNote(long userId, long filmId) throws ServiceException {
         Optional<History> history = findHistoryByUserIdAndFilmId(userId, filmId);
         if (history.isPresent()) {
-            return Optional.ofNullable(history.get().getRating());
+            return Optional.of(history.get().getRating());
         }
         throw new ServiceException("La note du film n'a pas pu être trouvée.");
     }

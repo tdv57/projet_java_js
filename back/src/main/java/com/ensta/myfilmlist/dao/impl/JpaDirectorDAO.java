@@ -18,6 +18,10 @@ public class JpaDirectorDAO implements DirectorDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public JpaDirectorDAO(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     /**
      * Returns the list of all Directors present in the database.
      * A ServicException is thrown in case of an error (can't get Directors, list empty)
@@ -26,7 +30,7 @@ public class JpaDirectorDAO implements DirectorDAO {
      */
     @Override
     public List<Director> findAll(){
-        return entityManager.createQuery("SELECT r FROM Director r").getResultList();
+            return entityManager.createQuery("SELECT r FROM Director r", Director.class).getResultList();
     }
 
     /**
@@ -100,7 +104,7 @@ public class JpaDirectorDAO implements DirectorDAO {
         Director managedDirector = entityManager.find(Director.class, id);
         if (managedDirector != null) {
             List<Film> films = entityManager
-                    .createQuery("SELECT f FROM Film f WHERE director.id = :director_id")
+                    .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
                     .setParameter("director_id", id)
                     .getResultList();
             films.forEach(film -> entityManager.remove(film));

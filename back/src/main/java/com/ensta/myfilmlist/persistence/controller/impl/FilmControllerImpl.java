@@ -38,7 +38,7 @@ public class FilmControllerImpl implements FilmController {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<FilmDTO> getFilmById(@PathVariable Long id) throws ControllerException {
+    public ResponseEntity<FilmDTO> getFilmById(@PathVariable long id) throws ControllerException {
         try {
             FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(id));
             return ResponseEntity.status(HttpStatus.OK).body(filmDTO);
@@ -82,7 +82,7 @@ public class FilmControllerImpl implements FilmController {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<FilmDTO> updateFilm(@PathVariable Long id, @RequestBody FilmForm filmForm) throws ControllerException {
+    public ResponseEntity<FilmDTO> updateFilm(@PathVariable long id, @RequestBody FilmForm filmForm) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateFilm(id, filmForm));
         } catch (ServiceException e) {
@@ -93,7 +93,7 @@ public class FilmControllerImpl implements FilmController {
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFilm(@PathVariable Long id) throws ControllerException {
+    public ResponseEntity<?> deleteFilm(@PathVariable long id) throws ControllerException {
         try {
             myFilmsService.deleteFilm(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);

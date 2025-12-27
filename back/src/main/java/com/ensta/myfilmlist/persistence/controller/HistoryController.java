@@ -4,7 +4,6 @@ package com.ensta.myfilmlist.persistence.controller;
 import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.dto.HistoryDTO;
 import com.ensta.myfilmlist.exception.ControllerException;
-import com.ensta.myfilmlist.model.History;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

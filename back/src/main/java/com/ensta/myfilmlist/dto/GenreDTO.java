@@ -2,7 +2,7 @@ package com.ensta.myfilmlist.dto;
 
 public class GenreDTO {
 
-    private Long id;
+    private long id;
 
     private String name;
 
@@ -11,16 +11,11 @@ public class GenreDTO {
         this.name = "";
     }
 
-    public GenreDTO(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

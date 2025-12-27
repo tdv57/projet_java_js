@@ -9,7 +9,7 @@ import java.util.*;
 public class Director {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     private String surname;
 
@@ -23,13 +23,14 @@ public class Director {
     private boolean famous;
 
     public Director() {
-        this.id = null;
+        this.id = 0L;
         this.surname = "";
         this.name = "";
         this.birthdate = null;
         this.filmsProduced = new ArrayList<>();
         this.famous = false;
     }
+
     public Director(Director director) {
         this.id = director.id;
         this.surname = director.surname;
@@ -42,7 +43,7 @@ public class Director {
         this.famous = director.famous;
     }
 
-    public Director(Long id, String surname, String name, LocalDate birthdate, List<Film> filmsProduced, boolean famous) {
+    public Director(long id, String surname, String name, LocalDate birthdate, List<Film> filmsProduced, boolean famous) {
         this.id = id;
         this.surname = surname;
         this.name = name;
@@ -55,11 +56,11 @@ public class Director {
     }
 
     
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 
@@ -86,11 +87,11 @@ public class Director {
         this.birthdate = birthdate;
     }
 
-    public List<Film> getfilmsProduced() {
+    public List<Film> getFilmsProduced() {
         return this.filmsProduced;
     }
 
-    public void setfilmsProduced(List<Film> filmsProduced) {
+    public void setFilmsProduced(List<Film> filmsProduced) {
         this.filmsProduced = filmsProduced;
     }
 

@@ -21,15 +21,15 @@ public interface MyFilmsService {
 
     DirectorDTO createDirector(DirectorForm directorForm) throws ServiceException;
     List<Director> findAllDirectors() throws ServiceException;
-    Director findDirectorById(Long id) throws ServiceException;
+    Director findDirectorById(long id) throws ServiceException;
     Director findDirectorBySurnameAndName(String surname, String name) throws ServiceException;
     Director updateDirectorFamous(Director director) throws ServiceException;
-    List<Director> updateDirectorFamouss(List<Director> directors) throws ServiceException;
+    List<Director> updateDirectorsFamous(List<Director> directors) throws ServiceException;
     DirectorDTO updateDirector(long id, DirectorForm directorForm) throws ServiceException;
     void deleteDirector(long id) throws ServiceException;
 
     List<Genre> findAllGenres() throws ServiceException;
-    Genre findGenreById(Long id) throws ServiceException;
+    Genre findGenreById(long id) throws ServiceException;
     GenreDTO updateGenre(long id, String name) throws ServiceException;
 
     List<Film> findWatchList(long userId) throws ServiceException;

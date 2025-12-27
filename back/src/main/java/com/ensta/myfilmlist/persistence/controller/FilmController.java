@@ -30,7 +30,7 @@ public interface FilmController {
             @ApiResponse(code = 200, message = "Le film demandé a été trouvé"),
             @ApiResponse(code = 404, message = "Le film demandé n'existe pas")
     })
-    ResponseEntity<FilmDTO> getFilmById(Long id) throws ControllerException;
+    ResponseEntity<FilmDTO> getFilmById(long id) throws ControllerException;
 
     @ApiOperation(value = "Rechercher un film par son title", notes = "Permet de renvoyer les détails d'un film grâce à son title.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
@@ -58,12 +58,12 @@ public interface FilmController {
             @ApiResponse(code = 200, message = "Le film a bien été édité"),
             @ApiResponse(code = 404, message = "Le film n'a pas pu être édité"),
     })
-    ResponseEntity<FilmDTO> updateFilm(Long id, FilmForm filmForm) throws ControllerException;
+    ResponseEntity<FilmDTO> updateFilm(long id, FilmForm filmForm) throws ControllerException;
 
     @ApiOperation(value = "Supprimer un film", notes = "Permet de supprimer un film d'après son identifiant.")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Le film a bien été supprimé"),
             @ApiResponse(code = 404, message = "Le film n'a pas pu être supprimé")
     })
-    ResponseEntity<?> deleteFilm(Long id) throws ControllerException;
+    ResponseEntity<?> deleteFilm(long id) throws ControllerException;
 }

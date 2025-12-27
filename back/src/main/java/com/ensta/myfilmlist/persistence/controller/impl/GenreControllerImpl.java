@@ -35,7 +35,7 @@ public class GenreControllerImpl implements GenreController {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<GenreDTO> getGenreById(@PathVariable Long id) throws ControllerException {
+    public ResponseEntity<GenreDTO> getGenreById(@PathVariable long id) throws ControllerException {
         try {
             GenreDTO genreDTO = GenreMapper.convertGenreToGenreDTO(myFilmsService.findGenreById(id));
             return ResponseEntity.status(HttpStatus.OK).body(genreDTO);
@@ -46,7 +46,7 @@ public class GenreControllerImpl implements GenreController {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<GenreDTO> updateGenre(@PathVariable Long id, @RequestBody String name) throws ControllerException {
+    public ResponseEntity<GenreDTO> updateGenre(@PathVariable long id, @RequestBody String name) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateGenre(id, name));
         } catch (ServiceException e) {

@@ -17,10 +17,10 @@ public class FilmForm {
 	private int duration;
 
 	@Min(value=1, message="L'id du director doit être strictement positif")
-	private long directorId;
+	private Long directorId;
 
     @Min(value=1, message="L'id du genre doit être strictement positif")
-    private long genreId;
+    private Long genreId;
 
 	public String getTitle() {
 		return title;

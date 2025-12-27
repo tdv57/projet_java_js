@@ -76,7 +76,7 @@ public class JdbcFilmDAO implements FilmDAO {
         String query = "SELECT * FROM Film JOIN Director ON Film.director_id = Director.id WHERE Film.id=?";
         try {
             Film film = this.jdbcTemplate.queryForObject(query, this.rowMapper, id);
-            return Optional.of(film);
+            return Optional.ofNullable(film);
         } catch(EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -87,7 +87,7 @@ public class JdbcFilmDAO implements FilmDAO {
         String query = "SELECT * FROM Film JOIN Director ON Film.director_id = Director.id WHERE Film.title=?";
         try {
             Film film = this.jdbcTemplate.queryForObject(query, this.rowMapper, title);
-            return Optional.of(film);
+            return Optional.ofNullable(film);
         } catch(EmptyResultDataAccessException e) {
             return Optional.empty();
         }

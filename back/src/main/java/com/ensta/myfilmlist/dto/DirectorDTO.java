@@ -4,14 +4,14 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class DirectorDTO {
-    private Long id;
+    private long id;
     private String surname;
     private String name;
     private LocalDate birthdate;
     private boolean famous;
 
     public DirectorDTO() {
-        this.id = null;
+        this.id = 0L;
         this.surname = "";
         this.name = "";
         this.birthdate = null;
@@ -24,21 +24,12 @@ public class DirectorDTO {
         this.birthdate = directorDTO.birthdate;
         this.famous = directorDTO.famous;
     }
-
-    public DirectorDTO(Long id, String surname, String name, LocalDate birthdate, List<FilmDTO> filmsProduced, boolean famous) {
-        this.id = id;
-        this.surname = surname;
-        this.name = name;
-        this.birthdate = birthdate;
-        this.famous = famous;
-    }
-
     
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public long getId() {
         return this.id;
     }
 

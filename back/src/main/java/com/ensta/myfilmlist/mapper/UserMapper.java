@@ -3,9 +3,6 @@ package com.ensta.myfilmlist.mapper;
 import com.ensta.myfilmlist.dto.UserDTO;
 import com.ensta.myfilmlist.model.User;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class UserMapper {
 
     public static User convertUserDTOToUser(UserDTO userDTO) {

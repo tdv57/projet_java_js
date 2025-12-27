@@ -19,14 +19,14 @@ public class JpaGenreDAO implements GenreDAO {
 
     /**
      * Returns the list of all Genres present in the database.
-     * A ServicException is thrown in case of an error (can't get Genres, list empty)
+     * A ServiceException is thrown in case of an error (can't get Genres, list empty)
      *
      * @return      the list of Genres
      */
     @Override
     public List<Genre> findAll() throws ServiceException {
         List<Genre> genres =  entityManager
-                .createQuery("SELECT g FROM Genre g")
+                .createQuery("SELECT g FROM Genre g", Genre.class)
                 .getResultList();
         if (genres.isEmpty()) {
             throw new ServiceException("Impossible de trouver les genres");
@@ -50,7 +50,7 @@ public class JpaGenreDAO implements GenreDAO {
      *
      * @param  id   the id of the genre to update
      * @param  name  the new name to give to the genre
-     * @return      the corresponding genrea
+     * @return      the corresponding genre
      */
     @Override
     public Genre update(long id, String name) throws ServiceException{

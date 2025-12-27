@@ -6,7 +6,6 @@ import com.ensta.myfilmlist.exception.ControllerException;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.mapper.HistoryMapper;
-import com.ensta.myfilmlist.model.History;
 import com.ensta.myfilmlist.persistence.controller.HistoryController;
 import com.ensta.myfilmlist.service.MyFilmsService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -15,7 +15,7 @@ public class Genre {
     private String name;
 
     public Genre() {
-        this.id = 0;
+        this.id = 0L;
         this.name = "";
     }
 

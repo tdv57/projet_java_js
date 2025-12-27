@@ -26,6 +26,10 @@ public class DirectorControllerImpl implements DirectorController {
     @Autowired
     private MyFilmsService myFilmsService;
 
+    public DirectorControllerImpl(MyFilmsService myFilmsService) {
+        this.myFilmsService = myFilmsService;
+    }
+
     @Override
     @GetMapping("")
     public ResponseEntity<List<DirectorDTO>> getAllDirectors() throws ControllerException {
@@ -38,7 +42,7 @@ public class DirectorControllerImpl implements DirectorController {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<DirectorDTO> getDirectorById(@PathVariable Long id) throws ControllerException {
+    public ResponseEntity<DirectorDTO> getDirectorById(@PathVariable long id) throws ControllerException {
         try {
             DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorById(id));
             return ResponseEntity.status(HttpStatus.OK).body(directorDTO);
@@ -70,7 +74,7 @@ public class DirectorControllerImpl implements DirectorController {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<DirectorDTO> updateDirector(@PathVariable Long id, @RequestBody DirectorForm directorForm) throws ControllerException {
+    public ResponseEntity<DirectorDTO> updateDirector(@PathVariable long id, @RequestBody DirectorForm directorForm) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateDirector(id, directorForm));
         } catch (ServiceException e) {
@@ -81,7 +85,7 @@ public class DirectorControllerImpl implements DirectorController {
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteDirector(@PathVariable Long id) throws ControllerException {
+    public ResponseEntity<?> deleteDirector(@PathVariable long id) throws ControllerException {
         try {
             myFilmsService.deleteDirector(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);

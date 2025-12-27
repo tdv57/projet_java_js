@@ -2,7 +2,7 @@ package com.ensta.myfilmlist.dto;
 
 public class HistoryDTO {
 
-    private Long id;
+    private long id;
 
     private FilmDTO filmDTO;
 
@@ -15,18 +15,6 @@ public class HistoryDTO {
         this.filmDTO = new FilmDTO();
         this.userDTO = new UserDTO();
         this.rating = 0;
-    }
-
-    public HistoryDTO(HistoryDTO historyDTO) {
-        this.id = historyDTO.getId();
-        this.filmDTO = historyDTO.getFilmDTO();
-        this.userDTO = historyDTO.getUserDTO();
-        this.rating = historyDTO.getRating();
-    }
-
-    public HistoryDTO(FilmDTO filmDTO, UserDTO userDTO) {
-        this.filmDTO = filmDTO;
-        this.userDTO = userDTO;
     }
 
     public long getId() {

@@ -110,19 +110,19 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
-    public DirectorDTO createDirector(DirectorForm directorForm) throws ServiceException {
+    public DirectorDTO createDirector(DirectorForm directorForm) {
         Director director = DirectorMapper.convertDirectorFormToDirector(directorForm);
         director = this.directorDAO.save(director);
         return DirectorMapper.convertDirectorToDirectorDTO(director);
     }
 
     @Override 
-    public List<Director> findAllDirectors() throws ServiceException {
+    public List<Director> findAllDirectors() {
         return this.directorDAO.findAll();
     }
 
     @Override
-    public Director findDirectorById(Long id) throws ServiceException {
+    public Director findDirectorById(long id) throws ServiceException {
         Optional<Director> director = this.directorDAO.findById(id);
         if (director.isEmpty()) {
             throw new  ServiceException ("Le réalisateur demandé n'existe pas");
@@ -147,8 +147,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     public Director updateDirectorFamous(Director director) throws ServiceException {
         try {
             List<Film> filmsDuDirector = filmDAO.findByDirectorId(director.getId());
-            director.setfilmsProduced(filmsDuDirector);
-            director.setFamous(director.getfilmsProduced().size() >= MIN_NB_FILMS_FAMOUS_DIRECTOR);
+            director.setFilmsProduced(filmsDuDirector);
+            director.setFamous(director.getFilmsProduced().size() >= MIN_NB_FILMS_FAMOUS_DIRECTOR);
             return directorDAO.update(director.getId(), director);
         } catch (ServiceException e) {
             throw new ServiceException("Réalisateur inexistant");
@@ -160,7 +160,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
-    public List<Director> updateDirectorFamouss(List<Director> directors) throws ServiceException {
+    public List<Director> updateDirectorsFamous(List<Director> directors) throws ServiceException {
         try {
             return directors.stream()
                     .map(director -> {
@@ -200,7 +200,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public Genre findGenreById(Long id) throws ServiceException {
+    public Genre findGenreById(long id) throws ServiceException {
         Optional<Genre> genre = this.genreDAO.findById(id);
         if (genre.isEmpty()) {
             throw new  ServiceException ("Le genre demandé n'existe pas");
@@ -218,20 +218,18 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
-    public List<Film> findWatchList(long userId) throws ServiceException {
-        List<Film> films = this.historyDAO.getWatchList(userId);
-        return films;
+    public List<Film> findWatchList(long userId) {
+        return this.historyDAO.getWatchList(userId);
     }
 
     @Override
     @Transactional
-    public History addFilmToWatchList(long userId, long filmId) throws ServiceException {
-        History history = this.historyDAO.addFilmToWatchList(userId, filmId);
-        return history;
+    public History addFilmToWatchList(long userId, long filmId) {
+        return this.historyDAO.addFilmToWatchList(userId, filmId);
     }
 
     @Override
-    public void removeFilmFromWatchList(long userId, long filmId) throws ServiceException {
+    public void removeFilmFromWatchList(long userId, long filmId) {
         this.historyDAO.deleteFilm(userId, filmId);
     }
 

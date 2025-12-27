@@ -13,7 +13,6 @@ import com.ensta.myfilmlist.dto.*;
 import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.mapper.DirectorMapper;
-import com.ensta.myfilmlist.service.impl.*;
 
 /**
  * Classe de tests du service MyFilmsServiceImpl.
@@ -77,11 +76,11 @@ public class MyfilmlistTests{
 			peterJacksonFilms.add(laCommunauteDeLAnneau);
 			peterJacksonFilms.add(lesDeuxTours);
 			peterJacksonFilms.add(leRetourDuRoi);
-			peterJackson.setfilmsProduced(peterJacksonFilms);
+			peterJackson.setFilmsProduced(peterJacksonFilms);
 
 			List<Film> jamesCameronFilms = new ArrayList<>();
 			jamesCameronFilms.add(avatar);
-			jamesCameron.setfilmsProduced(jamesCameronFilms);
+			jamesCameron.setFilmsProduced(jamesCameronFilms);
 
 		// Mise a jour du statut "famous" des Directors
 
@@ -197,18 +196,18 @@ public class MyfilmlistTests{
 			peterJacksonFilms.add(laCommunauteDeLAnneau);
 			peterJacksonFilms.add(lesDeuxTours);
 			peterJacksonFilms.add(leRetourDuRoi);
-			peterJackson.setfilmsProduced(peterJacksonFilms);
+			peterJackson.setFilmsProduced(peterJacksonFilms);
 
 			List<Film> jamesCameronFilms = new ArrayList<>();
 			jamesCameronFilms.add(avatar);
-			jamesCameron.setfilmsProduced(jamesCameronFilms);
+			jamesCameron.setFilmsProduced(jamesCameronFilms);
 
 			// Mise a jour du statut "famous" des Directors
 			List<Director> directors = new ArrayList<>();
 			directors.add(jamesCameron);
 			directors.add(peterJackson);
 
-			List <Director> directorsFamouss = myFilmsService.updateDirectorFamouss(directors);
+			List <Director> directorsFamouss = myFilmsService.updateDirectorsFamous(directors);
 			System.out.println(directorsFamouss.size());
 			for(Director directorFamous : directorsFamouss) {
 				System.out.println(directorFamous.getName() + directorFamous.getSurname() + " est célèbre");

@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class History {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(nullable = false)

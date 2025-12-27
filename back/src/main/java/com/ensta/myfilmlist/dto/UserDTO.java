@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDTO {
-    private Long id;
+    private long id;
     private String surname;
     private String name;
     private List<FilmDTO> watchedFilms;
@@ -14,18 +14,6 @@ public class UserDTO {
         this.surname = "";
         this.name = "";
         this.watchedFilms = new ArrayList<>();
-    }
-
-    public UserDTO(UserDTO userDTO) {
-        this.id = userDTO.getId();
-        this.surname = userDTO.getSurname();
-        this.name = userDTO.getName();
-        this.watchedFilms = userDTO.getWatchedFilms();
-    }
-
-    public UserDTO(String surname, String name) {
-        this.surname = surname;
-        this.name = name;
     }
 
     public long getId() {
