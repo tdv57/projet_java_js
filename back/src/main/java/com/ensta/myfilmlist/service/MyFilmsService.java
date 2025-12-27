@@ -32,6 +32,12 @@ public interface MyFilmsService {
     Genre findGenreById(Long id) throws ServiceException;
     GenreDTO updateGenre(long id, String name) throws ServiceException;
 
+    List<Film> findWatchList(long userId) throws ServiceException;
+    History addFilmToWatchList(long userId, long filmId) throws ServiceException;
+    void removeFilmFromWatchList(long userId, long filmId) throws ServiceException;
+    History rateFilm(long userId, long filmId, int rating) throws ServiceException;
+    Optional<Integer> getNote(long userId, long filmId) throws ServiceException;
+
     int calculerDurationTotale(List<Film> filmsProduced);
     Optional<Double> calculerNoteMoyenne(List<Double> notes);
 }

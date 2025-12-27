@@ -1,6 +1,7 @@
 package com.ensta.myfilmlist.service.impl;
 
 import com.ensta.myfilmlist.dao.GenreDAO;
+import com.ensta.myfilmlist.dao.HistoryDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.form.DirectorForm;
@@ -10,6 +11,7 @@ import com.ensta.myfilmlist.mapper.DirectorMapper;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Genre;
 import com.ensta.myfilmlist.model.Director;
+import com.ensta.myfilmlist.model.History;
 import com.ensta.myfilmlist.service.*;
 import com.ensta.myfilmlist.dao.FilmDAO;
 import com.ensta.myfilmlist.dao.DirectorDAO;
@@ -36,6 +38,9 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Autowired
     private GenreDAO genreDAO;
+
+    @Autowired
+    private HistoryDAO historyDAO;
 
     @Autowired
     private FilmMapper filmMapper;
@@ -208,6 +213,37 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     public GenreDTO updateGenre(long id, String name) throws ServiceException {
         Genre genre = this.genreDAO.update(id, name);
         return GenreMapper.convertGenreToGenreDTO(genre);
+    }
+
+
+    @Override
+    @Transactional
+    public List<Film> findWatchList(long userId) throws ServiceException {
+        List<Film> films = this.historyDAO.getWatchList(userId);
+        return films;
+    }
+
+    @Override
+    @Transactional
+    public History addFilmToWatchList(long userId, long filmId) throws ServiceException {
+        History history = this.historyDAO.addFilmToWatchList(userId, filmId);
+        return history;
+    }
+
+    @Override
+    public void removeFilmFromWatchList(long userId, long filmId) throws ServiceException {
+        this.historyDAO.deleteFilm(userId, filmId);
+    }
+
+    @Override
+    @Transactional
+    public History rateFilm(long userId, long filmId, int rating) throws ServiceException {
+        return this.historyDAO.rateFilm(userId, filmId, rating);
+    }
+
+    @Override
+    public Optional<Integer> getNote(long userId, long filmId) throws ServiceException {
+        return this.historyDAO.getNote(userId, filmId);
     }
 
 
