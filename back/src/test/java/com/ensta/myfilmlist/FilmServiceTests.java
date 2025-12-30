@@ -16,6 +16,7 @@ import com.ensta.myfilmlist.dto.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -176,6 +177,18 @@ public class FilmServiceTests {
     filmFound.setGenre(film.getGenre());
     filmFound.setTitle(film.getTitle());
     return filmFound;
+  }
+
+  private void mockJpaFilmDAODelete(Film film) throws ServiceException {
+    if (Objects.equals(film, hihihi1)) {
+      hihihi1 = null;
+    } else if (Objects.equals(film, hihihi2)) {
+      hihihi2 = null;
+    } else if (Objects.equals(film, hihihi3)) {
+      hihihi3 = null;
+    } else if (Objects.equals(film, deBonMatin)) {
+      deBonMatin = null;
+    }
   }
 
   @BeforeEach 
@@ -442,6 +455,29 @@ public class FilmServiceTests {
     assertEquals(serviceException.getMessage(), "Impossible de mettre à jour le film");
 
   }
+
+  @Test 
+  void whenDeleteFilm_thenShouldDeleteFilm() throws ServiceException {
+    doAnswer(invocation -> {
+      mockJpaFilmDAODelete(invocation.getArgument(0));
+      return null;
+    }).when(jpaFilmDAO).delete(any(Film.class));
+    
+    when(jpaFilmDAO.findById(anyLong())).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindById(invocation.getArgument(0));
+    });
+
+    myFilmsServiceImpl.deleteFilm(1L);
+    assertEquals(null, hihihi1);
+
+    ServiceException serviceException = assertThrows(ServiceException.class, () -> {
+      myFilmsServiceImpl.deleteFilm(100L);
+    });
+
+    assertEquals("Le film demandé n'existe pas", serviceException.getMessage());
+  }
+
+
   @Test 
   void whenUpdateRealisateur_thenShouldHaveUpdatedRealisateur() throws ServiceException{
     when(jpaDirectorDAO.update(anyLong(), any(Director.class))).thenAnswer(invocation -> {
@@ -465,6 +501,5 @@ public class FilmServiceTests {
       System.out.println("whenUpdateRealisateur_thenShouldHaveUpdatedRealisateur error");
     }
   }
-
 
 } 
