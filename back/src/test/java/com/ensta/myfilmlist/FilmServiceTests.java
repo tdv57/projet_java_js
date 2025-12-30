@@ -13,7 +13,7 @@ import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.dao.impl.*;
 import com.ensta.myfilmlist.dto.*;
 
-import java.security.Provider.Service;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -409,23 +409,6 @@ public class FilmServiceTests {
     assertEquals("Erreur lors de la mise à jour de la célébrité",exception.getMessage());
   }
 
-  @Test
-  void whenCalculerDurationTotale_thenShouldHaveLaDurationTotale() {
-    List<Double> pasDeNote = new ArrayList<>();
-    List<Double> troisNotes=  new ArrayList<>();
-    troisNotes.add(Double.valueOf(11f)); 
-    troisNotes.add(Double.valueOf(19.5f));
-    troisNotes.add(Double.valueOf(14.5f));
-    List<Double> notesComplexes = new ArrayList<>();
-    notesComplexes.addAll(troisNotes);
-    notesComplexes.add(Double.valueOf(7.123213f));
-    notesComplexes.add(Double.valueOf(1.123213f));
-    Double moyenne = Double.valueOf(15f);
-    assertEquals(moyenne, myFilmsServiceImpl.calculerNoteMoyenne(troisNotes).get());
-    assertEquals(Boolean.TRUE, myFilmsServiceImpl.calculerNoteMoyenne(pasDeNote).isEmpty());
-    assertEquals(Double.valueOf(10.65), myFilmsServiceImpl.calculerNoteMoyenne(notesComplexes).get());
-  }
-
   @Test 
   void whenDirectorAmongDirectorsHasAtLeast3Movies_thenShouldBeFamous() throws ServiceException{
       when(jpaFilmDAO.findByDirectorId(any(Long.class))).thenAnswer(invocation -> {
@@ -754,5 +737,36 @@ public class FilmServiceTests {
     });
 
     assertEquals("Impossible de mettre à jour le genre", serviceException.getMessage());
+  }
+
+  @Test
+  void whenCalculerDurationTotale_thenShouldHaveDurationTotale() {
+    List<Double> pasDeNote = new ArrayList<>();
+    List<Double> troisNotes=  new ArrayList<>();
+    troisNotes.add(Double.valueOf(11f)); 
+    troisNotes.add(Double.valueOf(19.5f));
+    troisNotes.add(Double.valueOf(14.5f));
+    List<Double> notesComplexes = new ArrayList<>();
+    notesComplexes.addAll(troisNotes);
+    notesComplexes.add(Double.valueOf(7.123213f));
+    notesComplexes.add(Double.valueOf(1.123213f));
+    Double moyenne = Double.valueOf(15f);
+    assertEquals(moyenne, myFilmsServiceImpl.calculerNoteMoyenne(troisNotes).get());
+    assertEquals(Boolean.TRUE, myFilmsServiceImpl.calculerNoteMoyenne(pasDeNote).isEmpty());
+    assertEquals(Double.valueOf(10.65), myFilmsServiceImpl.calculerNoteMoyenne(notesComplexes).get());
+  }
+
+  @Test 
+  void whenCalculerNoteMoyenne_thenShouldHaveNoteMoyenne() {
+    List<Double> notes = new ArrayList<>();
+    notes.add(10.3);
+    notes.add(17.4);
+    notes.add(14.3);
+
+    Optional<Double> noteMoyenne = myFilmsServiceImpl.calculerNoteMoyenne(notes);
+    List<Double> notesVides = new ArrayList<>();
+    Optional<Double> noteMoyenneVide = myFilmsServiceImpl.calculerNoteMoyenne(notesVides);
+    assertEquals(Optional.of(14.0), noteMoyenne);
+    assertEquals(Optional.empty(), noteMoyenneVide);
   }
 } 
