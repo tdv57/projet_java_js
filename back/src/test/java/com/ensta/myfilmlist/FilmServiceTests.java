@@ -77,9 +77,11 @@ public class FilmServiceTests {
     switch ((int)id) {
       case 1:
         jamesCameron = director;
+        jamesCameron.setId(id);
         return jamesCameron;
       case 2:
         peterJackson = director;
+        peterJackson.setId(id);
         return peterJackson;
       default:
         throw new ServiceException("Impossible de mettre à jour le réalisateur");
@@ -381,6 +383,24 @@ public class FilmServiceTests {
 
   }
 
+  @Test
+  void whenFindFilmByDirectorId_thenShouldHaveFilm() {
+    when(jpaFilmDAO.findByDirectorId(anyLong())).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindByDirectorId(invocation.getArgument(0));
+    });
+
+    try {
+      assertEquals(jamesCameron.getfilmsProduced(), myFilmsServiceImpl.findFilmByDirectorId(1));
+    } catch (ServiceException e) {
+      System.out.println("whenFindFilmByDirectorId_thenShouldHaveFilm error");
+    }
+
+    ServiceException exception = assertThrows(ServiceException.class, () -> {
+        myFilmsServiceImpl.findFilmByDirectorId(100L);
+    });
+    assertEquals("Le réalistauer n'a réalisé aucun film",exception.getMessage());
+  }
+
   @Test 
   void whenUpdateRealisateur_thenShouldHaveUpdatedRealisateur() throws ServiceException{
     when(jpaDirectorDAO.update(anyLong(), any(Director.class))).thenAnswer(invocation -> {
@@ -393,7 +413,7 @@ public class FilmServiceTests {
     francisCameronForm.setSurname("Francis");
     
     Director francisCameron = new Director(jamesCameron);
-    francisCameron.setSurname("francis");
+    francisCameron.setSurname("Francis");
     francisCameron.setId(1L);
     assertNotEquals(francisCameron, jamesCameron);
     try {
@@ -404,5 +424,6 @@ public class FilmServiceTests {
       System.out.println("whenUpdateRealisateur_thenShouldHaveUpdatedRealisateur error");
     }
   }
+
 
 } 
