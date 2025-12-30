@@ -106,4 +106,19 @@ public class Director {
     public String toString(){
         return "Director [id=" + this.id + ", surname=" + this.surname + ", name=" + this.name +", date de naissance=" + this.birthdate+ ", famous=" + this.famous + "]";
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || this.getClass() != object.getClass()) return false;
+        Director director = (Director) object;
+        if (this.id == director.getId() 
+            && director.isFamous() == this.famous 
+            && Objects.equals(director.getBirthdate(), this.birthdate) 
+            && Objects.equals(director.getName(), this.name) 
+            && Objects.equals(director.getSurname(), this.surname)) {
+            return true;
+        }
+        return false;
+    }
 }
