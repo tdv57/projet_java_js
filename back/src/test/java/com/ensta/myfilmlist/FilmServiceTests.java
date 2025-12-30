@@ -75,6 +75,8 @@ public class FilmServiceTests {
   private static int count = 0;
   private static Long directorId = Long.valueOf(1L);
   private static Long filmId = Long.valueOf(2L);
+  private List<Genre> genres = new ArrayList<>();
+  private int genreId = 1;
 
   private Director mockJpaDirectorDAOUpdate(long id, Director director) throws ServiceException {
     switch ((int)id) {
@@ -116,9 +118,6 @@ public class FilmServiceTests {
     }
   }
 
-  private Optional<Genre> mockJpaGenreDaoFindById(long id) {
-    return Optional.empty();
-  }
 
 
 
@@ -244,6 +243,34 @@ public class FilmServiceTests {
     }
   }
 
+  private List<Genre> mockJpaGenreDAOFindAll() throws ServiceException {
+      List<Genre> allGenres = new ArrayList<>();
+      for (Genre genre : genres) {
+          allGenres.add(genre);
+      }
+      return allGenres;
+  }
+
+  private Optional<Genre> mockJpaGenreDAOFindById(long id) {
+    int intId = (int) id;
+    if (id >= 1 && id <= genres.size()) {
+      return Optional.of(genres.get(intId - 1));
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  private Genre mockJpaGenreDAOUpdate(long id, String name) throws ServiceException {
+    int intId = (int) id;
+    if (intId >= 1 && intId <= genres.size()) {
+      Genre genre = genres.get(intId-1);
+      genre.setName(name);
+      return genre;
+    } else {
+      throw new ServiceException("Impossible de mettre à jour le genre");
+    }
+  }
+
   @BeforeEach 
   void setUp() {
     when(jpaDirectorDAO.findById(anyLong())).thenAnswer(invocation -> {
@@ -251,7 +278,7 @@ public class FilmServiceTests {
     });
 
     when(jpaGenreDAO.findById(anyLong())).thenAnswer(invocation -> {
-      return mockJpaGenreDaoFindById(invocation.getArgument(0));
+      return mockJpaGenreDAOFindById(invocation.getArgument(0));
     });
 
     System.out.println("\n");
@@ -271,26 +298,76 @@ public class FilmServiceTests {
     
     directorId = Long.valueOf(3L);
 
+    Genre action = new Genre();
+    action.setId(genreId++);
+    action.setName("action");
+    genres.add(action);
+
+    Genre biopic = new Genre();
+    biopic.setId(genreId++);
+    biopic.setName("biopic");
+    genres.add(biopic);
+
+    Genre comedie = new Genre();
+    comedie.setId(genreId++);
+    comedie.setName("comédie");
+    genres.add(comedie);
+
+    Genre drame = new Genre();
+    drame.setId(genreId++);
+    drame.setName("drame");
+    genres.add(drame);
+
+    Genre fantaisie = new Genre();
+    fantaisie.setId(genreId++);
+    fantaisie.setName("fantaisie");
+    genres.add(fantaisie);
+
+    Genre horreur = new Genre();
+    horreur.setId(genreId++);
+    horreur.setName("horreur");
+    genres.add(horreur);
+    
+    Genre policier = new Genre();
+    policier.setId(genreId++);
+    policier.setName("policier");
+    genres.add(policier);
+
+    Genre SF = new Genre();
+    SF.setId(genreId++);
+    SF.setName("SF");
+    genres.add(SF);
+
+    Genre thriller = new Genre();
+    thriller.setId(genreId++);
+    thriller.setName("thriller");
+    genres.add(thriller);
+
+
     hihihi1.setDuration(60);
     hihihi1.setDirector(jamesCameron);
     hihihi1.setTitle("hihihi1");
     hihihi1.setId(Long.valueOf(1L));
+    hihihi1.setGenre(genres.get(2));
 
     hihihi2.setDuration(61);
     hihihi2.setDirector(jamesCameron);
     hihihi2.setTitle("hihihi2");
     hihihi2.setId(Long.valueOf(2L));
+    hihihi2.setGenre(genres.get(2));
 
     hihihi3.setDuration(62);
     hihihi3.setDirector(jamesCameron);
     hihihi3.setTitle("hihihi3");
     hihihi3.setId(Long.valueOf(3L));
+    hihihi3.setGenre(genres.get(2));
 
     deBonMatin.setDuration(90);
     deBonMatin.setId(Long.valueOf(4L));
     deBonMatin.setDirector(peterJackson);
     deBonMatin.setTitle("de bon matin");
-    
+    deBonMatin.setGenre(genres.get(4));
+
     filmId = Long.valueOf(5L);
 
     List<Film> jamesCameronFilms = new ArrayList<>();
@@ -304,6 +381,7 @@ public class FilmServiceTests {
     peterJackson.setfilmsProduced(peterJacksonFilms);
 
     erreurInterne.setId(Long.valueOf(1000L));
+
   }
 
   @AfterEach
@@ -634,7 +712,47 @@ public class FilmServiceTests {
   }
 
   @Test 
-  void whenFindAllGenres_thenShouldFindAllGenres() {
-    
+  void whenFindAllGenres_thenShouldFindAllGenres() throws ServiceException{
+    when(jpaGenreDAO.findAll()).thenAnswer(invocation -> {
+      return mockJpaGenreDAOFindAll();
+    });
+
+    List<Genre> allGenres = myFilmsServiceImpl.findAllGenres();
+    assertEquals(genres, allGenres);
+  }
+
+  @Test 
+  void whenFindGenreById_thenShouldHaveGenre() throws ServiceException {
+    when(jpaGenreDAO.findById(anyLong())).thenAnswer(invocation -> {
+      return mockJpaGenreDAOFindById(invocation.getArgument(0));
+    });
+
+    Genre genre = myFilmsServiceImpl.findGenreById(1L);
+    assertEquals(genres.get(0), genre);
+
+    ServiceException serviceException = assertThrows(ServiceException.class, () -> {
+      myFilmsServiceImpl.findGenreById(100L);
+    });
+    assertEquals("Le genre demandé n'existe pas", serviceException.getMessage());
+  }
+
+  @Test 
+  void whenUpdateGenre_thenShouldUpdateGenre() throws ServiceException {
+    when(jpaGenreDAO.update(anyLong(), anyString())).thenAnswer(invocation -> {
+      return mockJpaGenreDAOUpdate(invocation.getArgument(0), invocation.getArgument(1));
+    });
+
+    Genre newAction = new Genre();
+    newAction.setId(1);
+    newAction.setName("truc");
+
+    myFilmsServiceImpl.updateGenre(1L, "truc");
+    assertEquals(newAction, genres.get(0));
+
+    ServiceException serviceException = assertThrows(ServiceException.class, () -> {
+      myFilmsServiceImpl.updateGenre(100L, "truc");
+    });
+
+    assertEquals("Impossible de mettre à jour le genre", serviceException.getMessage());
   }
 } 
