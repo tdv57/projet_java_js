@@ -13,6 +13,7 @@ import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.dao.impl.*;
 import com.ensta.myfilmlist.dto.*;
 
+import java.security.Provider.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.dom4j.util.PerThreadSingleton;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -97,6 +99,20 @@ public class FilmServiceTests {
         return Optional.of(peterJackson);
       default:
         return Optional.empty();
+    }
+  }
+
+  private Director mockJpaDirectorDAOSave(Director director) {
+    return director;
+  }
+
+  private Optional<Director> mockJpaDirectorFindBySurnameAndName(String name, String surname) throws ServiceException{
+    if (Objects.equals(name, jamesCameron.getName()) && Objects.equals(surname, jamesCameron.getSurname())) {
+      return Optional.of(jamesCameron);
+    } else if (Objects.equals(name, peterJackson.getName()) && Objects.equals(surname, peterJackson.getSurname())) {
+      return Optional.of(peterJackson);
+    } else {
+      return Optional.empty();
     }
   }
 
@@ -213,6 +229,19 @@ public class FilmServiceTests {
 
     System.out.println(jamesCameron.getfilmsProduced());
     System.out.println(films);
+  }
+
+  private void mockJpaDirectorDAODelete(long id) {
+    switch((int) id) {
+      case 1:
+        jamesCameron = null;
+        break;
+      case 2:
+        peterJackson = null;
+        break;
+      default:
+        return;
+    }
   }
 
   @BeforeEach 
@@ -517,7 +546,7 @@ public class FilmServiceTests {
 
 
   @Test 
-  void whenUpdateRealisateur_thenShouldHaveUpdatedRealisateur() throws ServiceException{
+  void whenUpdateDirector_thenShouldHaveUpdatedDirector() throws ServiceException{
     when(jpaDirectorDAO.update(anyLong(), any(Director.class))).thenAnswer(invocation -> {
       return mockJpaDirectorDAOUpdate(invocation.getArgument(0), invocation.getArgument(1));
     });
@@ -540,4 +569,72 @@ public class FilmServiceTests {
     }
   }
 
+  @Test 
+  void whenCreateDirector_thenShouldCreateDirector() throws ServiceException {
+    when(jpaDirectorDAO.save(any(Director.class))).thenAnswer(invocation -> {
+      return mockJpaDirectorDAOSave(invocation.getArgument(0));
+    });
+
+    DirectorForm directorForm = new DirectorForm();
+    directorForm.setBirthdate(LocalDate.of(2000, 03, 20));
+    directorForm.setName("director");
+    directorForm.setSurname("form");
+
+    DirectorDTO directorDTO = myFilmsServiceImpl.createDirector(directorForm);
+    directorDTO.setId(3L);
+    DirectorDTO directorExpected = new DirectorDTO();
+    directorExpected.setBirthdate(LocalDate.of(2000, 03, 20));
+    directorExpected.setFamous(false);
+    directorExpected.setId(3L);
+    directorExpected.setName("director");
+    directorExpected.setSurname("form");
+    assertEquals(DirectorMapper.convertDirectorDTOToDirector(directorExpected), DirectorMapper.convertDirectorDTOToDirector(directorDTO));
+  }
+
+  @Test 
+  void whenFindDirectorById_thenShouldHaveDirector() throws ServiceException {
+    when(jpaDirectorDAO.findById(anyLong())).thenAnswer(invocation -> {
+      return mockJpaDirectorDAOFindById(invocation.getArgument(0));
+    });
+
+    assertEquals(jamesCameron, myFilmsServiceImpl.findDirectorById(1L));
+    ServiceException serviceException = assertThrows(ServiceException.class, () -> {
+      myFilmsServiceImpl.findDirectorById(100L);
+    });
+    assertEquals("Le réalisateur demandé n'existe pas", serviceException.getMessage());
+  }
+
+  @Test
+  void whenFindDirectorBySurnameAndName_thenShouldHaveDirector() throws ServiceException {
+    when(jpaDirectorDAO.findBySurnameAndName(anyString(), anyString())).thenAnswer(invocation -> {
+      return mockJpaDirectorFindBySurnameAndName(invocation.getArgument(0), invocation.getArgument(1));
+    });
+    String JAMES = "James";
+    String CAMERON = "Cameron";
+    String PETER = "Peter";
+    String JACKSON = "Jackson";
+    String UNKNOWN = "unknown";
+    assertEquals(jamesCameron, myFilmsServiceImpl.findDirectorBySurnameAndName(JAMES, CAMERON));
+    assertEquals(peterJackson, myFilmsServiceImpl.findDirectorBySurnameAndName(PETER, JACKSON));
+    ServiceException serviceException = assertThrows(ServiceException.class, () -> {
+      myFilmsServiceImpl.findDirectorBySurnameAndName(UNKNOWN, UNKNOWN);
+    });
+    assertEquals("Le réalisateur demandé n'existe pas", serviceException.getMessage());
+  }
+
+  @Test
+  void whenDeleteDirector_thenShouldDeleteDirector() throws ServiceException {
+    doAnswer(invocation -> {
+      mockJpaDirectorDAODelete(invocation.getArgument(0));
+      return null;
+    }).when(jpaDirectorDAO).delete(anyLong());
+
+    myFilmsServiceImpl.deleteDirector(1L);
+    assertEquals(null, jamesCameron);
+  }
+
+  @Test 
+  void whenFindAllGenres_thenShouldFindAllGenres() {
+    
+  }
 } 
