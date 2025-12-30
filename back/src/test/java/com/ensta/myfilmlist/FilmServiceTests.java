@@ -6,10 +6,12 @@ import com.ensta.myfilmlist.dao.*;
 import com.ensta.myfilmlist.model.*;
 import com.ensta.myfilmlist.service.impl.MyFilmsServiceImpl;
 import com.ensta.myfilmlist.form.*;
+import com.ensta.myfilmlist.mapper.DirectorMapper;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.dao.impl.*;
+import com.ensta.myfilmlist.dto.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -377,6 +379,30 @@ public class FilmServiceTests {
       System.out.println("whenFilmByTitle_thenShouldHaveFilm error");
     }
 
+  }
+
+  @Test 
+  void whenUpdateRealisateur_thenShouldHaveUpdatedRealisateur() throws ServiceException{
+    when(jpaDirectorDAO.update(anyLong(), any(Director.class))).thenAnswer(invocation -> {
+      return mockJpaDirectorDAOUpdate(invocation.getArgument(0), invocation.getArgument(1));
+    });
+
+    DirectorForm francisCameronForm = new DirectorForm();
+    francisCameronForm.setBirthdate(jamesCameron.getBirthdate());
+    francisCameronForm.setName(jamesCameron.getName());
+    francisCameronForm.setSurname("Francis");
+    
+    Director francisCameron = new Director(jamesCameron);
+    francisCameron.setSurname("francis");
+    francisCameron.setId(1L);
+    assertNotEquals(francisCameron, jamesCameron);
+    try {
+      DirectorDTO temp = myFilmsServiceImpl.updateDirector(jamesCameron.getId(), francisCameronForm);
+      jamesCameron = DirectorMapper.convertDirectorDTOToDirector(temp);
+      assertEquals(francisCameron, jamesCameron);
+    } catch (ServiceException e) {
+      System.out.println("whenUpdateRealisateur_thenShouldHaveUpdatedRealisateur error");
+    }
   }
 
 } 
