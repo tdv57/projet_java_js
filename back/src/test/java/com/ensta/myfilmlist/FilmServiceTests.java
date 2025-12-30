@@ -103,17 +103,9 @@ public class FilmServiceTests {
     return Optional.empty();
   }
 
-  private Optional<Director> mockJpaDirectorDAOFindById(Long id) {
-      if (id == Long.valueOf(1)) {
-        return Optional.of(jamesCameron);
-      } else if (id == Long.valueOf(2)) {
-        return Optional.of(peterJackson);
-      } else {
-        return Optional.empty();
-      }
-  }
 
-    private List<Film> mockJpaFilmDAOFindByDirectorId(Long id) {
+
+  private List<Film> mockJpaFilmDAOFindByDirectorId(Long id) {
       if (id == 1L) {
         System.out.println("Cameron");
         return jamesCameron.getfilmsProduced();
@@ -158,6 +150,32 @@ public class FilmServiceTests {
       default:
         return Optional.empty();
     }
+  }
+
+  private Film mockJpaFilmDAOUpdate(long id, Film film) throws ServiceException {
+    Film filmFound = null;
+    switch ((int) id) {
+      case 1:
+        filmFound = hihihi1;
+        break;
+      case 2:
+        filmFound = hihihi2;
+        break;
+      case 3:
+        filmFound = hihihi3;
+        break;
+      case 4: 
+        filmFound = deBonMatin;
+        break;
+      default:
+        throw new ServiceException("Impossible de mettre à jour le film");
+    }
+
+    filmFound.setDirector(film.getDirector());
+    filmFound.setDuration(film.getDuration());
+    filmFound.setGenre(film.getGenre());
+    filmFound.setTitle(film.getTitle());
+    return filmFound;
   }
 
   @BeforeEach 
@@ -367,7 +385,7 @@ public class FilmServiceTests {
   }
 
   @Test 
-  void whenFilmByTitle_thenShouldHaveFilm() {
+  void whenFindFilmByTitle_thenShouldHaveFilm() {
     when(jpaFilmDAO.findByTitle(anyString())).thenAnswer(invocation -> {
       return mockJpaFilmDAOFindByTitle(invocation.getArgument(0));
     });
@@ -401,6 +419,29 @@ public class FilmServiceTests {
     assertEquals("Le réalistauer n'a réalisé aucun film",exception.getMessage());
   }
 
+  @Test 
+  void whenUpdateFilm_thenShouldUpdateFilm() throws ServiceException{
+    when(jpaFilmDAO.update(anyLong(), any(Film.class))).thenAnswer(invocation -> {
+      return mockJpaFilmDAOUpdate(invocation.getArgument(0), invocation.getArgument(1));
+    });
+
+    FilmForm hahaha1 = new FilmForm();
+    hahaha1.setDirectorId(1);
+    hahaha1.setDuration(100);
+    hahaha1.setGenreId(1);
+    hahaha1.setTitle("hahaha1");
+    myFilmsServiceImpl.updateFilm(1L, hahaha1);
+    Film newHahaha = filmMapper.convertFilmFormToFilm(hahaha1);
+    newHahaha.setId(1);
+    assertEquals(newHahaha, hihihi1);
+
+    ServiceException serviceException = assertThrows(ServiceException.class, () -> {
+      myFilmsServiceImpl.updateFilm(100, hahaha1);
+    });
+
+    assertEquals(serviceException.getMessage(), "Impossible de mettre à jour le film");
+
+  }
   @Test 
   void whenUpdateRealisateur_thenShouldHaveUpdatedRealisateur() throws ServiceException{
     when(jpaDirectorDAO.update(anyLong(), any(Director.class))).thenAnswer(invocation -> {
