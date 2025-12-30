@@ -37,4 +37,13 @@ public class Genre {
     public String toString() {
         return "Genre{" + "id=" + id + ", name=" + name + '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true; 
+        if (o == null || o.getClass() != this.getClass()) return false;
+        Genre genre = (Genre) o;    
+        if (genre.getId() == this.getId() && genre.getName() == this.getName()) return true;
+        return false;
+    }
 }
