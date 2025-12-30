@@ -1,5 +1,7 @@
 package com.ensta.myfilmlist.model;
 
+import java.util.Objects;
+
 import javax.persistence.*;
 
 /**
@@ -89,4 +91,18 @@ public class Film {
 		}
 		return "Film [id=" + id + ", title=" + title + ", duration=" + duration + directorNameEtSurname + "]";
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        Film film = (Film) o;
+        if (Objects.equals(this.getDirector(), film.getDirector())
+            && Objects.equals(this.getTitle(), film.getTitle())
+            && Objects.equals(this.getDuration(), film.getDuration())
+            && this.getId() == film.getId()) {
+                return true;
+            }
+        return false;
+    }
 }
