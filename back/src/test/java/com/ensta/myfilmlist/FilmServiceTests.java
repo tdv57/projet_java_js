@@ -180,15 +180,39 @@ public class FilmServiceTests {
   }
 
   private void mockJpaFilmDAODelete(Film film) throws ServiceException {
+    
+    Director director;
+
+    if (film.getDirector().getId() == 1) {
+      director = jamesCameron;
+    } else if (film.getDirector().getId() == 2) {
+      director = peterJackson;
+    } else {
+      return;
+    }
+
+    List<Film> films = director.getfilmsProduced();
+    System.out.println(films);
     if (Objects.equals(film, hihihi1)) {
+      films.remove(hihihi1);
+      jamesCameron.setfilmsProduced(films);
       hihihi1 = null;
     } else if (Objects.equals(film, hihihi2)) {
+      films.remove(hihihi2);
+      jamesCameron.setfilmsProduced(films);
       hihihi2 = null;
     } else if (Objects.equals(film, hihihi3)) {
+      films.remove(hihihi3);
+      jamesCameron.setfilmsProduced(films);
       hihihi3 = null;
     } else if (Objects.equals(film, deBonMatin)) {
+      films.remove(deBonMatin);
+      peterJackson.setfilmsProduced(films);
       deBonMatin = null;
     }
+
+    System.out.println(jamesCameron.getfilmsProduced());
+    System.out.println(films);
   }
 
   @BeforeEach 
@@ -467,8 +491,22 @@ public class FilmServiceTests {
       return mockJpaFilmDAOFindById(invocation.getArgument(0));
     });
 
+    when(jpaDirectorDAO.update(anyLong(), any(Director.class))).thenAnswer(invocation -> {
+      return mockJpaDirectorDAOUpdate(invocation.getArgument(0), invocation.getArgument(1));
+    });
+
+    when(jpaFilmDAO.findByDirectorId(anyLong())).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindByDirectorId(invocation.getArgument(0));
+    });
+
+    System.out.println(jamesCameron.getfilmsProduced());
+    jamesCameron.setFamous(true);
+    assertEquals(true, jamesCameron.isFamous());
     myFilmsServiceImpl.deleteFilm(1L);
+    System.out.println(jamesCameron.getfilmsProduced());
     assertEquals(null, hihihi1);
+    assertEquals(false, jamesCameron.isFamous());
+    assertEquals(2, jamesCameron.getfilmsProduced().size());
 
     ServiceException serviceException = assertThrows(ServiceException.class, () -> {
       myFilmsServiceImpl.deleteFilm(100L);
