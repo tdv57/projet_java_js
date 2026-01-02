@@ -51,12 +51,9 @@ public class FilmControllerImpl implements FilmController {
     public ResponseEntity<FilmDTO> getFilmByTitle(@RequestParam String title) throws ControllerException {
         try {
             FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmByTitle(title));
-            if (filmDTO == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
             return ResponseEntity.status(HttpStatus.OK).body(filmDTO);
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible de trouver le film demandé", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
