@@ -47,7 +47,7 @@ public class FilmControllerImpl implements FilmController {
     }
 
     @Override
-    @PostMapping("/title")
+    @GetMapping("/title")
     public ResponseEntity<FilmDTO> getFilmByTitle(@RequestParam String title) throws ControllerException {
         try {
             FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmByTitle(title));
