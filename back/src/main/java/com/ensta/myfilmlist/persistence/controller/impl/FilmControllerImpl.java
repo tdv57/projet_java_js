@@ -42,7 +42,7 @@ public class FilmControllerImpl implements FilmController {
             FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(id));
             return ResponseEntity.status(HttpStatus.OK).body(filmDTO);
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible de trouver le film demandé", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
