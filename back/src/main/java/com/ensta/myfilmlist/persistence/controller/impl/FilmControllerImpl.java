@@ -63,12 +63,9 @@ public class FilmControllerImpl implements FilmController {
         try {
             List<Film> filmList = myFilmsService.findFilmByDirectorId(id);
             List<FilmDTO> returnList = filmList.stream().map(FilmMapper::convertFilmToFilmDTO).toList();
-            if  (returnList.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
             return ResponseEntity.status(HttpStatus.OK).body(returnList);
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible de trouver les films demandés", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
