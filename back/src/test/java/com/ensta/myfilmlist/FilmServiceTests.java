@@ -391,6 +391,7 @@ public class FilmServiceTests {
     count ++;
     System.out.println("\n");
   }
+  
   @Test 
   void whenDirectorHasAtLeast3Movies_thenShouldBeFamous() throws ServiceException{
     when(jpaFilmDAO.findByDirectorId(any(Long.class))).thenAnswer(invocation -> {
