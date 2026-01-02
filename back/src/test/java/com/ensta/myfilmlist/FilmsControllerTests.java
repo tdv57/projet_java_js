@@ -1,10 +1,13 @@
 package com.ensta.myfilmlist;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.description;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -191,6 +194,39 @@ public class FilmsControllerTests {
         throw new ServiceException("Le film demandé n'existe pas");
     }
   } 
+
+  private Film mockMyFilmsServiceFindFilmByTitle(String title) throws ServiceException {
+    switch(title) {
+      case "hihihi1":
+        return hihihi1;
+      case "hihihi2":
+        return hihihi2;
+      case "hihihi3":
+        return hihihi3;
+      case "de bon matin":
+        return deBonMatin;
+      default:
+        throw new ServiceException("Le film demandé n'existe pas");
+    }
+  }
+
+  private List<Film> mockMyFilmsServiceFindFilmByDirectorId(long id) throws ServiceException {
+    List<Film> films = new ArrayList<>();
+
+    switch ((int) id) {
+      case 1:
+        films.add(hihihi1);
+        films.add(hihihi2);
+        films.add(hihihi3);
+        return films;
+      case 2:
+        films.add(deBonMatin);
+        return films;
+      default:
+        throw new ServiceException("Le réalistauer n'a réalisé aucun film");
+    }
+  }
+
   @Test 
   void whenGetAllFilms_thenShouldHaveAllFilms() throws Exception {
     when(myFilmsService.findAll()).thenReturn(mockMyFilmsServiceFindAll());
@@ -206,6 +242,7 @@ public class FilmsControllerTests {
   @Test
   void whenGetFilmById_thenShouldHaveFilm() throws Exception {
     when(myFilmsService.findFilmById(anyLong())).thenAnswer(invocation -> {
+      System.out.println(mockMyFilmsServiceFindFilmById(invocation.getArgument(0)));
       return mockMyFilmsServiceFindFilmById(invocation.getArgument(0));
     });
 
@@ -213,13 +250,64 @@ public class FilmsControllerTests {
     .andExpect(status().isOk())
     .andExpect(jsonPath("$.id").value(1))
     .andExpect(jsonPath("$.title").value("hihihi1"))
-    .andExpect(jsonPath("$.duration").value(60));
+    .andExpect(jsonPath("$.duration").value(60))
+    .andExpect(jsonPath("$.directorDTO.name").value("James"))
+    .andExpect(jsonPath("$.directorDTO.surname").value("Cameron"))
+    .andExpect(jsonPath("$.genreDTO.name").value("comédie")); 
 
     mockMvc.perform(get("/film/100"))
     .andExpect(status().isNotFound());
+  }
 
+  @Test
+  void whenGetFilmByTitle_thenShouldHaveFilm() throws Exception {
+    when(myFilmsService.findFilmByTitle(anyString())).thenAnswer(invocation -> {
+      return mockMyFilmsServiceFindFilmByTitle(invocation.getArgument(0));
+    });
 
+    mockMvc.perform(get("/film/title?title=hihihi1"))
+    .andExpect(status().isOk())
+    .andExpect(jsonPath("$.id").value(1))
+    .andExpect(jsonPath("$.title").value("hihihi1"))
+    .andExpect(jsonPath("$.duration").value(60))
+    .andExpect(jsonPath("$.directorDTO.name").value("James"))
+    .andExpect(jsonPath("$.directorDTO.surname").value("Cameron"))
+    .andExpect(jsonPath("$.genreDTO.name").value("comédie")); 
 
+    mockMvc.perform(get("/film/title?title=xxxxxxxxxx"))
+    .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void whenGetFilmByDirectorId_thenShouldHaveFilm() throws Exception {
+    when(myFilmsService.findFilmByDirectorId(anyLong())).thenAnswer(invocation -> {
+      return mockMyFilmsServiceFindFilmByDirectorId(invocation.getArgument(0));
+    });
+
+    mockMvc.perform(get("/film/director/1"))
+    .andExpect(status().isOk())
+    .andExpect(jsonPath("$[0].id").value(1))
+    .andExpect(jsonPath("$[0].title").value("hihihi1"))
+    .andExpect(jsonPath("$[0].duration").value(60))
+    .andExpect(jsonPath("$[0].directorDTO.name").value("James"))
+    .andExpect(jsonPath("$[0].directorDTO.surname").value("Cameron"))
+    .andExpect(jsonPath("$[0].genreDTO.name").value("comédie"))
+    .andExpect(jsonPath("$[1].id").value(2))
+    .andExpect(jsonPath("$[1].title").value("hihihi2"))
+    .andExpect(jsonPath("$[1].duration").value(61))
+    .andExpect(jsonPath("$[1].directorDTO.name").value("James"))
+    .andExpect(jsonPath("$[1].directorDTO.surname").value("Cameron"))
+    .andExpect(jsonPath("$[1].genreDTO.name").value("comédie"))
+    .andExpect(jsonPath("$[2].id").value(3))
+    .andExpect(jsonPath("$[2].title").value("hihihi3"))
+    .andExpect(jsonPath("$[2].duration").value(62))
+    .andExpect(jsonPath("$[2].directorDTO.name").value("James"))
+    .andExpect(jsonPath("$[2].directorDTO.surname").value("Cameron"))
+    .andExpect(jsonPath("$[2].genreDTO.name").value("comédie"));
+
+    mockMvc.perform(get("/film/director/100"))
+    .andExpect(status().isNotFound())
+    .andExpect(content().string(""));
 
   }
 }
