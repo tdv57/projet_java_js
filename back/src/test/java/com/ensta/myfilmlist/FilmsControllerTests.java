@@ -2,12 +2,17 @@ package com.ensta.myfilmlist;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.description;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+
+import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,10 +31,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.ensta.myfilmlist.model.Director;
 import com.ensta.myfilmlist.model.Film;
+import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.model.Genre;
 import com.ensta.myfilmlist.service.MyFilmsService;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.exception.ServiceException;
+import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.exception.ControllerException;
 
 @SpringBootTest
@@ -227,6 +234,37 @@ public class FilmsControllerTests {
     }
   }
 
+  private FilmDTO mockMyFilmsServiceCreateFilm(FilmForm filmForm) throws ServiceException {
+    if (filmForm.getDirectorId() > 2 ) throw new ServiceException("Le réalisateur n'existe pas");
+    Film film = filmMapper.convertFilmFormToFilm(filmForm);
+    film.setId(filmId++);
+    return filmMapper.convertFilmToFilmDTO(film);
+  }
+
+  private FilmDTO mockMyFilmsServiceUpdateFilm(long id, FilmForm filmForm) throws ServiceException {
+    if (filmForm.getDirectorId() > 2) throw new ServiceException("Réalisateur inexistant");
+    Film film = filmMapper.convertFilmFormToFilm(filmForm);
+    film.setId(id);
+    switch((int) id) {
+      case 1:
+        hihihi1 = film;
+        break;
+      case 2:
+        hihihi2 = film;
+        break;
+      case 3:
+        hihihi3 = film;
+        break;
+      case 4: 
+        deBonMatin = film;
+        break;
+      default:
+        throw new ServiceException("Impossible de mettre à jour le film");
+    }
+
+    return filmMapper.convertFilmToFilmDTO(film);
+  }
+
   @Test 
   void whenGetAllFilms_thenShouldHaveAllFilms() throws Exception {
     when(myFilmsService.findAll()).thenReturn(mockMyFilmsServiceFindAll());
@@ -308,6 +346,93 @@ public class FilmsControllerTests {
     mockMvc.perform(get("/film/director/100"))
     .andExpect(status().isNotFound())
     .andExpect(content().string(""));
+  }
+
+  @Test 
+  void whenCreateFilm_thenShouldCreateFilm() throws Exception {
+    when(myFilmsService.createFilm(any(FilmForm.class))).thenAnswer(invocation -> {
+      return mockMyFilmsServiceCreateFilm(invocation.getArgument(0));
+    });
+    String hihihi4 = """
+    {
+      "title": "hihihi4",
+      "duration": 63,
+      "directorId": 1,
+      "genreId": 3
+    }
+    """;
+
+    mockMvc.perform(post("/film/")
+    .contentType(MediaType.APPLICATION_JSON)
+    .content(hihihi4))
+    .andExpect(status().isOk())
+    .andExpect(jsonPath("$.id").value(5))
+    .andExpect(jsonPath("$.title").value("hihihi4"))
+    .andExpect(jsonPath("$.duration").value(63))
+    .andExpect(jsonPath("$.directorDTO.name").value("James"))
+    .andExpect(jsonPath("$.directorDTO.surname").value("Cameron"))
+    .andExpect(jsonPath("$.genreDTO.name").value("comédie"));
+    
+    String unknown = """
+    {
+      "title": "unknown",
+      "duration": 60,
+      "directorId": 100,
+      "genreId": 3
+    }
+    """;
+    mockMvc.perform(post("/film/")
+    .contentType(MediaType.APPLICATION_JSON)
+    .content(unknown))
+    .andExpect(status().isBadRequest())
+    .andExpect(content().string("Impossible d'ajouter le film demandé"));
+  }
+
+  @Test 
+  void whenUpdateFilm_thenShouldHaveFilmUpdated() throws Exception {
+    when(myFilmsService.updateFilm(anyLong(), any(FilmForm.class))).thenAnswer(invocation -> {
+      return mockMyFilmsServiceUpdateFilm(invocation.getArgument(0), invocation.getArgument(1));
+    });
+
+    String _hihihi1 = """
+    {
+      "title": "hihihi1",
+      "duration": 63,
+      "directorId": 1,
+      "genreId": 3
+    }
+    """;
+    mockMvc.perform(put("/film/1")
+           .contentType(MediaType.APPLICATION_JSON)
+           .content(_hihihi1))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.title").value("hihihi1"))
+           .andExpect(jsonPath("$.id").value(1))
+           .andExpect(jsonPath("$.duration").value(63))
+           .andExpect(jsonPath("$.genreDTO.name").value("comédie"))
+           .andExpect(jsonPath("$.directorDTO.name").value("James"))
+           .andExpect(jsonPath("$.directorDTO.surname").value("Cameron"));
+
+    mockMvc.perform(put("/film/100")
+           .contentType(MediaType.APPLICATION_JSON)
+           .content(_hihihi1))
+           .andExpect(status().isNotFound())
+           .andExpect(content().string(""));
+
+    String hihihi1Error = """
+    {
+      "title": "hihihi1",
+      "duration": 63,
+      "directorId": 100,
+      "genreId": 3
+    }
+    """;
+
+    mockMvc.perform(put("/film/1")
+           .contentType(MediaType.APPLICATION_JSON)
+           .content(hihihi1Error))
+           .andExpect(status().isBadRequest())
+           .andExpect(content().string("Réalisateur inexistant"));
 
   }
 }

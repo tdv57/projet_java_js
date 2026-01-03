@@ -569,6 +569,12 @@ public class FilmServiceTests {
 
     assertEquals(serviceException.getMessage(), "Impossible de mettre à jour le film");
 
+    hahaha1.setDirectorId(100);
+    ServiceException serviceException2 = assertThrows(ServiceException.class, () -> {
+      myFilmsServiceImpl.updateFilm(1, hahaha1);
+    });
+
+    assertEquals(serviceException2.getMessage(), "Réalisateur inexistant");
   }
 
   @Test 
