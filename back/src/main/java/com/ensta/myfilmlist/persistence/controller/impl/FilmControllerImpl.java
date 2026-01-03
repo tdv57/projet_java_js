@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/film")
@@ -85,7 +86,8 @@ public class FilmControllerImpl implements FilmController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateFilm(id, filmForm));
         } catch (ServiceException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            if (Objects.equals(e.getMessage(), "Réalisateur inexistant")) throw new ControllerException(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
