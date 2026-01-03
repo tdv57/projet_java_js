@@ -95,7 +95,7 @@ public class Film {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
+        if (!(o instanceof Film)) return false;
         Film film = (Film) o;
         if (Objects.equals(this.getDirector(), film.getDirector())
             && Objects.equals(this.getTitle(), film.getTitle())

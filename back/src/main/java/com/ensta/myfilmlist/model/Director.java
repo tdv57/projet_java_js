@@ -110,7 +110,7 @@ public class Director {
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
-        if (object == null || this.getClass() != object.getClass()) return false;
+        if (!(object instanceof Director)) return false;
         Director director = (Director) object;
         if (this.id == director.getId() 
             && director.isFamous() == this.famous 
