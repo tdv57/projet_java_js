@@ -145,6 +145,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
             director.setfilmsProduced(filmsDuDirector);
             director.setFamous(director.getfilmsProduced().size() >= MIN_NB_FILMS_FAMOUS_DIRECTOR);
             return directorDAO.update(director.getId(), director);
+        } catch (ServiceException e) {
+            throw new ServiceException("Directeur inexistant");
         } catch(Throwable e) {
             throw new ServiceException("Erreur lors de la mise à jour de la célébrité", e);
         }
