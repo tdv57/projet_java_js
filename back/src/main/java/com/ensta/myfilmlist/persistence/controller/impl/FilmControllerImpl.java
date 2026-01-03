@@ -85,7 +85,7 @@ public class FilmControllerImpl implements FilmController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateFilm(id, filmForm));
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible d'éditer le film demandé", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
