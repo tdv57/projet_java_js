@@ -87,6 +87,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Override
     @Transactional
     public FilmDTO updateFilm(long id, FilmForm filmForm) throws ServiceException {
+        Optional<Director> director = this.directorDAO.findById(filmForm.getDirectorId());
+        if (director.isEmpty()) throw new ServiceException("Réalisateur inexistant");
         Film new_film = filmMapper.convertFilmFormToFilm(filmForm);
         Film film = this.filmDAO.update(id, new_film);
         return FilmMapper.convertFilmToFilmDTO(film);
