@@ -99,7 +99,7 @@ public class JpaFilmDAO implements FilmDAO {
     public Film update(long id, Film film)  throws ServiceException {
         Optional<Film> prev_film = this.findById(id);
         if  (prev_film.isEmpty()) {
-            throw new ServiceException("Impossible de mettre à jour le film");
+            throw new ServiceException("Film inexistant");
         }
         Film film_to_modify = entityManager.merge(prev_film.get());
         film_to_modify.setTitle(film.getTitle());
