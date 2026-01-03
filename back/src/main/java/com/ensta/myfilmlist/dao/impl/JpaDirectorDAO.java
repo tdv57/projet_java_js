@@ -68,7 +68,7 @@ public class JpaDirectorDAO implements DirectorDAO {
     public Director update(long id, Director director) throws ServiceException {
         Optional<Director> prev_director = this.findById(id);
         if  (prev_director.isEmpty()) {
-            throw new ServiceException("Directeur inexistant");
+            throw new ServiceException("Réalisateur inexistant");
         }
         Director director_to_modify = entityManager.merge(prev_director.get());
         director_to_modify.setSurname(director.getSurname());
