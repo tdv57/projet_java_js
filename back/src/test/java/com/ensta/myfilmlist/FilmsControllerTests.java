@@ -4,6 +4,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.description;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -265,6 +267,25 @@ public class FilmsControllerTests {
     return filmMapper.convertFilmToFilmDTO(film);
   }
 
+  private void mockMyFilmsServiceDeleteFilm(long id) throws ServiceException {
+    switch((int) id) {
+      case 1:
+        hihihi1 = null;
+        break;
+      case 2:
+        hihihi2 = null;
+        break;
+      case 3:
+        hihihi3 = null;
+        break;
+      case 4:
+        deBonMatin = null;
+        break;
+      default:
+        throw new  ServiceException ("Le film demandé n'existe pas");
+    }
+  }
+
   @Test 
   void whenGetAllFilms_thenShouldHaveAllFilms() throws Exception {
     when(myFilmsService.findAll()).thenReturn(mockMyFilmsServiceFindAll());
@@ -436,4 +457,19 @@ public class FilmsControllerTests {
 
   }
 
+  @Test 
+  void whenDeleteFilm_thenDeleteFilm() throws Exception {
+    doAnswer(invocation -> {
+      mockMyFilmsServiceDeleteFilm(invocation.getArgument(0));
+      return null;
+    }).when(myFilmsService).deleteFilm(anyLong());
+    
+    mockMvc.perform(delete("/film/1"))
+      .andExpect(status().isNoContent())
+      .andExpect(content().string(""));
+    
+    mockMvc.perform(delete("/film/100"))
+      .andExpect(status().isNotFound())
+      .andExpect(content().string(""));
+  }
 }

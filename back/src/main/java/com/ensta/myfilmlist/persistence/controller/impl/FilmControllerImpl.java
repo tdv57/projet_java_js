@@ -98,7 +98,7 @@ public class FilmControllerImpl implements FilmController {
             myFilmsService.deleteFilm(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (ServiceException e) {
-            if (Objects.equals(e.getMessage(), "Le film demandé n'existe pas")) throw new ControllerException("Le film demandé n'existe pas", e);
+            if (Objects.equals(e.getMessage(), "Le film demandé n'existe pas")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Impossible de supprimer le film demandé", e);
         }
     }

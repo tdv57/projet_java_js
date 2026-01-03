@@ -407,7 +407,7 @@ public class FilmServiceTests {
     Exception exception = assertThrows(ServiceException.class, () -> {
         myFilmsServiceImpl.updateDirectorFamous(erreurInterne);
     });
-    assertEquals("Erreur lors de la mise à jour de la célébrité",exception.getMessage());
+    assertEquals("Réalisateur inexistant",exception.getMessage());
   }
 
   @Test 
