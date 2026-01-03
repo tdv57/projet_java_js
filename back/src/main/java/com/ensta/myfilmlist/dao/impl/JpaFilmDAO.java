@@ -70,7 +70,8 @@ public class JpaFilmDAO implements FilmDAO {
                 .createQuery("SELECT f FROM Film f WHERE f.title = :title")
                 .setParameter("title", title)
                 .getResultList();
-        return Optional.ofNullable(films.get(0));
+        if (films.size() == 0) return Optional.empty();
+        return Optional.of(films.get(0));
     }
 
     /**
