@@ -112,7 +112,7 @@ public class Director {
         if (this == object) return true;
         if (!(object instanceof Director)) return false;
         Director director = (Director) object;
-        if (this.id == director.getId() 
+        if (Objects.equals(this.id, director.getId())
             && director.isFamous() == this.famous 
             && Objects.equals(director.getBirthdate(), this.birthdate) 
             && Objects.equals(director.getName(), this.name) 

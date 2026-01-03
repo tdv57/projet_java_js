@@ -100,7 +100,7 @@ public class Film {
         if (Objects.equals(this.getDirector(), film.getDirector())
             && Objects.equals(this.getTitle(), film.getTitle())
             && Objects.equals(this.getDuration(), film.getDuration())
-            && this.getId() == film.getId()) {
+            && Objects.equals(this.id, film.getId())) {
                 return true;
             }
         return false;
