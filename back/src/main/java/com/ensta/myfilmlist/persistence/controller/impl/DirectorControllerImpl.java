@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/director")
@@ -73,6 +74,7 @@ public class DirectorControllerImpl implements DirectorController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateDirector(id, directorForm));
         } catch (ServiceException e) {
+            if (Objects.equals(e.getMessage(), "Réalisateur inexistant")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Impossible d'éditer le réalisateur demandé", e);
         }
     }
@@ -84,6 +86,7 @@ public class DirectorControllerImpl implements DirectorController {
             myFilmsService.deleteDirector(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (ServiceException e) {
+            if (Objects.equals(e.getMessage(), "Réalisateur inexistant")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Impossible de supprimer le réalisateur demandé", e);
         }
     }

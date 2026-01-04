@@ -57,7 +57,6 @@ public interface FilmController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le film a bien été édité"),
             @ApiResponse(code = 404, message = "Le film n'a pas pu être édité"),
-            @ApiResponse(code = 400, message= "Réalisateur inexistant")
     })
     ResponseEntity<FilmDTO> updateFilm(Long id, FilmForm filmForm) throws ControllerException;
 

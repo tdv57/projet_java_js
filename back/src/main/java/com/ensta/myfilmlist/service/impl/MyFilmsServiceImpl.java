@@ -183,6 +183,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Override
     @Transactional
     public void deleteDirector(long id) throws ServiceException {
+        this.directorDAO.findById(id);
         this.directorDAO.delete(id);
     }
 
