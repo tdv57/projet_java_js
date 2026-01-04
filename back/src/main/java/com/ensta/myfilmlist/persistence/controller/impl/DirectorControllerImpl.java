@@ -51,12 +51,9 @@ public class DirectorControllerImpl implements DirectorController {
     public ResponseEntity<DirectorDTO> getDirectorByNameAndSurname(@RequestParam String surname, @RequestParam String name) throws ControllerException {
         try {
             DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorBySurnameAndName(surname, name));
-            if (directorDTO == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
             return ResponseEntity.status(HttpStatus.OK).body(directorDTO);
         } catch (ServiceException e) {
-            throw new ControllerException("DirectorControllerImpl::getDirectorByNameAndSurname", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
