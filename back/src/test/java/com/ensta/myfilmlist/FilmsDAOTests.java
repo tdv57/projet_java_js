@@ -55,6 +55,69 @@ class FilmsDAOTests {
         System.out.println("\n");
     }
 
+    private Genre getAction() {
+        Genre action = new Genre();
+        action.setId(1);
+        action.setName("action");
+        return action;
+    }
+
+    private Genre getBiopic() {
+        Genre biopic = new Genre();
+        biopic.setId(2);
+        biopic.setName("biopic");
+        return biopic;
+    }
+
+    private Genre getComedie() {
+        Genre comedie = new Genre();
+        comedie.setId(3);
+        comedie.setName("comédie");
+        return comedie;
+    }
+
+    private Genre getDrame() {
+        Genre drame = new Genre();
+        drame.setId(4);
+        drame.setName("drame");
+        return drame;
+    }
+
+    private Genre getFantaisie() {
+        Genre fantaisie = new Genre();
+        fantaisie.setId(5);
+        fantaisie.setName("fantaisie");
+        return fantaisie;
+    }
+
+    private Genre getHorreur() {
+        Genre horreur = new Genre();
+        horreur.setId(6);
+        horreur.setName("horreur");
+        return horreur;
+    }
+
+    private Genre getPolicier() {
+        Genre policier = new Genre();
+        policier.setId(7);
+        policier.setName("policier");
+        return policier;
+    }
+
+    private Genre getSF() {
+        Genre sf = new Genre();
+        sf.setId(8);
+        sf.setName("SF");
+        return sf;
+    }
+
+    private Genre getThriller() {
+        Genre thriller = new Genre();
+        thriller.setId(9);
+        thriller.setName("thriller");
+        return thriller;
+    }
+
     private Director getJamesCameron() {
         Director jamesCameron = new Director();
         jamesCameron.setBirthdate(LocalDate.of(1954, 8, 16));    
@@ -83,7 +146,7 @@ class FilmsDAOTests {
         avatar.setDuration(162);
         avatar.setId(1);
         avatar.setTitle("avatar");
-        avatar.setGenre(null);
+        avatar.setGenre(getAction());
         return avatar;
     }
 
@@ -93,7 +156,7 @@ class FilmsDAOTests {
         laCommunauteDeLAnneau.setDuration(178);
         laCommunauteDeLAnneau.setId(2);
         laCommunauteDeLAnneau.setTitle("La communauté de l'anneau");
-        laCommunauteDeLAnneau.setGenre(null);
+        laCommunauteDeLAnneau.setGenre(getFantaisie());
         return laCommunauteDeLAnneau;
     }
 
@@ -103,7 +166,7 @@ class FilmsDAOTests {
         lesDeuxTours.setDuration(179);
         lesDeuxTours.setId(3);
         lesDeuxTours.setTitle("Les deux tours");
-        lesDeuxTours.setGenre(null);
+        lesDeuxTours.setGenre(getFantaisie());
         return lesDeuxTours;      
     }
 
@@ -113,7 +176,7 @@ class FilmsDAOTests {
         leRetourDuRoi.setDuration(201);
         leRetourDuRoi.setId(4);
         leRetourDuRoi.setTitle("Le retour du roi");
-        leRetourDuRoi.setGenre(null);
+        leRetourDuRoi.setGenre(getFantaisie());
         return leRetourDuRoi;      
     }
 
@@ -145,6 +208,7 @@ class FilmsDAOTests {
         filmForm.setDuration(15);
         filmForm.setDirectorId(2);
         filmForm.setTitle("title");
+        filmForm.setGenreId(1);
         try {
             filmDAO.save(filmMapper.convertFilmFormToFilm(filmForm));
             assertEquals(5, filmDAO.findAll().size());
@@ -153,6 +217,8 @@ class FilmsDAOTests {
             assertEquals(5, newFilm.getId());
             assertEquals(2, newFilm.getDirector().getId());
             assertEquals("title", newFilm.getTitle());
+            assertEquals("action", newFilm.getGenre().getName());
+
         } catch (ServiceException serviceException) {
             throw new RuntimeErrorException(null);
         }
@@ -173,6 +239,7 @@ class FilmsDAOTests {
         assertEquals("avatar", film.getTitle());
         assertEquals(162, film.getDuration());
         assertEquals(1, film.getDirector().getId());
+        assertEquals("action", film.getGenre().getName());
     }
 
     @Test 

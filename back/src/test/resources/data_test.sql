@@ -8,3 +8,14 @@ INSERT INTO Film(title, duration, director_id) VALUES('avatar', 162, 1);
 INSERT INTO Film(title, duration, director_id) VALUES('La communauté de l''anneau', 178, 2);
 INSERT INTO Film(title, duration, director_id) VALUES('Les deux tours', 179, 2);
 INSERT INTO Film(title, duration, director_id) VALUES('Le retour du roi', 201, 2);
+
+CREATE TABLE IF NOT EXISTS Genre(id INT primary key auto_increment, name VARCHAR(100));
+INSERT INTO Genre(name) VALUES('action');
+INSERT INTO Genre(name) VALUES('biopic');
+INSERT INTO Genre(name) VALUES('comédie');
+INSERT INTO Genre(name) VALUES('drame');
+INSERT INTO Genre(name) VALUES('fantaisie');
+INSERT INTO Genre(name) VALUES('horreur');
+INSERT INTO Genre(name) VALUES('policier');
+INSERT INTO Genre(name) VALUES('SF');
+INSERT INTO Genre(name) VALUES('thriller');

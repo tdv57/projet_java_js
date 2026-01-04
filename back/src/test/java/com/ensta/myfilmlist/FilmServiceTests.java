@@ -234,9 +234,13 @@ public class FilmServiceTests {
     switch((int) id) {
       case 1:
         jamesCameron = null;
+        hihihi1 = null;
+        hihihi2 = null;
+        hihihi3 = null;
         break;
       case 2:
         peterJackson = null;
+        deBonMatin = null;
         break;
       default:
         return;
@@ -692,10 +696,17 @@ public class FilmServiceTests {
 
   @Test
   void whenDeleteDirector_thenShouldDeleteDirector() throws ServiceException {
+
+
+    when(jpaFilmDAO.findByDirectorId(anyLong())).thenAnswer(invocation -> {
+      return mockJpaFilmDAOFindByDirectorId(invocation.getArgument(0));
+    });
+
     doAnswer(invocation -> {
       mockJpaDirectorDAODelete(invocation.getArgument(0));
       return null;
     }).when(jpaDirectorDAO).delete(anyLong());
+
 
     myFilmsServiceImpl.deleteDirector(1L);
     assertEquals(null, jamesCameron);

@@ -192,5 +192,7 @@ class DirectorsDAOTests {
         assertEquals(1, directorDAO.findAll().size());
         directorDAO.delete(2L);
         assertEquals(0, directorDAO.findAll().size());
+
+        assertEquals(filmDAO.findById(1), Optional.empty());
     }
 }
