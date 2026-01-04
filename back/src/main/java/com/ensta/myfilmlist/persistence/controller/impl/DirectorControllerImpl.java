@@ -47,7 +47,7 @@ public class DirectorControllerImpl implements DirectorController {
     }
 
     @Override
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<DirectorDTO> getDirectorByNameAndSurname(@RequestParam String surname, @RequestParam String name) throws ControllerException {
         try {
             DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorBySurnameAndName(surname, name));
