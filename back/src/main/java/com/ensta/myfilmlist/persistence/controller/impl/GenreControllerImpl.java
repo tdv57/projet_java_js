@@ -37,12 +37,9 @@ public class GenreControllerImpl implements GenreController {
     public ResponseEntity<GenreDTO> getGenreById(@PathVariable Long id) throws ControllerException {
         try {
             GenreDTO genreDTO = GenreMapper.convertGenreToGenreDTO(myFilmsService.findGenreById(id));
-            if (genreDTO == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
             return ResponseEntity.status(HttpStatus.OK).body(genreDTO);
         } catch (ServiceException e) {
-            throw new ControllerException("GenreControllerImpl::getGenreById", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);        
         }
     }
 
