@@ -28,11 +28,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @Transactional
-class DirectorsDAOTests {
+class GenresDAOTests {
+    
     @Autowired
     private FilmDAO filmDAO;
+    
     @Autowired
     private DirectorDAO directorDAO;
+
+    @Autowired
+    private GenreDAO genreDAO;
 
     private static int count = 0;
 
@@ -52,6 +57,69 @@ class DirectorsDAOTests {
         System.out.println("Fin test n°" + count);
         count ++;
         System.out.println("\n");
+    }
+
+    private Genre getAction() {
+        Genre action = new Genre();
+        action.setId(1);
+        action.setName("action");
+        return action;
+    }
+
+    private Genre getBiopic() {
+        Genre biopic = new Genre();
+        biopic.setId(2);
+        biopic.setName("biopic");
+        return biopic;
+    }
+
+    private Genre getComedie() {
+        Genre comedie = new Genre();
+        comedie.setId(3);
+        comedie.setName("comédie");
+        return comedie;
+    }
+
+    private Genre getDrame() {
+        Genre drame = new Genre();
+        drame.setId(4);
+        drame.setName("drame");
+        return drame;
+    }
+
+    private Genre getFantaisie() {
+        Genre fantaisie = new Genre();
+        fantaisie.setId(5);
+        fantaisie.setName("fantaisie");
+        return fantaisie;
+    }
+
+    private Genre getHorreur() {
+        Genre horreur = new Genre();
+        horreur.setId(6);
+        horreur.setName("horreur");
+        return horreur;
+    }
+
+    private Genre getPolicier() {
+        Genre policier = new Genre();
+        policier.setId(7);
+        policier.setName("policier");
+        return policier;
+    }
+
+    private Genre getSF() {
+        Genre sf = new Genre();
+        sf.setId(8);
+        sf.setName("SF");
+        return sf;
+    }
+
+    private Genre getThriller() {
+        Genre thriller = new Genre();
+        thriller.setId(9);
+        thriller.setName("thriller");
+        return thriller;
     }
 
     private Director getJamesCameron() {
@@ -82,7 +150,7 @@ class DirectorsDAOTests {
         avatar.setDuration(162);
         avatar.setId(1);
         avatar.setTitle("avatar");
-        avatar.setGenre(null);
+        avatar.setGenre(getAction());
         return avatar;
     }
 
@@ -92,7 +160,7 @@ class DirectorsDAOTests {
         laCommunauteDeLAnneau.setDuration(178);
         laCommunauteDeLAnneau.setId(2);
         laCommunauteDeLAnneau.setTitle("La communauté de l'anneau");
-        laCommunauteDeLAnneau.setGenre(null);
+        laCommunauteDeLAnneau.setGenre(getFantaisie());
         return laCommunauteDeLAnneau;
     }
 
@@ -102,7 +170,7 @@ class DirectorsDAOTests {
         lesDeuxTours.setDuration(179);
         lesDeuxTours.setId(3);
         lesDeuxTours.setTitle("Les deux tours");
-        lesDeuxTours.setGenre(null);
+        lesDeuxTours.setGenre(getFantaisie());
         return lesDeuxTours;      
     }
 
@@ -112,86 +180,41 @@ class DirectorsDAOTests {
         leRetourDuRoi.setDuration(201);
         leRetourDuRoi.setId(4);
         leRetourDuRoi.setTitle("Le retour du roi");
-        leRetourDuRoi.setGenre(null);
+        leRetourDuRoi.setGenre(getFantaisie());
         return leRetourDuRoi;      
     }
 
-
-    @Test  
-    void printDatabaseTest() {
-        try {
-        filmDAO.findAll().forEach(System.out::println);
-        System.out.println("\n");
-        directorDAO.findAll().forEach(System.out::println);
-        } catch (ServiceException e) {
-            System.out.println("Erreur interne");
-        }
-    }
-
     @Test 
-    void whenFindAll_thenShouldHaveAllDirectors() {
-        List<Director> directors = directorDAO.findAll();
-        assertEquals(getJamesCameron(), directors.get(0));
-        assertEquals(getPeterJackson(), directors.get(1));
-    }
-
-    @Test 
-    void whenFindBySurnameAndName_thenShouldHaveDirector() {
-        Optional<Director> jamesCameron = directorDAO.findBySurnameAndName("Cameron", "James");
-        assertEquals(Optional.of(getJamesCameron()), jamesCameron);
-
-        Optional<Director> error = directorDAO.findBySurnameAndName("unknown", "unknown");
-        assertEquals(Optional.empty(), error);
-    }
-
-    @Test 
-    void whenFindById_thenShouldHaveDirector() {
-        Optional<Director> jamesCameron = directorDAO.findById(1L);
-        assertEquals(jamesCameron, Optional.of(getJamesCameron()));
-
-        Optional<Director> empty = directorDAO.findById(100L);
-        assertEquals(Optional.empty(), empty);
+    void whenFindAll_thenShouldHaveAllGenre() throws ServiceException {
+        List<Genre> genres = genreDAO.findAll();
+        assertEquals(genres.get(0), getAction());
+        assertEquals(genres.get(1), getBiopic());
+        assertEquals(genres.get(2), getComedie());
+        assertEquals(genres.get(3), getDrame());
+        assertEquals(genres.get(4), getFantaisie());
+        assertEquals(genres.get(5), getHorreur());
+        assertEquals(genres.get(6), getPolicier());
+        assertEquals(genres.get(7), getSF());
+        assertEquals(genres.get(8), getThriller());
     }
 
     @Test
-    void whenUpdate_thenShouldHaveUpdatedDirector() throws ServiceException{
-        Director newJamesCameron = new Director();
-        newJamesCameron.setBirthdate((LocalDate.of(2000, 8, 16)));
-        newJamesCameron.setFamous(false);
-        newJamesCameron.setName("J");
-        newJamesCameron.setSurname("C");
-        newJamesCameron.setId(1L);
-        Director updatedJamesCameron = directorDAO.update(1L, newJamesCameron);
-        assertEquals(Optional.of(newJamesCameron), directorDAO.findById(1));
+    void whenFindById_thenShouldHaveGenre() throws ServiceException {
+        assertEquals(Optional.of(getAction()), genreDAO.findById(1));
+        assertEquals(Optional.of(getThriller()), genreDAO.findById(9));
+        assertEquals(Optional.empty(), genreDAO.findById(100));
+    }
 
-        ServiceException e = assertThrows(ServiceException.class, () -> {
-            directorDAO.update(100L, newJamesCameron);
+    @Test
+    void whenUpdate_thenShouldHaveUpdatedGenre() throws ServiceException {
+        Genre newAction = new Genre();
+        newAction.setId(1);
+        newAction.setName("new action");
+        Genre _newAction = genreDAO.update(1, "new action");
+        assertEquals(newAction, _newAction);
+        assertEquals(Optional.of(newAction), genreDAO.findById(1));
+        assertThrows(ServiceException.class, () -> {
+            genreDAO.update(100, "new action");
         });
-
-        assertEquals("Réalisateur inexistant", e.getMessage());
     }
-
-    @Test 
-    void whenSave_thenShouldHaveCreatedDirector() {
-        Director newDirector = new Director();
-        newDirector.setBirthdate(LocalDate.of(2002,03, 20));
-        newDirector.setFamous(false);
-        newDirector.setName("name");
-        newDirector.setSurname("surname");
-        Director savedDirector = directorDAO.save(newDirector);
-        newDirector.setId(3L);
-        assertEquals(Optional.of(savedDirector), directorDAO.findById(3L));
-    }
-
-    @Test 
-    void whenDelete_thenShouldHaveDeleteDirector() {
-        assertEquals(2, directorDAO.findAll().size());
-        directorDAO.delete(1L);
-        assertEquals(1, directorDAO.findAll().size());
-        directorDAO.delete(3L);
-        assertEquals(1, directorDAO.findAll().size());
-        directorDAO.delete(2L);
-        assertEquals(0, directorDAO.findAll().size());
-        assertEquals(filmDAO.findById(1), Optional.empty());
-    }
-}
+} 
