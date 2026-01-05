@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/genre")
@@ -49,6 +50,7 @@ public class GenreControllerImpl implements GenreController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateGenre(id, name));
         } catch (ServiceException e) {
+            if (Objects.equals(e.getMessage(), "Genre introuvable")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);     
             throw new ControllerException("Impossible d'éditer le genre demandé", e);
         }
     }
