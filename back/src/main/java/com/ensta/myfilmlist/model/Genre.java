@@ -1,6 +1,7 @@
 package com.ensta.myfilmlist.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -41,9 +42,9 @@ public class Genre {
     @Override
     public boolean equals(Object o) {
         if (o == this) return true; 
-        if (o == null || o.getClass() != this.getClass()) return false;
+        if (! (o instanceof Genre)) return false;
         Genre genre = (Genre) o;    
-        if (genre.getId() == this.getId() && genre.getName() == this.getName()) return true;
+        if (Objects.equals(genre.getId(), this.getId()) && Objects.equals(genre.getName(), this.getName())) return true;
         return false;
     }
 }
