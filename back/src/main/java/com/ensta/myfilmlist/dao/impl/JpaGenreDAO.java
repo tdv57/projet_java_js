@@ -56,7 +56,7 @@ public class JpaGenreDAO implements GenreDAO {
     public Genre update(long id, String name) throws ServiceException{
         Optional<Genre> prev_genre = this.findById(id);
         if  (prev_genre.isEmpty()) {
-            throw new ServiceException("Impossible de mettre à jour le genre");
+            throw new ServiceException("Genre introuvable");
         }
         Genre genre_to_modify = entityManager.merge(prev_genre.get());
         genre_to_modify.setName(name);
