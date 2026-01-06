@@ -34,7 +34,7 @@ public class HistoryControllerImpl implements HistoryController {
      */
     @Override
     @GetMapping("/{userId}")
-    @PreAuthorize("#userId == authentication.principal.id")
+    //@PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<List<FilmDTO>> getWatchList(@PathVariable long userId) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findWatchList(userId)));
@@ -50,8 +50,8 @@ public class HistoryControllerImpl implements HistoryController {
      * @throws ControllerException  in case of any error
      */
     @Override
-    @PostMapping("/")
-    @PreAuthorize("#userId == authentication.principal.id")
+    @PostMapping("")
+    //@PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<HistoryDTO> addToWatchList(long userId, long filmId) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.addFilmToWatchList(userId, filmId)));
@@ -61,8 +61,8 @@ public class HistoryControllerImpl implements HistoryController {
     }
 
     @Override
-    @DeleteMapping("/")
-    @PreAuthorize("#userId == authentication.principal.id")
+    @DeleteMapping("")
+    //@PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<?> removeFromWatchList(long userId, long filmId) throws ControllerException {
         try {
             myFilmsService.removeFilmFromWatchList(userId, filmId);
@@ -73,8 +73,8 @@ public class HistoryControllerImpl implements HistoryController {
     }
 
     @Override
-    @PutMapping("/")
-    @PreAuthorize("#userId == authentication.principal.id")
+    @PutMapping("")
+    //@PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<HistoryDTO> rateFilm(long userId, long filmId, int rating) throws ControllerException{
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.rateFilm(userId, filmId, rating)));
