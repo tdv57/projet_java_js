@@ -113,4 +113,16 @@ public class JpaHistoryDAO implements HistoryDAO {
         }
         throw new ServiceException("Can't get rating.");
     }
+
+    @Override
+    public List<Integer> getNotesByFilmId(long filmId) throws ServiceException {
+        Film film = entityManager.find(Film.class, filmId);
+        if (film == null) {
+            throw new ServiceException("Film inexistant");
+        }
+        List<Integer> notes = entityManager.createQuery("SELECT h.rating FROM History h WHERE h.film.id = :film_id", Integer.class)
+                    .setParameter("film_id", film.getId())
+                    .getResultList();
+        return notes;
+    }
 }
