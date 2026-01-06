@@ -120,7 +120,7 @@ public class JpaHistoryDAO implements HistoryDAO {
         if (film == null) {
             throw new ServiceException("Film inexistant");
         }
-        List<Integer> notes = entityManager.createQuery("SELECT h.rating FROM History h WHERE h.film.id = :film_id", Integer.class)
+        List<Integer> notes = entityManager.createQuery("SELECT h.rating FROM History h WHERE h.film.id = :film_id AND h.rating IS NOT NULL", Integer.class)
                     .setParameter("film_id", film.getId())
                     .getResultList();
         return notes;
