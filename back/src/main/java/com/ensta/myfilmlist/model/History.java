@@ -72,4 +72,21 @@ public class History {
     public void setRating(int rating) {
         this.rating = rating;
     }
+
+    @Override
+    public String toString() {
+        return "{id=" + this.getId() + ", film=" + this.getFilm() + ", user=" + this.getUser() + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o==this) return true;
+        if (! (o instanceof History)) return false;
+        History history = (History) o;
+        if (history.getFilm() == this.getFilm()
+            && history.getId() == this.getId()
+            && history.getUser() == this.getUser())
+        return true;
+        return false;        
+    }
 }
