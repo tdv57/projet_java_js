@@ -76,7 +76,9 @@ public class HistoryControllerImpl implements HistoryController {
     @Override
     @PutMapping("/")
     @PreAuthorize("#userId == authentication.principal.id")
-    public ResponseEntity<HistoryDTO> rateFilm(long userId, long filmId, int rating) throws ControllerException{
+    public ResponseEntity<HistoryDTO> rateFilm(@RequestParam("userId") long userId, 
+                                                @RequestParam("filmId") long filmId, 
+                                                @RequestParam("rating") int rating) throws ControllerException{
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.rateFilm(userId, filmId, rating)));
         } catch (ServiceException e) {

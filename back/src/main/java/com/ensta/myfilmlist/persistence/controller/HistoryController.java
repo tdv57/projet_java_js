@@ -39,7 +39,8 @@ public interface HistoryController {
 
     @ApiOperation(value = "Noter un film", notes = "Permet à un utilisateur de donner une note à un film de sa liste de visionnage.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "La note a des films a été mise à jour correctement")
+            @ApiResponse(code = 200, message = "La note a des films a été mise à jour correctement"),
+            @ApiResponse(code = 404, message = "L'utilisateur ou le film est introuvable")
     })
     ResponseEntity<HistoryDTO> rateFilm(long userId, long filmId, int rating) throws ControllerException;
 
