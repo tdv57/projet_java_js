@@ -6,8 +6,18 @@ import com.ensta.myfilmlist.model.Genre;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Functions to cast Genres into and from DTO and Form.
+ */
 public class GenreMapper {
 
+
+    /**
+     * Convert a genre's DTO into genre.
+     *
+     * @param genreDTO  genre's DTO to be converted
+     * @return          genre created from the parameter
+     */
     public static Genre convertGenreDTOToGenre(GenreDTO genreDTO) {
         if (genreDTO == null) return null;
         Genre genre = new Genre();
@@ -16,6 +26,12 @@ public class GenreMapper {
         return genre;
     }
 
+    /**
+     * Convert a genre into a genre's DTO.
+     *
+     * @param genre     genre to be converted
+     * @return          genre's DTO created from the parameter
+     */
     public static GenreDTO convertGenreToGenreDTO(Genre genre) {
         if (genre == null) return null;
         GenreDTO genreDTO = new GenreDTO();
@@ -24,6 +40,12 @@ public class GenreMapper {
         return genreDTO;
     }
 
+    /**
+     * Convert a list of genres into a list of genres' DTO.
+     *
+     * @param genres    list of genres to be converted
+     * @return          list of genre's DTO created from the parameter
+     */
     public static List<GenreDTO> convertGenreToGenreDTOs(List<Genre> genres) {
         return genres.stream()
                 .map(GenreMapper::convertGenreToGenreDTO)

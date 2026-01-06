@@ -32,14 +32,14 @@ public class MyfilmlistTests{
 	public void updateDirectorFamousTest(){
 		// Creation des Directors
 		try {
-			Director jamesCameron = myFilmsService.findDirectorBySurnameAndName("Cameron", "James");
+			Director jamesCameron = myFilmsService.findDirectorByNameAndSurname("Cameron", "James");
 			jamesCameron.setFamous(false);
 			// Director jamesCameron = new Director();
 			// jamesCameron.setSurname("Cameron");
 			// jamesCameron.setName("James");
 			// jamesCameron.setBirthdate(LocalDate.of(1954, 8, 16));
 
-			Director peterJackson = myFilmsService.findDirectorBySurnameAndName("Jackson", "Peter");
+			Director peterJackson = myFilmsService.findDirectorByNameAndSurname("Jackson", "Peter");
 			peterJackson.setFamous(false);
 			// Director peterJackson = new Director();
 			// peterJackson.setSurname("Jackson");
@@ -123,7 +123,7 @@ public class MyfilmlistTests{
 
 		// Calcule de la duration totale
 
-		long durationTotale = myFilmsService.calculerDurationTotale(leSeigneurDesAnneaux);
+		long durationTotale = myFilmsService.calculateTotalDuration(leSeigneurDesAnneaux);
 		// Attendue : 558 minutes
 		System.out.println("La duration totale de la trilogie \"Le Seigneur des Anneaux\" est de : " + durationTotale + " minutes");
 	}
@@ -141,7 +141,7 @@ public class MyfilmlistTests{
 
 		// Calcul de la note moyenne
 
-		Optional<Double> noteMoyenne = myFilmsService.calculerNoteMoyenne(notesList);
+		Optional<Double> noteMoyenne = myFilmsService.calculateMeanRating(notesList);
 
 		// Attendue : 15,17
 		System.out.println("La note moyenne est : " + noteMoyenne.toString());
@@ -149,11 +149,11 @@ public class MyfilmlistTests{
 
 	public void updateDirectorsFamoussTest() {
 		try {
-			Director jamesCameron = myFilmsService.findDirectorBySurnameAndName("Cameron", "James");
+			Director jamesCameron = myFilmsService.findDirectorByNameAndSurname("Cameron", "James");
 			jamesCameron.setFamous(false);
 			// jamesCameron = DirectorMapper.convertDirectorDTOToDirector(myFilmsService.createDirector(jamesCameron));
 
-			Director peterJackson = myFilmsService.findDirectorBySurnameAndName("Jackson", "Peter");
+			Director peterJackson = myFilmsService.findDirectorByNameAndSurname("Jackson", "Peter");
 			peterJackson.setFamous(false);
 			// peterJackson.setSurname("Jackson");
 			// peterJackson.setName("Peter");
@@ -241,7 +241,7 @@ public class MyfilmlistTests{
 	 */
 	public void createFilmTest() {
 		try {
-			Director director = myFilmsService.findDirectorBySurnameAndName("Cameron", "James");
+			Director director = myFilmsService.findDirectorByNameAndSurname("Cameron", "James");
 			DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(director);
 			FilmForm titanic = new FilmForm();
 			titanic.setTitle("Titanic");
@@ -297,7 +297,7 @@ public class MyfilmlistTests{
 	 */
 	public void updateDirectorFamous() {
 		try {
-			DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorBySurnameAndName("Cameron", "James"));
+			DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorByNameAndSurname("Cameron", "James"));
 			// Attendue : false
 			System.out.println("James Cameron est-il famous ? " + directorDTO.isFamous());
 
@@ -315,14 +315,14 @@ public class MyfilmlistTests{
 			FilmDTO leHobbitDTO = myFilmsService.createFilm(leHobbit);
 
 			System.out.println("James Cameron a realise deux nouveaux films");
-			directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorBySurnameAndName("Cameron", "James"));
+			directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorByNameAndSurname("Cameron", "James"));
 
 			// Attendue : true
 			System.out.println("James Cameron est-il famous ? " + directorDTO.isFamous());
 
 			myFilmsService.deleteFilm(leHobbitDTO.getId());
 			System.out.println("Ce n'est pas James Cameron qui a realise le Hobbit, suppression du film !");
-			directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorBySurnameAndName("Cameron", "James"));
+			directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorByNameAndSurname("Cameron", "James"));
 
 			// Attendue : false
 			System.out.println("James Cameron est-il famous ? " + directorDTO.isFamous());

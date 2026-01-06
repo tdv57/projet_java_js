@@ -24,7 +24,7 @@ public class JpaDirectorDAO implements DirectorDAO {
 
     /**
      * Returns the list of all Directors present in the database.
-     * A ServicException is thrown in case of an error (can't get Directors, list empty)
+     * A ServiceException is thrown in case of an error (can't get Directors, list empty)
      *
      * @return      the list of Directors
      */
@@ -41,13 +41,9 @@ public class JpaDirectorDAO implements DirectorDAO {
      * @return          the corresponding director
      */
     @Override
-    public Optional<Director> findBySurnameAndName(String surname, String name){
-        List<Director> directors =  entityManager.createQuery("SELECT r FROM Director r WHERE surname = :surname AND name = :name", Director.class)
-                                        .setParameter("surname", surname)
-                                        .setParameter("name", name)
-                                        .getResultList();
-        if (directors.size() == 0) return Optional.empty();
-        return Optional.of(directors.get(0));
+    public Optional<Director> findByNameAndSurname(String name, String surname){
+        int director_id =  entityManager.createQuery("SELECT r FROM Director r WHERE surname = :surname AND name = :name").getFirstResult();
+        return Optional.ofNullable(entityManager.find(Director.class, director_id));
     }
 
     /**
@@ -72,7 +68,7 @@ public class JpaDirectorDAO implements DirectorDAO {
     public Director update(long id, Director director) throws ServiceException {
         Optional<Director> prev_director = this.findById(id);
         if  (prev_director.isEmpty()) {
-            throw new ServiceException("Réalisateur inexistant");
+            throw new ServiceException("Can't update Director.");
         }
         Director director_to_modify = entityManager.merge(prev_director.get());
         director_to_modify.setSurname(director.getSurname());

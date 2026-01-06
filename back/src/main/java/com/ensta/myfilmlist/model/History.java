@@ -2,6 +2,9 @@ package com.ensta.myfilmlist.model;
 
 import javax.persistence.*;
 
+/**
+ * Data representing a History.
+ */
 @Entity
 @Table
 public class History {
@@ -19,6 +22,9 @@ public class History {
 
     private int rating;
 
+    /**
+     * Constructors for a History
+     */
     public History() {
         this.id = 0L;
         this.film = new Film();
@@ -30,6 +36,10 @@ public class History {
         this.user = user;
         this.film = film;
     }
+
+    /**
+     * Getter and setter for every attribute
+     */
 
     public long getId() {
         return id;

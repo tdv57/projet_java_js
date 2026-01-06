@@ -3,6 +3,9 @@ package com.ensta.myfilmlist.model;
 import javax.persistence.*;
 import java.util.Objects;
 
+/**
+ * Data representing a Genre.
+ */
 @Entity
 @Table
 public class Genre {
@@ -14,6 +17,10 @@ public class Genre {
     @Column
     private String name;
 
+    /**
+     * Constructors for a Genre
+     */
+
     public Genre() {
         this.id = 0L;
         this.name = "";
@@ -23,6 +30,10 @@ public class Genre {
         this.id = genre.getId();
         this.name = genre.getName();
     }
+
+    /**
+     * Getter and Setter for every attribute
+     */
 
     public long getId() {
         return this.id;

@@ -17,6 +17,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Api routes for Film
+ */
 @RestController
 @RequestMapping("/film")
 @CrossOrigin
@@ -25,17 +28,29 @@ public class FilmControllerImpl implements FilmController {
     @Autowired
     private MyFilmsService myFilmsService;
 
-
+    /**
+     * Returns the list of all films registered in the database.
+     *
+     * @return  list of existing Films' DTO
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @GetMapping("")
     public ResponseEntity<List<FilmDTO>> getAllFilms() throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findAll()));
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible de trouver tous les films", e);
+            throw new ControllerException("Can't get Films", e);
         }
     }
 
+    /**
+     * Returns a Film's DTO based on its id.
+     *
+     * @param id    id of the film to return
+     * @return      the corresponding Film
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<FilmDTO> getFilmById(@PathVariable long id) throws ControllerException {
@@ -47,6 +62,13 @@ public class FilmControllerImpl implements FilmController {
         }
     }
 
+    /**
+     * Returns a Film's DTO based on its title
+     *
+     * @param title     title of the Film in the database
+     * @return          the corresponding Film's DTO
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @GetMapping("/title")
     public ResponseEntity<FilmDTO> getFilmByTitle(@RequestParam String title) throws ControllerException {
@@ -58,6 +80,13 @@ public class FilmControllerImpl implements FilmController {
         }
     }
 
+    /**
+     * Returns a list of Film's DTO based on the id of a Director
+     *
+     * @param id    id of the Director in the database
+     * @return      the corresponding list of films' DTO
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @GetMapping("/director/{id}")
     public ResponseEntity<List<FilmDTO>> getFilmByDirectorId(@PathVariable long id) throws ControllerException {
@@ -70,6 +99,14 @@ public class FilmControllerImpl implements FilmController {
         }
     }
 
+    /**
+     * Adds a Film into the database and returns the corresponding Film's DTO.
+     * The Film is created based on a form (user entry).
+     *
+     * @param filmForm      form from which the Film is created
+     * @return              the corresponding Film's DTO
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @PostMapping("/")
     public ResponseEntity<FilmDTO> createFilm(@Valid @RequestBody FilmForm filmForm) throws ControllerException {
@@ -80,6 +117,14 @@ public class FilmControllerImpl implements FilmController {
         }
     }
 
+    /**
+     * Updates a Film based on a form (user entry)
+     *
+     * @param id            id of the Film to update
+     * @param filmForm      form with value updated
+     * @return              the updated Film's DTO
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<FilmDTO> updateFilm(@PathVariable long id, @RequestBody FilmForm filmForm) throws ControllerException {
@@ -91,6 +136,13 @@ public class FilmControllerImpl implements FilmController {
         }
     }
 
+    /**
+     * Deletes a Film based on its id.
+     *
+     * @param id    id of the Film to delete
+     * @return      no content
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFilm(@PathVariable long id) throws ControllerException {

@@ -20,7 +20,7 @@ public class JpaFilmDAO implements FilmDAO {
 
     /**
      * Returns the list of all Films present in the database.
-     * A ServicException is thrown in case of an error (can't get Films, list empty)
+     * A ServiceException is thrown in case of an error (can't get Films, list empty)
      *
      * @return      the list of Films
      */
@@ -30,7 +30,7 @@ public class JpaFilmDAO implements FilmDAO {
                     .createQuery("SELECT f FROM Film f", Film.class)
                     .getResultList();
         if (films.isEmpty()) {
-            throw new ServiceException("Impossible de trouver les films");
+            throw new ServiceException("Can't find Films.");
         }
         return films;
     }
@@ -70,12 +70,11 @@ public class JpaFilmDAO implements FilmDAO {
                 .createQuery("SELECT f FROM Film f WHERE f.title = :title", Film.class)
                 .setParameter("title", title)
                 .getResultList();
-        if (films.size() == 0) return Optional.empty();
-        return Optional.of(films.get(0));
+        return Optional.ofNullable(films.get(0));
     }
 
     /**
-     * Returns the list of Films that were realised by the Director correpsonding to the director_id argument.
+     * Returns the list of Films that were realised by the Director corresponding to the director_id argument.
      *
      * @param  director_id   the id of the Director
      * @return                  the corresponding films
@@ -99,7 +98,7 @@ public class JpaFilmDAO implements FilmDAO {
     public Film update(long id, Film film)  throws ServiceException {
         Optional<Film> prev_film = this.findById(id);
         if  (prev_film.isEmpty()) {
-            throw new ServiceException("Film inexistant");
+            throw new ServiceException("Can't update Film.");
         }
         Film film_to_modify = entityManager.merge(prev_film.get());
         film_to_modify.setTitle(film.getTitle());

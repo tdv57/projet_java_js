@@ -42,7 +42,7 @@ public class JdbcDirectorDAO implements DirectorDAO {
     }
 
     @Override
-    public Optional<Director> findBySurnameAndName(String surname, String name) {
+    public Optional<Director> findByNameAndSurname(String surname, String name) {
         String query = "SELECT * FROM Director WHERE name=? AND surname=?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(query,this.rowMapper, name, surname));

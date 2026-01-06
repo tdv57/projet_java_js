@@ -3,6 +3,10 @@ package com.ensta.myfilmlist.dto;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * Class representing data of a Director.
+ * DTO: transferred data between layers.
+ */
 public class DirectorDTO {
     private long id;
     private String surname;
@@ -66,7 +70,7 @@ public class DirectorDTO {
 
     @Override
     public String toString(){
-        return "DirectorDTO [id=" + this.id + ", surname=" + this.surname + ", name=" + this.name +", date de naissance=" + this.birthdate+ ", famous=" + this.famous + "]";
+        return "DirectorDTO [id=" + this.id + ", surname=" + this.surname + ", name=" + this.name +", birthdate=" + this.birthdate+ ", famous=" + this.famous + "]";
     }
 
 }

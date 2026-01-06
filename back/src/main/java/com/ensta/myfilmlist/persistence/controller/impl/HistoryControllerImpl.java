@@ -11,6 +11,7 @@ import com.ensta.myfilmlist.service.MyFilmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +25,16 @@ public class HistoryControllerImpl implements HistoryController {
     @Autowired
     private MyFilmsService myFilmsService;
 
+    /**
+     * Returns the list of all films watched by a user in the database.
+     *
+     * @param userId    id of the user to collect watched films
+     * @return          list of watched Film's DTO
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @GetMapping("/{userId}")
+    @PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<List<FilmDTO>> getWatchList(@PathVariable long userId) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findWatchList(userId)));
@@ -34,8 +43,15 @@ public class HistoryControllerImpl implements HistoryController {
         }
     }
 
+    /**
+     * Returns the list of all directors registered in database.
+     *
+     * @return  list of existing Directors' DTO
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @PostMapping("/")
+    @PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<HistoryDTO> addToWatchList(long userId, long filmId) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.addFilmToWatchList(userId, filmId)));
@@ -46,6 +62,7 @@ public class HistoryControllerImpl implements HistoryController {
 
     @Override
     @DeleteMapping("/")
+    @PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<?> removeFromWatchList(long userId, long filmId) throws ControllerException {
         try {
             myFilmsService.removeFilmFromWatchList(userId, filmId);
@@ -57,6 +74,7 @@ public class HistoryControllerImpl implements HistoryController {
 
     @Override
     @PutMapping("/")
+    @PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<HistoryDTO> rateFilm(long userId, long filmId, int rating) throws ControllerException{
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.rateFilm(userId, filmId, rating)));

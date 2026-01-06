@@ -1,7 +1,8 @@
 package com.ensta.myfilmlist.dto;
 
 /**
- * Contient les donnees d'un Film.
+ * Class representing data of a Film.
+ * DTO: transferred data between layers.
  */
 public class FilmDTO {
 

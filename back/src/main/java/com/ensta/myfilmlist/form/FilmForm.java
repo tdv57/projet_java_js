@@ -4,22 +4,23 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Min;
+
 /**
- * Contient les donnees pour créer un nouveau film.
+ * Form to parse create a Film from an entry.
  */
 public class FilmForm {
 
-	@NotBlank(message = "Le title ne peut pas être vide")
+	@NotBlank(message = "Film's title can't be blank/empty.")
 	private String title;
 
-	@NotNull(message = "La durée doit être strictement supérieure à 0")
-	@Positive(message = "La durée doit être strictement supérieure à 0")
+	@NotNull(message = "Film's duration must be strictly greater than 0.")
+	@Positive(message = "Film's duration must be strictly greater than 0.")
 	private int duration;
 
-	@Min(value=1, message="L'id du director doit être strictement positif")
+	@Min(value=1, message="Director's id must be strictly greater than 0.")
 	private Long directorId;
 
-    @Min(value=1, message="L'id du genre doit être strictement positif")
+    @Min(value=1, message="Genre's id must be strictly greater than 0.")
     private Long genreId;
 
 	public String getTitle() {

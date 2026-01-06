@@ -6,7 +6,7 @@ import java.util.*;
 
 public interface DirectorDAO {
     List<Director> findAll();
-    Optional<Director> findBySurnameAndName(String surname, String name);
+    Optional<Director> findByNameAndSurname(String name, String surname);
     Optional<Director> findById(long id);
     Director update(long id, Director director) throws ServiceException;
     Director save(Director director);

@@ -29,7 +29,7 @@ public class JpaGenreDAO implements GenreDAO {
                 .createQuery("SELECT g FROM Genre g", Genre.class)
                 .getResultList();
         if (genres.isEmpty()) {
-            throw new ServiceException("Impossible de trouver les genres");
+            throw new ServiceException("Can't find Genres.");
         }
         return genres;
     }
@@ -56,7 +56,7 @@ public class JpaGenreDAO implements GenreDAO {
     public Genre update(long id, String name) throws ServiceException{
         Optional<Genre> prev_genre = this.findById(id);
         if  (prev_genre.isEmpty()) {
-            throw new ServiceException("Genre introuvable");
+            throw new ServiceException("Can't update Genre.");
         }
         Genre genre_to_modify = entityManager.merge(prev_genre.get());
         genre_to_modify.setName(name);

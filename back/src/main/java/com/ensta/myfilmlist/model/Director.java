@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * Data representing a Director.
+ */
 @Entity
 @Table
 public class Director {
@@ -21,6 +24,10 @@ public class Director {
     private List<Film> filmsProduced;
 
     private boolean famous;
+
+    /**
+     * Constructors for a Director
+     */
 
     public Director() {
         this.id = 0L;
@@ -55,7 +62,10 @@ public class Director {
         this.famous = famous;
     }
 
-    
+    /**
+     * Getter and setter for every attribute
+     */
+
     public void setId(long id) {
         this.id = id;
     }

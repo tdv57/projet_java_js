@@ -1,5 +1,9 @@
 package com.ensta.myfilmlist.dto;
 
+/**
+ * Class representing data of a History.
+ * DTO: transferred data between layers.
+ */
 public class HistoryDTO {
 
     private long id;

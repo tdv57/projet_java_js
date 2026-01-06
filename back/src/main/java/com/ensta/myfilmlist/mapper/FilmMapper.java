@@ -14,8 +14,9 @@ import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Genre;
 import com.ensta.myfilmlist.model.Director;
+
 /**
- * Effectue les conversions des Films entre les couches de l'application.
+ * Functions to cast Films into and from DTO and Form.
  */
 @Component
 public class FilmMapper {
@@ -30,25 +31,25 @@ public class FilmMapper {
         this.jpaGenreDAO = jpaGenreDAO;
     }
 
-	/**
-	 * Convertit une liste de films en liste de DTO.
-	 * 
-	 * @param films la liste des films
-	 * @return Une liste non nulle de dtos construite a partir de la liste des films.
-	 */
+    /**
+     * Convert a list of films into a list of films' DTO.
+     *
+     * @param films     list of films to be converted
+     * @return          list of films' DTO created from the parameter
+     */
 	public static List<FilmDTO> convertFilmToFilmDTOs(List<Film> films) {
 		return films.stream()
 				.map(FilmMapper::convertFilmToFilmDTO)
 				.collect(Collectors.toList());
 	}
 
-	/**
-	 * Convertit un film en DTO.
-	 * 
-	 * @param film le film a convertir
-	 * @return Un DTO construit a partir des donnees du film.
-	 */
-	public static FilmDTO convertFilmToFilmDTO(Film film) {
+    /**
+     * Convert a film into a film's DTO.
+     *
+     * @param film      film to be converted
+     * @return          film's DTO created from the parameter
+     */
+    public static FilmDTO convertFilmToFilmDTO(Film film) {
 		if (film == null) return null;
 		FilmDTO filmDTO = new FilmDTO();
 		filmDTO.setId(film.getId());
@@ -59,13 +60,13 @@ public class FilmMapper {
 		return filmDTO;
 	}
 
-	/**
-	 * Convertit un DTO en film.
-	 * 
-	 * @param filmDTO le DTO a convertir
-	 * @return Un Film construit a partir des donnes du DTO.
-	 */
-	public static Film convertFilmDTOToFilm(FilmDTO filmDTO) {
+    /**
+     * Convert a film's DTO into a film.
+     *
+     * @param filmDTO   film's DTO to be converted
+     * @return          film created from the parameter
+     */
+    public static Film convertFilmDTOToFilm(FilmDTO filmDTO) {
 		if (filmDTO == null) return null;
 		Film film = new Film();
 		film.setId(filmDTO.getId());
@@ -76,17 +77,16 @@ public class FilmMapper {
 		return film;
 	}
 
-	/**
-	 * Convertit un formulaire de film (FilmForm) en film.
-	 * 
-	 * @param filmForm le Form à convertir
-	 * @return Un Film construit à partir des données du Form.
-	 */
-	public Film convertFilmFormToFilm(FilmForm filmForm) {
+    /**
+     * Convert a film's form into a film.
+     *
+     * @param filmForm  film's form to be converted
+     * @return          film created from the parameter
+     */
+    public Film convertFilmFormToFilm(FilmForm filmForm) {
 		Film film = new Film();
 		film.setTitle(filmForm.getTitle());
 		film.setDuration(filmForm.getDuration());
-        // TODO: again, jbdc usage but we should be in jpa?
 		Optional<Director> optionalDirector = this.jpaDirectorDAO.findById(filmForm.getDirectorId());
 		if (optionalDirector.isPresent()) {
 			film.setDirector(optionalDirector.get());

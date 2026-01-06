@@ -1,5 +1,9 @@
 package com.ensta.myfilmlist.dto;
 
+/**
+ * Class representing data of a Genre.
+ * DTO: transferred data between layers.
+ */
 public class GenreDTO {
 
     private long id;

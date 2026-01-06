@@ -30,6 +30,12 @@ public class JpaHistoryDAO implements HistoryDAO {
         return Optional.ofNullable(history);
     }
 
+    /**
+     * Returns the list of watched films associated to a user
+     *
+     * @param  userId   the id of the User
+     * @return          the corresponding Films list (of watched films)
+     */
     @Override
     public List<Film> getWatchList(long userId) {
         return entityManager
@@ -38,6 +44,14 @@ public class JpaHistoryDAO implements HistoryDAO {
                 .getResultList();
     }
 
+    /**
+     * Add a film to the watched list of a User.
+     * Returns the History related to the pair (Film, User).
+     *
+     * @param  userId   the id of the User
+     * @param  filmId   the id og the Film to add
+     * @return          the corresponding History (pair Film-User)
+     */
     @Override
     public History addFilmToWatchList(long userId, long filmId) {
         User user = entityManager.find(User.class, userId);
@@ -47,6 +61,12 @@ public class JpaHistoryDAO implements HistoryDAO {
         return history;
     }
 
+    /**
+     * Deletes a Film from the watched list of a User
+     *
+     * @param  userId   the id of the User
+     * @param  filmId   the id of the Film to delete
+     */
     @Override
     public void deleteFilm(long userId, long filmId) {
         Optional<History> history = findHistoryByUserIdAndFilmId(userId, filmId);
@@ -55,6 +75,15 @@ public class JpaHistoryDAO implements HistoryDAO {
         }
     }
 
+    /**
+     * Adds a rating to a Film from a User.
+     * The film must be in the watched list of the User to be rated.
+     *
+     * @param  userId   the id of the User
+     * @param  filmId   the id of the Film to be rated
+     * @param  rating   the (new) rating to give to the Film
+     * @return          the corresponding History (pair Film-User)
+     */
     @Override
     public History rateFilm(long userId, long filmId, int rating) throws ServiceException {
         Optional<History> history = findHistoryByUserIdAndFilmId(userId, filmId);
@@ -64,15 +93,24 @@ public class JpaHistoryDAO implements HistoryDAO {
             entityManager.merge(anhistory);
             return anhistory;
         }
-        throw new ServiceException("L'historique n'a pas pu être mis à jour.");
+        throw new ServiceException("Can't update history.");
     }
 
+    /**
+     * Get the rating of a Film from a User.
+     * The film must be in the watched list of the User to have a rating.
+     * Rating could not be existing so the function return an Optional
+     *
+     * @param  userId   the id of the User
+     * @param  filmId   the id of the Film
+     * @return          the corresponding rating or nothing
+     */
     @Override
     public Optional<Integer> getNote(long userId, long filmId) throws ServiceException {
         Optional<History> history = findHistoryByUserIdAndFilmId(userId, filmId);
         if (history.isPresent()) {
             return Optional.of(history.get().getRating());
         }
-        throw new ServiceException("La note du film n'a pas pu être trouvée.");
+        throw new ServiceException("Can't get rating.");
     }
 }

@@ -6,6 +6,7 @@ import com.ensta.myfilmlist.form.FilmForm;
 import java.util.*;
 
 import com.ensta.myfilmlist.form.DirectorForm;
+import com.ensta.myfilmlist.form.UserForm;
 import com.ensta.myfilmlist.model.*;
 import com.ensta.myfilmlist.dto.*;
 
@@ -22,7 +23,7 @@ public interface MyFilmsService {
     DirectorDTO createDirector(DirectorForm directorForm) throws ServiceException;
     List<Director> findAllDirectors() throws ServiceException;
     Director findDirectorById(long id) throws ServiceException;
-    Director findDirectorBySurnameAndName(String surname, String name) throws ServiceException;
+    Director findDirectorByNameAndSurname(String name, String surname) throws ServiceException;
     Director updateDirectorFamous(Director director) throws ServiceException;
     List<Director> updateDirectorsFamous(List<Director> directors) throws ServiceException;
     DirectorDTO updateDirector(long id, DirectorForm directorForm) throws ServiceException;
@@ -38,6 +39,14 @@ public interface MyFilmsService {
     History rateFilm(long userId, long filmId, int rating) throws ServiceException;
     Optional<Integer> getNote(long userId, long filmId) throws ServiceException;
 
-    int calculerDurationTotale(List<Film> filmsProduced);
-    Optional<Double> calculerNoteMoyenne(List<Double> notes);
+    List<User> findAllUsers() throws ServiceException;
+    UserDTO createUser(UserForm userForm) throws ServiceException;
+    User findUserById(long id) throws ServiceException;
+    User findUserBySurnameAndName(String surname, String name) throws ServiceException;
+    UserDTO updateUser(long id, UserForm userForm) throws ServiceException;
+    UserDTO setUserAsAdmin(long id) throws ServiceException;
+    void deleteUser(long id) throws ServiceException;
+
+    int calculateTotalDuration(List<Film> filmsProduced);
+    Optional<Double> calculateMeanRating(List<Double> notes);
 }

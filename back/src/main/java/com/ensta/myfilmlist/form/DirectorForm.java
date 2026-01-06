@@ -4,14 +4,14 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
 /**
- * Contient les donnees pour créer ou demander un réalisateur.
+ * Form to parse create a Director from an entry.
  */
 public class DirectorForm {
 
-    @NotBlank(message = "Le surname du réalisateur ne peut pas être vide")
+    @NotBlank(message = "Director's surname can't be blank/empty.")
     private String surname;
 
-    @NotBlank(message = "Le présurname du réalisateur ne peut pas être vide")
+    @NotBlank(message = "Director's name can't be blank/empty.")
     private String name;
 
     private LocalDate birthdate;
