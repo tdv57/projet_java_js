@@ -3,10 +3,16 @@ package com.ensta.myfilmlist.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class representing data of a User.
+ * DTO: transferred data between layers.
+ */
 public class UserDTO {
     private long id;
     private String surname;
     private String name;
+    private String password;
+    private String roles;
     private List<FilmDTO> watchedFilms;
 
     public UserDTO() {
@@ -47,4 +53,12 @@ public class UserDTO {
     public void setSurname(String surname) {
         this.surname = surname;
     }
+
+    public String getPassword() { return password; }
+
+    public void setPassword(String password) { this.password = password; }
+
+    public String getRoles() { return roles; }
+
+    public void setRoles(String roles) { this.roles = roles; }
 }
