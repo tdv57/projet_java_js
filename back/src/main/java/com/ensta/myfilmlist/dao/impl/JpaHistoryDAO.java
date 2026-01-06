@@ -110,7 +110,7 @@ public class JpaHistoryDAO implements HistoryDAO {
      * @return          the corresponding rating or nothing
      */
     @Override
-    public Optional<Integer> getNote(long userId, long filmId) throws ServiceException {
+    public Optional<Integer> getRate(long userId, long filmId) throws ServiceException {
         Optional<History> history = findHistoryByUserIdAndFilmId(userId, filmId);
         if (history.isPresent()) {
             return Optional.of(history.get().getRating());

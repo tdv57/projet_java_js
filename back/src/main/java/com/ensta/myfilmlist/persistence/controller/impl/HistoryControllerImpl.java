@@ -62,6 +62,12 @@ public class HistoryControllerImpl implements HistoryController {
         }
     }
 
+    /**
+     * Remove a film watch or rated by a user
+     *
+     * @return  void
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @DeleteMapping("/")
     @PreAuthorize("#userId == authentication.principal.id")
@@ -74,6 +80,12 @@ public class HistoryControllerImpl implements HistoryController {
         }
     }
 
+    /**
+     * add a rate for a film by an user
+     *
+     * @return  The history with the rate the user id and the film id
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @PutMapping("/")
     @PreAuthorize("#userId == authentication.principal.id")
@@ -88,11 +100,17 @@ public class HistoryControllerImpl implements HistoryController {
         }
     }
 
+    /**
+     * add a rate for a film by an user
+     *
+     * @return  an optional integer of the 
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @GetMapping("/rate")
-    public ResponseEntity<Optional<Integer>> getNote(long userId, long filmId) throws ControllerException {
+    public ResponseEntity<Optional<Integer>> getRate(long userId, long filmId) throws ControllerException {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getNote(userId, filmId)));
+            return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getRate(userId, filmId)));
         } catch (ServiceException e) {
             if (e.getMessage().equals("Note introuvable")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Impossible de trouver la note de ce film", e);
