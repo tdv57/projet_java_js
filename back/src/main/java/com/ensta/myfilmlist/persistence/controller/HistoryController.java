@@ -48,4 +48,11 @@ public interface HistoryController {
             @ApiResponse(code = 200, message = "La note a des films a été renvoyée correctement")
     })
     ResponseEntity<Optional<Integer>> getRate(long userId, long filmId) throws ControllerException;
+
+    @ApiOperation(value = "Voir la moyenne d'un film", notes = "Permet de voir la moyenne donner à un film.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "La note a des films a été renvoyée correctement"),
+            @ApiResponse(code = 404, message = "Le film n'a pas été trouvé")
+    })
+    ResponseEntity<Optional<Double>> getFilmMeanRating(long filmId) throws ControllerException;
 }

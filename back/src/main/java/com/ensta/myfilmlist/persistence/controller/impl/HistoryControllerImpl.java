@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 
 
 @RestController
@@ -89,6 +90,17 @@ public class HistoryControllerImpl implements HistoryController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getNote(userId, filmId)));
         } catch (ServiceException e) {
+            throw new ControllerException("Impossible de trouver la note de ce film", e);
+        }
+    }
+
+    @Override
+    @GetMapping("/mean/{filmId}")
+    public ResponseEntity<Optional<Double>> getFilmMeanRating(@PathVariable("filmId") long filmId) throws ControllerException {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getFilmMeanRating(filmId)));
+        } catch (ServiceException e) {
+            if (Objects.equals(e.getMessage(), "Film inexistant")) ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Impossible de trouver la note de ce film", e);
         }
     }
