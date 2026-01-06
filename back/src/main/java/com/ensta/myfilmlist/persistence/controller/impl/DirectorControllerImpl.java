@@ -52,7 +52,7 @@ public class DirectorControllerImpl implements DirectorController {
     }
 
     @Override
-    @GetMapping("/")
+    @GetMapping("/names")
     public ResponseEntity<DirectorDTO> getDirectorByNameAndSurname(@RequestParam String surname, @RequestParam String name) throws ControllerException {
         try {
             DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorBySurnameAndName(surname, name));
@@ -63,7 +63,7 @@ public class DirectorControllerImpl implements DirectorController {
     }
 
     @Override
-    @PostMapping(path="/", consumes=MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path="", consumes=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DirectorDTO> createDirector(@Valid @RequestBody DirectorForm directorForm) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createDirector(directorForm));

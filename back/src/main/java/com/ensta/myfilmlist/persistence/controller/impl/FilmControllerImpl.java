@@ -71,7 +71,7 @@ public class FilmControllerImpl implements FilmController {
     }
 
     @Override
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<FilmDTO> createFilm(@Valid @RequestBody FilmForm filmForm) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createFilm(filmForm));

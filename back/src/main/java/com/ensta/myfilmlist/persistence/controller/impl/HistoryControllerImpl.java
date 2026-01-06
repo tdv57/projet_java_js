@@ -35,7 +35,7 @@ public class HistoryControllerImpl implements HistoryController {
     }
 
     @Override
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<HistoryDTO> addToWatchList(long userId, long filmId) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.addFilmToWatchList(userId, filmId)));
@@ -45,7 +45,7 @@ public class HistoryControllerImpl implements HistoryController {
     }
 
     @Override
-    @DeleteMapping("/")
+    @DeleteMapping("")
     public ResponseEntity<?> removeFromWatchList(long userId, long filmId) throws ControllerException {
         try {
             myFilmsService.removeFilmFromWatchList(userId, filmId);
@@ -56,7 +56,7 @@ public class HistoryControllerImpl implements HistoryController {
     }
 
     @Override
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<HistoryDTO> rateFilm(long userId, long filmId, int rating) throws ControllerException{
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.rateFilm(userId, filmId, rating)));
