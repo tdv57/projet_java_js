@@ -64,7 +64,6 @@ public class DirectorControllerImpl implements DirectorController {
             return ResponseEntity.status(HttpStatus.OK).body(directorDTO);
         } catch (ServiceException e) {
             throw new ControllerException("Can't get Director.", e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
@@ -80,7 +79,7 @@ public class DirectorControllerImpl implements DirectorController {
     @GetMapping("/")
     public ResponseEntity<DirectorDTO> getDirectorByNameAndSurname(@RequestParam String surname, @RequestParam String name) throws ControllerException {
         try {
-            DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorBySurnameAndName(surname, name));
+            DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorByNameAndSurname(name, surname));
             return ResponseEntity.status(HttpStatus.OK).body(directorDTO);
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
