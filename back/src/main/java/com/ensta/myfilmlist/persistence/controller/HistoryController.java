@@ -21,13 +21,14 @@ public interface HistoryController {
 
     @ApiOperation(value = "Lister les films vus par un utilisateur", notes = "Permet de renvoyer la liste de tous les films visionné par un utilisateur.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "La liste des films a été renvoyée correctement")
+            @ApiResponse(code = 200, message = "La liste des films a été renvoyée correctement"),
     })
-    ResponseEntity<List<FilmDTO>> getWatchList(long id) throws ControllerException;
+    ResponseEntity<List<FilmDTO>> getWatchList(long userId) throws ControllerException;
 
     @ApiOperation(value = "Ajouter un film à la liste d'un utilisateur", notes = "Permet d'ajouter un film à la liste de tous les films visionné par un utilisateur.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "La liste des films a été mise à jour correctement")
+            @ApiResponse(code = 200, message = "La liste des films a été mise à jour correctement"),
+            @ApiResponse(code = 204, message = "L'utilisateur ou le film n'a pas été trouvé")
     })
     ResponseEntity<HistoryDTO> addToWatchList(long userId, long filmId) throws ControllerException;
 
@@ -46,9 +47,10 @@ public interface HistoryController {
 
     @ApiOperation(value = "Voir la note d'un film", notes = "Permet de voir la note donner par un utilisateur à un film.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "La note a des films a été renvoyée correctement")
+            @ApiResponse(code = 200, message = "La note a des films a été renvoyée correctement"),
+            @ApiResponse(code = 404, message = "L'utilisateur ou le film ne sont pas trouvables")
     })
-    ResponseEntity<Optional<Integer>> getRate(long userId, long filmId) throws ControllerException;
+    ResponseEntity<Optional<Integer>> getNote(long userId, long filmId) throws ControllerException;
 
     @ApiOperation(value = "Voir la moyenne d'un film", notes = "Permet de voir la moyenne donner à un film.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {

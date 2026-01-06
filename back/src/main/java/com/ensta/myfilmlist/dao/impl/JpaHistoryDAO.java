@@ -37,7 +37,9 @@ public class JpaHistoryDAO implements HistoryDAO {
      * @return          the corresponding Films list (of watched films)
      */
     @Override
-    public List<Film> getWatchList(long userId) {
+    public List<Film> getWatchList(long userId) throws ServiceException{
+        User user = entityManager.find(User.class, userId);
+        if (user == null) throw new ServiceException("Utilisateur introuvable");
         return entityManager
                 .createQuery("SELECT h.film FROM History h WHERE h.user.id = :user_id", Film.class)
                 .setParameter("user_id", userId)
@@ -53,9 +55,11 @@ public class JpaHistoryDAO implements HistoryDAO {
      * @return          the corresponding History (pair Film-User)
      */
     @Override
-    public History addFilmToWatchList(long userId, long filmId) {
+    public History addFilmToWatchList(long userId, long filmId) throws ServiceException{
         User user = entityManager.find(User.class, userId);
+        if (user == null) throw new ServiceException("Utilisateur introuvable");
         Film film = entityManager.find(Film.class, filmId);
+        if (film == null) throw new ServiceException("Film introuvable");
         History history = new History(user, film);
         entityManager.persist(history);
         return history;
@@ -93,7 +97,7 @@ public class JpaHistoryDAO implements HistoryDAO {
             entityManager.merge(anhistory);
             return anhistory;
         }
-        throw new ServiceException("Can't update history.");
+        throw new ServiceException("Historique introuvable");
     }
 
     /**
@@ -111,7 +115,7 @@ public class JpaHistoryDAO implements HistoryDAO {
         if (history.isPresent()) {
             return Optional.of(history.get().getRating());
         }
-        throw new ServiceException("Can't get rating.");
+        throw new ServiceException("Note introuvable");
     }
 
     @Override

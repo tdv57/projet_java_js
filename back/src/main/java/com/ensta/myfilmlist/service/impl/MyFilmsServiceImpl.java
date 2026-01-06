@@ -222,13 +222,13 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
-    public List<Film> findWatchList(long userId) {
+    public List<Film> findWatchList(long userId) throws ServiceException{
         return this.historyDAO.getWatchList(userId);
     }
 
     @Override
     @Transactional
-    public History addFilmToWatchList(long userId, long filmId) {
+    public History addFilmToWatchList(long userId, long filmId) throws ServiceException{
         return this.historyDAO.addFilmToWatchList(userId, filmId);
     }
 

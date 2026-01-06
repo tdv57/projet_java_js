@@ -57,6 +57,7 @@ public class HistoryControllerImpl implements HistoryController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.addFilmToWatchList(userId, filmId)));
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Utilisateur introuvable") || e.getMessage().equals("Film introuvable")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Impossible d'ajouter un film à l'historique", e);
         }
     }
@@ -82,17 +83,18 @@ public class HistoryControllerImpl implements HistoryController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.rateFilm(userId, filmId, rating)));
         } catch (ServiceException e) {
-            if (e.getMessage().equals("Can't update history.")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            if (e.getMessage().equals("Historique introuvable")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Impossible de noter ce film", e);
         }
     }
 
     @Override
     @GetMapping("/rate")
-    public ResponseEntity<Optional<Integer>> getRate(long userId, long filmId) throws ControllerException {
+    public ResponseEntity<Optional<Integer>> getNote(long userId, long filmId) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getNote(userId, filmId)));
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Note introuvable")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Impossible de trouver la note de ce film", e);
         }
     }
