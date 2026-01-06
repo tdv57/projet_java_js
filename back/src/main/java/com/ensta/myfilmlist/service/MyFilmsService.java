@@ -38,6 +38,7 @@ public interface MyFilmsService {
     void removeFilmFromWatchList(long userId, long filmId) throws ServiceException;
     History rateFilm(long userId, long filmId, int rating) throws ServiceException;
     Optional<Integer> getNote(long userId, long filmId) throws ServiceException;
+    Optional<Double> getFilmMeanRating(long filmId) throws ServiceException; 
 
     List<User> findAllUsers() throws ServiceException;
     UserDTO createUser(UserForm userForm) throws ServiceException;
