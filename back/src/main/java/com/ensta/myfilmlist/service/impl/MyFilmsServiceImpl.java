@@ -244,8 +244,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public Optional<Integer> getNote(long userId, long filmId) throws ServiceException {
-        return this.historyDAO.getNote(userId, filmId);
+    public Optional<Integer> getRate(long userId, long filmId) throws ServiceException {
+        return this.historyDAO.getRate(userId, filmId);
     }
 
         
