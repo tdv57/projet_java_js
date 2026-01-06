@@ -96,7 +96,6 @@ public class HistoryControllerImpl implements HistoryController {
 
     @Override
     @GetMapping("/mean/{filmId}")
-    @PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<Optional<Double>> getFilmMeanRating(@PathVariable("filmId") long filmId) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getFilmMeanRating(filmId)));
