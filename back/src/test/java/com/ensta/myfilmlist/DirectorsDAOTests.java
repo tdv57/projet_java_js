@@ -61,7 +61,7 @@ class DirectorsDAOTests {
         jamesCameron.setId(1L);
         jamesCameron.setName("James");
         jamesCameron.setSurname("Cameron");
-        jamesCameron.setfilmsProduced(new ArrayList<>());
+        jamesCameron.setFilmsProduced(new ArrayList<>());
         return jamesCameron;
     }
 
@@ -72,7 +72,7 @@ class DirectorsDAOTests {
         peterJackson.setId(2L);
         peterJackson.setName("Peter");
         peterJackson.setSurname("Jackson");
-        peterJackson.setfilmsProduced(new ArrayList<>());
+        peterJackson.setFilmsProduced(new ArrayList<>());
         return peterJackson;
     }
 
@@ -137,10 +137,10 @@ class DirectorsDAOTests {
 
     @Test 
     void whenFindBySurnameAndName_thenShouldHaveDirector() {
-        Optional<Director> jamesCameron = directorDAO.findBySurnameAndName("Cameron", "James");
+        Optional<Director> jamesCameron = directorDAO.findByNameAndSurname("Cameron", "James");
         assertEquals(Optional.of(getJamesCameron()), jamesCameron);
 
-        Optional<Director> error = directorDAO.findBySurnameAndName("unknown", "unknown");
+        Optional<Director> error = directorDAO.findByNameAndSurname("unknown", "unknown");
         assertEquals(Optional.empty(), error);
     }
 

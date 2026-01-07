@@ -124,10 +124,10 @@ public class FilmServiceTests {
   private List<Film> mockJpaFilmDAOFindByDirectorId(Long id) {
       if (id == 1L) {
         System.out.println("Cameron");
-        return jamesCameron.getfilmsProduced();
+        return jamesCameron.getFilmsProduced();
       } else if (id == 2L) {
         System.out.println("Jackson");
-        return peterJackson.getfilmsProduced();
+        return peterJackson.getFilmsProduced();
       } else {
         return new ArrayList<>();
       }
@@ -206,27 +206,27 @@ public class FilmServiceTests {
       return;
     }
 
-    List<Film> films = director.getfilmsProduced();
+    List<Film> films = director.getFilmsProduced();
     System.out.println(films);
     if (Objects.equals(film, hihihi1)) {
       films.remove(hihihi1);
-      jamesCameron.setfilmsProduced(films);
+      jamesCameron.setFilmsProduced(films);
       hihihi1 = null;
     } else if (Objects.equals(film, hihihi2)) {
       films.remove(hihihi2);
-      jamesCameron.setfilmsProduced(films);
+      jamesCameron.setFilmsProduced(films);
       hihihi2 = null;
     } else if (Objects.equals(film, hihihi3)) {
       films.remove(hihihi3);
-      jamesCameron.setfilmsProduced(films);
+      jamesCameron.setFilmsProduced(films);
       hihihi3 = null;
     } else if (Objects.equals(film, deBonMatin)) {
       films.remove(deBonMatin);
-      peterJackson.setfilmsProduced(films);
+      peterJackson.setFilmsProduced(films);
       deBonMatin = null;
     }
 
-    System.out.println(jamesCameron.getfilmsProduced());
+    System.out.println(jamesCameron.getFilmsProduced());
     System.out.println(films);
   }
 
@@ -378,11 +378,11 @@ public class FilmServiceTests {
     jamesCameronFilms.add(hihihi1);
     jamesCameronFilms.add(hihihi2);
     jamesCameronFilms.add(hihihi3);
-    jamesCameron.setfilmsProduced(jamesCameronFilms);
+    jamesCameron.setFilmsProduced(jamesCameronFilms);
     
     List<Film> peterJacksonFilms = new ArrayList<>();
     peterJacksonFilms.add(deBonMatin);
-    peterJackson.setfilmsProduced(peterJacksonFilms);
+    peterJackson.setFilmsProduced(peterJacksonFilms);
 
     erreurInterne.setId(Long.valueOf(1000L));
 
@@ -428,7 +428,7 @@ public class FilmServiceTests {
     directors.add(jamesCameron);
     directors.add(peterJackson);
 
-    List <Director> directorsFamouss = myFilmsServiceImpl.updateDirectorFamouss(directors);
+    List <Director> directorsFamouss = myFilmsServiceImpl.updateDirectorsFamous(directors);
     assertEquals(1, directorsFamouss.size());
     assertEquals(Boolean.TRUE, jamesCameron.isFamous());
     assertEquals(Boolean.FALSE, peterJackson.isFamous());
@@ -438,14 +438,14 @@ public class FilmServiceTests {
   void whenFindAll_thenShouldHaveAllFilms() throws ServiceException{
     when(jpaFilmDAO.findAll()).thenAnswer(invocation -> {
       List<Film> allFilms = new ArrayList<>();
-      allFilms.addAll(jamesCameron.getfilmsProduced());
-      allFilms.addAll(peterJackson.getfilmsProduced());
+      allFilms.addAll(jamesCameron.getFilmsProduced());
+      allFilms.addAll(peterJackson.getFilmsProduced());
       return allFilms;
     });
 
     List<Film> allFilmsExpected = new ArrayList<>();
-    allFilmsExpected.addAll(jamesCameron.getfilmsProduced());
-    allFilmsExpected.addAll(peterJackson.getfilmsProduced());
+    allFilmsExpected.addAll(jamesCameron.getFilmsProduced());
+    allFilmsExpected.addAll(peterJackson.getFilmsProduced());
     List<Film> allFilms = myFilmsServiceImpl.findAll();
     assertEquals(allFilmsExpected, allFilms);
   }
@@ -491,7 +491,7 @@ public class FilmServiceTests {
       onAttendPasPatrick.add(onAttendPasPatrick_1);
       onAttendPasPatrick.add(onAttendPasPatrick_2);
       onAttendPasPatrick.add(onAttendPasPatrick_3);
-      peterJackson.setfilmsProduced(onAttendPasPatrick);
+      peterJackson.setFilmsProduced(onAttendPasPatrick);
       peterJackson = myFilmsServiceImpl.updateDirectorFamous(peterJackson);
     } catch (ServiceException e) {
       System.out.println("whenCreateFilm_thenShouldHaveCreatFilm error");
@@ -540,7 +540,7 @@ public class FilmServiceTests {
     });
 
     try {
-      assertEquals(jamesCameron.getfilmsProduced(), myFilmsServiceImpl.findFilmByDirectorId(1));
+      assertEquals(jamesCameron.getFilmsProduced(), myFilmsServiceImpl.findFilmByDirectorId(1));
     } catch (ServiceException e) {
       System.out.println("whenFindFilmByDirectorId_thenShouldHaveFilm error");
     }
@@ -600,14 +600,14 @@ public class FilmServiceTests {
       return mockJpaFilmDAOFindByDirectorId(invocation.getArgument(0));
     });
 
-    System.out.println(jamesCameron.getfilmsProduced());
+    System.out.println(jamesCameron.getFilmsProduced());
     jamesCameron.setFamous(true);
     assertEquals(true, jamesCameron.isFamous());
     myFilmsServiceImpl.deleteFilm(1L);
-    System.out.println(jamesCameron.getfilmsProduced());
+    System.out.println(jamesCameron.getFilmsProduced());
     assertEquals(null, hihihi1);
     assertEquals(false, jamesCameron.isFamous());
-    assertEquals(2, jamesCameron.getfilmsProduced().size());
+    assertEquals(2, jamesCameron.getFilmsProduced().size());
 
     ServiceException serviceException = assertThrows(ServiceException.class, () -> {
       myFilmsServiceImpl.deleteFilm(100L);
@@ -678,7 +678,7 @@ public class FilmServiceTests {
 
   @Test
   void whenFindDirectorBySurnameAndName_thenShouldHaveDirector() throws ServiceException {
-    when(jpaDirectorDAO.findBySurnameAndName(anyString(), anyString())).thenAnswer(invocation -> {
+    when(jpaDirectorDAO.findByNameAndSurname(anyString(), anyString())).thenAnswer(invocation -> {
       return mockJpaDirectorFindBySurnameAndName(invocation.getArgument(0), invocation.getArgument(1));
     });
     String JAMES = "James";
@@ -686,10 +686,10 @@ public class FilmServiceTests {
     String PETER = "Peter";
     String JACKSON = "Jackson";
     String UNKNOWN = "unknown";
-    assertEquals(jamesCameron, myFilmsServiceImpl.findDirectorBySurnameAndName(JAMES, CAMERON));
-    assertEquals(peterJackson, myFilmsServiceImpl.findDirectorBySurnameAndName(PETER, JACKSON));
+    assertEquals(jamesCameron, myFilmsServiceImpl.findDirectorByNameAndSurname(JAMES, CAMERON));
+    assertEquals(peterJackson, myFilmsServiceImpl.findDirectorByNameAndSurname(PETER, JACKSON));
     ServiceException serviceException = assertThrows(ServiceException.class, () -> {
-      myFilmsServiceImpl.findDirectorBySurnameAndName(UNKNOWN, UNKNOWN);
+      myFilmsServiceImpl.findDirectorByNameAndSurname(UNKNOWN, UNKNOWN);
     });
     assertEquals("Le réalisateur demandé n'existe pas", serviceException.getMessage());
   }
@@ -769,9 +769,9 @@ public class FilmServiceTests {
     notesComplexes.add(Double.valueOf(7.123213f));
     notesComplexes.add(Double.valueOf(1.123213f));
     Double moyenne = Double.valueOf(15f);
-    assertEquals(moyenne, myFilmsServiceImpl.calculerNoteMoyenne(troisNotes).get());
-    assertEquals(Boolean.TRUE, myFilmsServiceImpl.calculerNoteMoyenne(pasDeNote).isEmpty());
-    assertEquals(Double.valueOf(10.65), myFilmsServiceImpl.calculerNoteMoyenne(notesComplexes).get());
+    assertEquals(moyenne, myFilmsServiceImpl.calculateMeanRating(troisNotes).get());
+    assertEquals(Boolean.TRUE, myFilmsServiceImpl.calculateMeanRating(pasDeNote).isEmpty());
+    assertEquals(Double.valueOf(10.65), myFilmsServiceImpl.calculateMeanRating(notesComplexes).get());
   }
 
   @Test 
@@ -781,9 +781,9 @@ public class FilmServiceTests {
     notes.add(17.4);
     notes.add(14.3);
 
-    Optional<Double> noteMoyenne = myFilmsServiceImpl.calculerNoteMoyenne(notes);
+    Optional<Double> noteMoyenne = myFilmsServiceImpl.calculateMeanRating(notes);
     List<Double> notesVides = new ArrayList<>();
-    Optional<Double> noteMoyenneVide = myFilmsServiceImpl.calculerNoteMoyenne(notesVides);
+    Optional<Double> noteMoyenneVide = myFilmsServiceImpl.calculateMeanRating(notesVides);
     assertEquals(Optional.of(14.0), noteMoyenne);
     assertEquals(Optional.empty(), noteMoyenneVide);
   }

@@ -167,11 +167,11 @@ public class DirectorsControllerTests {
     jamesCameronFilms.add(hihihi1);
     jamesCameronFilms.add(hihihi2);
     jamesCameronFilms.add(hihihi3);
-    jamesCameron.setfilmsProduced(jamesCameronFilms);
+    jamesCameron.setFilmsProduced(jamesCameronFilms);
     
     List<Film> peterJacksonFilms = new ArrayList<>();
     peterJacksonFilms.add(deBonMatin);
-    peterJackson.setfilmsProduced(peterJacksonFilms);
+    peterJackson.setFilmsProduced(peterJacksonFilms);
 
     erreurInterne.setId(Long.valueOf(1000L));
   }
@@ -289,7 +289,7 @@ public class DirectorsControllerTests {
 
   @Test 
   void whenGetDirectorByNameAndSurname_thenShouldHaveDirector() throws Exception {
-    when(myFilmsService.findDirectorBySurnameAndName(anyString(), anyString())).thenAnswer(invocation -> {
+    when(myFilmsService.findDirectorByNameAndSurname(anyString(), anyString())).thenAnswer(invocation -> {
         return mockMyFilmsServiceFindDirectorBySurnameAndName(invocation.getArgument(0), invocation.getArgument(1));
     });
 

@@ -163,11 +163,11 @@ public class FilmsControllerTests {
     jamesCameronFilms.add(hihihi1);
     jamesCameronFilms.add(hihihi2);
     jamesCameronFilms.add(hihihi3);
-    jamesCameron.setfilmsProduced(jamesCameronFilms);
+    jamesCameron.setFilmsProduced(jamesCameronFilms);
     
     List<Film> peterJacksonFilms = new ArrayList<>();
     peterJacksonFilms.add(deBonMatin);
-    peterJackson.setfilmsProduced(peterJacksonFilms);
+    peterJackson.setFilmsProduced(peterJacksonFilms);
 
     erreurInterne.setId(Long.valueOf(1000L));
   }

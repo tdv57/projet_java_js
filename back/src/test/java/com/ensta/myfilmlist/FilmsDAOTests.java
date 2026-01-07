@@ -125,7 +125,7 @@ class FilmsDAOTests {
         jamesCameron.setId(1L);
         jamesCameron.setName("James");
         jamesCameron.setSurname("Cameron");
-        jamesCameron.setfilmsProduced(new ArrayList<>());
+        jamesCameron.setFilmsProduced(new ArrayList<>());
         return jamesCameron;
     }
 
@@ -136,7 +136,7 @@ class FilmsDAOTests {
         peterJackson.setId(2L);
         peterJackson.setName("Peter");
         peterJackson.setSurname("Jackson");
-        peterJackson.setfilmsProduced(new ArrayList<>());
+        peterJackson.setFilmsProduced(new ArrayList<>());
         return peterJackson;
     }
 
