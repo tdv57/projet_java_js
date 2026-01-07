@@ -25,9 +25,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest
 @Transactional
+@Sql(
+        scripts = "/data_test.sql",
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
+)
 class DirectorsDAOTests {
     @Autowired
     private FilmDAO filmDAO;
@@ -61,7 +66,7 @@ class DirectorsDAOTests {
         jamesCameron.setId(1L);
         jamesCameron.setName("James");
         jamesCameron.setSurname("Cameron");
-        jamesCameron.setfilmsProduced(new ArrayList<>());
+        jamesCameron.setFilmsProduced(new ArrayList<>());
         return jamesCameron;
     }
 
@@ -72,7 +77,7 @@ class DirectorsDAOTests {
         peterJackson.setId(2L);
         peterJackson.setName("Peter");
         peterJackson.setSurname("Jackson");
-        peterJackson.setfilmsProduced(new ArrayList<>());
+        peterJackson.setFilmsProduced(new ArrayList<>());
         return peterJackson;
     }
 
@@ -119,13 +124,9 @@ class DirectorsDAOTests {
 
     @Test  
     void printDatabaseTest() {
-        try {
         filmDAO.findAll().forEach(System.out::println);
         System.out.println("\n");
         directorDAO.findAll().forEach(System.out::println);
-        } catch (ServiceException e) {
-            System.out.println("Erreur interne");
-        }
     }
 
     @Test 

@@ -20,13 +20,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest
 @Transactional
+@Sql(
+        scripts = "/data_test.sql",
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
+)
 class FilmsDAOTests {
 
     @Autowired
     private FilmDAO filmDAO;
+
     @Autowired
     private DirectorDAO directorDAO;
 
@@ -176,14 +182,14 @@ class FilmsDAOTests {
     }
 
 
-    @Test  
+    @Test
     void printDatabaseTest() {
         filmDAO.findAll().forEach(System.out::println);
         System.out.println("\n");
         directorDAO.findAll().forEach(System.out::println);
     }
 
-    @Test 
+    @Test
     void whenFindAll_thenShouldHaveAllFilms() {
         List<Film> films = this.filmDAO.findAll();
         assertEquals(films.get(0), getAvatar());
@@ -193,7 +199,7 @@ class FilmsDAOTests {
     }
 
 
-    @Test 
+    @Test
     void whenSave_thenShouldHaveSaveFilm() {
         FilmForm filmForm = new FilmForm();
         filmForm.setDuration(15);
@@ -209,12 +215,8 @@ class FilmsDAOTests {
         assertEquals("title", newFilm.getTitle());
         assertEquals("action", newFilm.getGenre().getName());
     }
-
-
-
-
-
-    @Test 
+    
+    @Test
     void whenFindById_thenShouldHaveFilm() {
         Optional<Film> filmInexistant = filmDAO.findById(100); 
         assertEquals(Boolean.TRUE, filmInexistant.isEmpty() );
@@ -228,7 +230,7 @@ class FilmsDAOTests {
         assertEquals("action", film.getGenre().getName());
     }
 
-    @Test 
+    @Test
     void whenFindByTitle_thenShouldHaveTitle() {
         Optional<Film> avatar = filmDAO.findByTitle("avatar");
         assertEquals(Optional.of(getAvatar()), avatar);
@@ -253,16 +255,15 @@ class FilmsDAOTests {
             throw new RuntimeException(e);
         }
         assertEquals(3, filmsDeJackson.size());
-        List<Film> filmsSansDirectors;
+        List<Film> filmsSansDirectors = List.of();
+        assertThrows(ServiceException.class, () -> filmDAO.findByDirectorId(3));
         try {
             filmsSansDirectors = filmDAO.findByDirectorId(3);
-        } catch (ServiceException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (ServiceException ignored) {}
         assertEquals(0, filmsSansDirectors.size());
     }
 
-    @Test 
+    @Test
     void whenUpdateFilm_thenShouldHaveUpdatedFilm() throws ServiceException{
         Film newAvatar = new Film();
         newAvatar.setDirector(getJamesCameron());
@@ -274,10 +275,10 @@ class FilmsDAOTests {
 
         ServiceException error = assertThrows(ServiceException.class, () -> filmDAO.update(10, newAvatar));
 
-        assertEquals("Film inexistant", error.getMessage());
+        assertEquals("Film doesn't exist", error.getMessage());
     }
 
-    @Test 
+    @Test
     void whenDeleteFilm_thenShouldDeleteFilm() {
         Film film = filmDAO.findById(1).get();
         filmDAO.delete(film);
