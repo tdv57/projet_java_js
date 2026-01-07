@@ -4,16 +4,11 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.description;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 
 import org.springframework.http.MediaType;
 
@@ -22,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.hibernate.internal.ExceptionConverterImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,12 +36,10 @@ import com.ensta.myfilmlist.mapper.DirectorMapper;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.DirectorForm;
-import com.ensta.myfilmlist.form.FilmForm;
-import com.ensta.myfilmlist.exception.ControllerException;
 import com.ensta.myfilmlist.dto.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class DirectorsControllerTests {
   @MockBean 
   private MyFilmsService myFilmsService;
@@ -202,7 +194,7 @@ public class DirectorsControllerTests {
     }
   }
 
-  private Director mockMyFilmsServiceFindDirectorBySurnameAndName(String surname, String name) throws ServiceException {
+  private Director mockMyFilmsServiceFindDirectorByNameAndSurname(String name, String surname) throws ServiceException {
     if (Objects.equals(surname, jamesCameron.getSurname()) && Objects.equals(name, jamesCameron.getName())) {
         return jamesCameron;
     } else if (Objects.equals(surname, peterJackson.getSurname()) && Objects.equals(name, peterJackson.getName())) {
@@ -231,7 +223,7 @@ public class DirectorsControllerTests {
             peterJackson.setSurname(directorForm.getSurname());    
             return DirectorMapper.convertDirectorToDirectorDTO(peterJackson);
         default:
-            throw new ServiceException("Réalisateur inexistant");
+            throw new ServiceException("Can't get Director");
     }
   }
 
@@ -244,7 +236,7 @@ public class DirectorsControllerTests {
             peterJackson = null;
             break;
         default: 
-            throw new ServiceException("Réalisateur inexistant");
+            throw new ServiceException("Can't get Director");
     }   
   }
 
@@ -259,12 +251,16 @@ public class DirectorsControllerTests {
     .andExpect(jsonPath("$[0].id").value(1))
     .andExpect(jsonPath("$[0].surname").value("Cameron"))
     .andExpect(jsonPath("$[0].name").value("James"))
-    .andExpect(jsonPath("$[0].birthdate").value("1950-03-20"))
+    .andExpect(jsonPath("$[0].birthdate[0]").value(1950))
+    .andExpect(jsonPath("$[0].birthdate[1]").value(3))
+    .andExpect(jsonPath("$[0].birthdate[2]").value(20))
     .andExpect(jsonPath("$[0].famous").value(false))
     .andExpect(jsonPath("$[1].id").value(2))
     .andExpect(jsonPath("$[1].surname").value("Jackson"))
     .andExpect(jsonPath("$[1].name").value("Peter"))
-    .andExpect(jsonPath("$[1].birthdate").value("1980-02-02"))
+    .andExpect(jsonPath("$[1].birthdate[0]").value(1980))
+    .andExpect(jsonPath("$[1].birthdate[1]").value(2))
+    .andExpect(jsonPath("$[1].birthdate[2]").value(2))
     .andExpect(jsonPath("$[1].famous").value(false));
   }
 
@@ -279,18 +275,20 @@ public class DirectorsControllerTests {
     .andExpect(jsonPath("$.id").value(1))
     .andExpect(jsonPath("$.surname").value("Cameron"))
     .andExpect(jsonPath("$.name").value("James"))
-    .andExpect(jsonPath("$.birthdate").value("1950-03-20"))
+    .andExpect(jsonPath("$.birthdate[0]").value(1950))
+    .andExpect(jsonPath("$.birthdate[1]").value(3))
+    .andExpect(jsonPath("$.birthdate[2]").value(20))
     .andExpect(jsonPath("$.famous").value(false));
 
     mockMvc.perform(get("/director/100"))
-    .andExpect(status().isNotFound())
-    .andExpect(content().string(""));
+    .andExpect(status().isBadRequest())
+    .andExpect(content().string("Can't get Director."));
   }
 
   @Test 
   void whenGetDirectorByNameAndSurname_thenShouldHaveDirector() throws Exception {
     when(myFilmsService.findDirectorByNameAndSurname(anyString(), anyString())).thenAnswer(invocation -> {
-        return mockMyFilmsServiceFindDirectorBySurnameAndName(invocation.getArgument(0), invocation.getArgument(1));
+        return mockMyFilmsServiceFindDirectorByNameAndSurname(invocation.getArgument(0), invocation.getArgument(1));
     });
 
     mockMvc.perform(get("/director/?name=James&surname=Cameron"))
@@ -298,7 +296,9 @@ public class DirectorsControllerTests {
     .andExpect(jsonPath("$.id").value(1))
     .andExpect(jsonPath("$.surname").value("Cameron"))
     .andExpect(jsonPath("$.name").value("James"))
-    .andExpect(jsonPath("$.birthdate").value("1950-03-20"))
+    .andExpect(jsonPath("$.birthdate[0]").value(1950))
+    .andExpect(jsonPath("$.birthdate[1]").value(3))
+    .andExpect(jsonPath("$.birthdate[2]").value(20))
     .andExpect(jsonPath("$.famous").value(false));
 
     mockMvc.perform(get("/director/?name=unknown&surname=unknown"))
@@ -312,6 +312,7 @@ public class DirectorsControllerTests {
         return mockMyFilmsServiceCreateDirector(invocation.getArgument(0));
     });
 
+    System.out.println("whenCreateDirector_thenShouldCreateDirector");
     String newDirector= """
             {
             "birthdate": "2000-03-20",
@@ -327,7 +328,9 @@ public class DirectorsControllerTests {
                 .andExpect(jsonPath("$.id").value(3))
                 .andExpect(jsonPath("$.surname").value("surname"))
                 .andExpect(jsonPath("$.name").value("name"))
-                .andExpect(jsonPath("$.birthdate").value("2000-03-20"))
+                .andExpect(jsonPath("$.birthdate[0]").value(2000))
+                .andExpect(jsonPath("$.birthdate[1]").value(3))
+                .andExpect(jsonPath("$.birthdate[2]").value(20))
                 .andExpect(jsonPath("$.famous").value(false));
   }
 
@@ -352,7 +355,9 @@ public class DirectorsControllerTests {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.surname").value("surname"))
                 .andExpect(jsonPath("$.name").value("name"))
-                .andExpect(jsonPath("$.birthdate").value("2000-03-20"))
+                .andExpect(jsonPath("$.birthdate[0]").value(2000))
+                .andExpect(jsonPath("$.birthdate[1]").value(3))
+                .andExpect(jsonPath("$.birthdate[2]").value(20))
                 .andExpect(jsonPath("$.famous").value(false));
 
     mockMvc.perform(put("/director/100")

@@ -1,13 +1,10 @@
 package com.ensta.myfilmlist;
 
-import com.ensta.myfilmlist.dao.impl.*;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.dao.*;
 import com.ensta.myfilmlist.model.*;
-import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -16,15 +13,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @SpringBootTest
 @Transactional
@@ -137,7 +132,7 @@ class DirectorsDAOTests {
 
     @Test 
     void whenFindBySurnameAndName_thenShouldHaveDirector() {
-        Optional<Director> jamesCameron = directorDAO.findByNameAndSurname("Cameron", "James");
+        Optional<Director> jamesCameron = directorDAO.findByNameAndSurname("James", "Cameron");
         assertEquals(Optional.of(getJamesCameron()), jamesCameron);
 
         Optional<Director> error = directorDAO.findByNameAndSurname("unknown", "unknown");
@@ -168,7 +163,7 @@ class DirectorsDAOTests {
             directorDAO.update(100L, newJamesCameron);
         });
 
-        assertEquals("Réalisateur inexistant", e.getMessage());
+        assertEquals("Can't update Director.", e.getMessage());
     }
 
     @Test 
@@ -185,6 +180,7 @@ class DirectorsDAOTests {
 
     @Test 
     void whenDelete_thenShouldHaveDeleteDirector() {
+        System.out.println("whenDelete_thenShouldHaveDeleteDirector");
         assertEquals(2, directorDAO.findAll().size());
         directorDAO.delete(1L);
         assertEquals(1, directorDAO.findAll().size());
@@ -193,5 +189,6 @@ class DirectorsDAOTests {
         directorDAO.delete(2L);
         assertEquals(0, directorDAO.findAll().size());
         assertEquals(filmDAO.findById(1), Optional.empty());
+    
     }
 }

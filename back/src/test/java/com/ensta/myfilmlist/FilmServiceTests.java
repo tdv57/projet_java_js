@@ -21,26 +21,17 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.dom4j.util.PerThreadSingleton;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import org.mockito.Mock;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations; // si tu initialises les mocks manuellement
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -470,32 +461,37 @@ public class FilmServiceTests {
     onAttendPasPatrick1.setDuration(90);
     onAttendPasPatrick1.setDirectorId(2);
     onAttendPasPatrick1.setTitle("on attend pas Patrick 1");
+    onAttendPasPatrick1.setGenreId(3);
 
     FilmForm onAttendPasPatrick2 = new FilmForm();
     onAttendPasPatrick2.setDuration(90);
     onAttendPasPatrick2.setDirectorId(2);
     onAttendPasPatrick2.setTitle("on attend pas Patrick 2");
+    onAttendPasPatrick2.setGenreId(3);
 
     FilmForm onAttendPasPatrick3 = new FilmForm();
     onAttendPasPatrick3.setDuration(90);
     onAttendPasPatrick3.setDirectorId(2);
     onAttendPasPatrick3.setTitle("on attend pas Patrick 3");
-
+    onAttendPasPatrick3.setGenreId(3);
+    
     try {
       peterJackson = myFilmsServiceImpl.updateDirectorFamous(peterJackson);
       assertEquals(Boolean.FALSE, peterJackson.isFamous());
       Film onAttendPasPatrick_1 = filmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick1));
       Film onAttendPasPatrick_2 = filmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick2));
       Film onAttendPasPatrick_3 = filmMapper.convertFilmDTOToFilm(myFilmsServiceImpl.createFilm(onAttendPasPatrick3));
+
       List<Film> onAttendPasPatrick = new ArrayList<>();
       onAttendPasPatrick.add(onAttendPasPatrick_1);
       onAttendPasPatrick.add(onAttendPasPatrick_2);
       onAttendPasPatrick.add(onAttendPasPatrick_3);
       peterJackson.setFilmsProduced(onAttendPasPatrick);
       peterJackson = myFilmsServiceImpl.updateDirectorFamous(peterJackson);
-    } catch (ServiceException e) {
-      System.out.println("whenCreateFilm_thenShouldHaveCreatFilm error");
-    }
+    } catch (Exception e) {
+        int i = 0;
+        i = 1;
+      }
 
     assertEquals(Boolean.TRUE, peterJackson.isFamous());
   }
@@ -510,7 +506,7 @@ public class FilmServiceTests {
       Film filmFound = myFilmsServiceImpl.findFilmById(1);
       ServiceException filmNotFoundError = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findFilmById(100));
       assertEquals(hihihi1, filmFound);
-      assertEquals("Le film demandé n'existe pas", filmNotFoundError.getMessage());
+      assertEquals("Film can't be found.", filmNotFoundError.getMessage());
     } catch (ServiceException e) {
       System.out.println("whenFindFilmById_thenShouldHaveFilm error");
     }
@@ -526,7 +522,7 @@ public class FilmServiceTests {
       Film filmFound = myFilmsServiceImpl.findFilmByTitle("hihihi1");
       ServiceException filmNotFoundError = assertThrows(ServiceException.class,() -> myFilmsServiceImpl.findFilmByTitle("not existing"));
       assertEquals(hihihi1, filmFound);
-      assertEquals("Le film demandé n'existe pas", filmNotFoundError.getMessage());
+      assertEquals("Film can't be found.", filmNotFoundError.getMessage());
     } catch (ServiceException e) {
       System.out.println("whenFilmByTitle_thenShouldHaveFilm error");
     }
@@ -548,7 +544,7 @@ public class FilmServiceTests {
     ServiceException exception = assertThrows(ServiceException.class, () -> {
         myFilmsServiceImpl.findFilmByDirectorId(100L);
     });
-    assertEquals("Le réalistauer n'a réalisé aucun film",exception.getMessage());
+    assertEquals("Director isn't related to any film.",exception.getMessage());
   }
 
   @Test 
@@ -613,7 +609,7 @@ public class FilmServiceTests {
       myFilmsServiceImpl.deleteFilm(100L);
     });
 
-    assertEquals("Le film demandé n'existe pas", serviceException.getMessage());
+    assertEquals("Film can't be found.", serviceException.getMessage());
   }
 
 
@@ -673,7 +669,7 @@ public class FilmServiceTests {
     ServiceException serviceException = assertThrows(ServiceException.class, () -> {
       myFilmsServiceImpl.findDirectorById(100L);
     });
-    assertEquals("Le réalisateur demandé n'existe pas", serviceException.getMessage());
+    assertEquals("Director can't be found.", serviceException.getMessage());
   }
 
   @Test
@@ -691,7 +687,7 @@ public class FilmServiceTests {
     ServiceException serviceException = assertThrows(ServiceException.class, () -> {
       myFilmsServiceImpl.findDirectorByNameAndSurname(UNKNOWN, UNKNOWN);
     });
-    assertEquals("Le réalisateur demandé n'existe pas", serviceException.getMessage());
+    assertEquals("Director can't be found.", serviceException.getMessage());
   }
 
   @Test
@@ -734,7 +730,7 @@ public class FilmServiceTests {
     ServiceException serviceException = assertThrows(ServiceException.class, () -> {
       myFilmsServiceImpl.findGenreById(100L);
     });
-    assertEquals("Le genre demandé n'existe pas", serviceException.getMessage());
+    assertEquals("Genre can't be found.", serviceException.getMessage());
   }
 
   @Test 

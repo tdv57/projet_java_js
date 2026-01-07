@@ -3,19 +3,11 @@ package com.ensta.myfilmlist;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.description;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.timeout;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 
-import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,16 +26,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.ensta.myfilmlist.model.*;
 import com.ensta.myfilmlist.dto.*;
-import com.ensta.myfilmlist.model.Genre;
 import com.ensta.myfilmlist.service.MyFilmsService;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.mapper.GenreMapper;
 import com.ensta.myfilmlist.exception.ServiceException;
-import com.ensta.myfilmlist.form.FilmForm;
-import com.ensta.myfilmlist.exception.ControllerException;
+
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class GenresControllerTests{
   
   @MockBean 
