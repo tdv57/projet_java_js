@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Api routes for Film
@@ -92,7 +93,10 @@ public class FilmControllerImpl implements FilmController {
     public ResponseEntity<List<FilmDTO>> getFilmByDirectorId(@PathVariable long id) throws ControllerException {
         try {
             List<Film> filmList = myFilmsService.findFilmByDirectorId(id);
-            List<FilmDTO> returnList = filmList.stream().map(FilmMapper::convertFilmToFilmDTO).toList();
+            List<FilmDTO> returnList =
+                    filmList.stream()
+                            .map(FilmMapper::convertFilmToFilmDTO)
+                            .collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(returnList);
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

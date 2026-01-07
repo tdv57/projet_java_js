@@ -313,13 +313,11 @@ public class DirectorsControllerTests {
     });
 
     System.out.println("whenCreateDirector_thenShouldCreateDirector");
-    String newDirector= """
-            {
-            "birthdate": "2000-03-20",
-            "name": "name",
-            "surname": "surname"
-            }
-            """;
+    String newDirector = "{\n" +
+            "  \"birthdate\": \"2000-03-20\",\n" +
+            "  \"name\": \"name\",\n" +
+            "  \"surname\": \"surname\"\n" +
+            "}";
 
     mockMvc.perform(post("/director/")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -340,13 +338,11 @@ public class DirectorsControllerTests {
         return mockMyFilmsServiceUpdateDirector(invocation.getArgument(0), invocation.getArgument(1));
     });
 
-    String newDirector= """
-            {
-            "birthdate": "2000-03-20",
-            "name": "name",
-            "surname": "surname"
-            }
-            """;
+    String newDirector = "{\n" +
+            "  \"birthdate\": \"2000-03-20\",\n" +
+            "  \"name\": \"name\",\n" +
+            "  \"surname\": \"surname\"\n" +
+            "}";
 
     mockMvc.perform(put("/director/1")
                     .contentType(MediaType.APPLICATION_JSON)

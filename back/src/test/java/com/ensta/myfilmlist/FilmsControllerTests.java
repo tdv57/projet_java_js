@@ -368,14 +368,12 @@ public class FilmsControllerTests {
     when(myFilmsService.createFilm(any(FilmForm.class))).thenAnswer(invocation -> {
       return mockMyFilmsServiceCreateFilm(invocation.getArgument(0));
     });
-    String hihihi4 = """
-    {
-      "title": "hihihi4",
-      "duration": 63,
-      "directorId": 1,
-      "genreId": 3
-    }
-    """;
+    String hihihi4 = "{\n" +
+            "  \"title\": \"hihihi4\",\n" +
+            "  \"duration\": 63,\n" +
+            "  \"directorId\": 1,\n" +
+            "  \"genreId\": 3\n" +
+            "}";
 
     mockMvc.perform(post("/film/")
     .contentType(MediaType.APPLICATION_JSON)
@@ -387,15 +385,13 @@ public class FilmsControllerTests {
     .andExpect(jsonPath("$.directorDTO.name").value("James"))
     .andExpect(jsonPath("$.directorDTO.surname").value("Cameron"))
     .andExpect(jsonPath("$.genreDTO.name").value("comédie"));
-    
-    String unknown = """
-    {
-      "title": "unknown",
-      "duration": 60,
-      "directorId": 100,
-      "genreId": 3
-    }
-    """;
+        
+    String unknown = "{\n" +
+            "  \"title\": \"unknown\",\n" +
+            "  \"duration\": 60,\n" +
+            "  \"directorId\": 100,\n" +
+            "  \"genreId\": 3\n" +
+            "}";
     mockMvc.perform(post("/film/")
     .contentType(MediaType.APPLICATION_JSON)
     .content(unknown))
@@ -409,14 +405,13 @@ public class FilmsControllerTests {
       return mockMyFilmsServiceUpdateFilm(invocation.getArgument(0), invocation.getArgument(1));
     });
 
-    String _hihihi1 = """
-    {
-      "title": "hihihi1",
-      "duration": 63,
-      "directorId": 1,
-      "genreId": 3
-    }
-    """;
+    String _hihihi1 = "{\n" +
+            "  \"title\": \"hihihi1\",\n" +
+            "  \"duration\": 63,\n" +
+            "  \"directorId\": 1,\n" +
+            "  \"genreId\": 3\n" +
+            "}";
+
     mockMvc.perform(put("/film/1")
            .contentType(MediaType.APPLICATION_JSON)
            .content(_hihihi1))
@@ -434,14 +429,12 @@ public class FilmsControllerTests {
            .andExpect(status().isNotFound())
            .andExpect(content().string(""));
 
-    String hihihi1Error = """
-    {
-      "title": "hihihi1",
-      "duration": 63,
-      "directorId": 100,
-      "genreId": 3
-    }
-    """;
+    String hihihi1Error = "{\n" +
+            "  \"title\": \"hihihi1\",\n" +
+            "  \"duration\": 63,\n" +
+            "  \"directorId\": 100,\n" +
+            "  \"genreId\": 3\n" +
+            "}";
 
     mockMvc.perform(put("/film/1")
            .contentType(MediaType.APPLICATION_JSON)
