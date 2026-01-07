@@ -52,11 +52,11 @@ public class HistoryControllerImpl implements HistoryController {
     @Override
     @PostMapping("")
     //@PreAuthorize("#userId == authentication.principal.id")
-    public ResponseEntity<HistoryDTO> addToWatchList(long userId, long filmId) throws ControllerException {
+    public ResponseEntity<HistoryDTO> addToWatchList(long userId, long filmId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.addFilmToWatchList(userId, filmId)));
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible d'ajouter un film à l'historique", e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
     }
 
@@ -84,10 +84,19 @@ public class HistoryControllerImpl implements HistoryController {
     }
 
     @Override
-    @GetMapping("/rate")
-    public ResponseEntity<Optional<Integer>> getRate(long userId, long filmId) throws ControllerException {
+    @GetMapping("/rate/{userId}")
+    public ResponseEntity<Optional<Integer>> getUserRating(@PathVariable long userId, long filmId) throws ControllerException {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getNote(userId, filmId)));
+            return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getUserRating(userId, filmId)));
+        } catch (ServiceException e) {
+            throw new ControllerException("Impossible de trouver la note de ce film", e);
+        }
+    }
+
+    @GetMapping("/rate")
+    public ResponseEntity<Optional<Double>> getMeanRating(long filmId) throws ControllerException {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getMeanRating(filmId)));
         } catch (ServiceException e) {
             throw new ControllerException("Impossible de trouver la note de ce film", e);
         }

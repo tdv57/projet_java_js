@@ -39,9 +39,10 @@ public interface DirectorController {
     @ApiOperation(value = "Ajouter un réalisateur", notes = "Permet d'ajouter un réalisateur.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le réalisateur a bien été ajouté"),
-            @ApiResponse(code = 404, message = "Le réalisateur n'a pas pu être ajouté")
+            @ApiResponse(code = 404, message = "Le réalisateur n'a pas pu être ajouté"),
+            @ApiResponse(code = 409, message = "Le réalisateur existe déjà")
     })
-    ResponseEntity<DirectorDTO> createDirector(DirectorForm directorForm) throws ControllerException;
+    ResponseEntity<DirectorDTO> createDirector(DirectorForm directorForm);
 
     @ApiOperation(value = "Éditer un réalisateur", notes = "Permet d'éditer un réalisateur d'après un formulaire.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
