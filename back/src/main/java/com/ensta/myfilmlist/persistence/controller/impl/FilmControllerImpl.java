@@ -36,12 +36,8 @@ public class FilmControllerImpl implements FilmController {
      */
     @Override
     @GetMapping("")
-    public ResponseEntity<List<FilmDTO>> getAllFilms() throws ControllerException {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findAll()));
-        } catch (ServiceException e) {
-            throw new ControllerException("Can't get Films", e);
-        }
+    public ResponseEntity<List<FilmDTO>> getAllFilms() {
+        return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findAll()));
     }
 
     /**
@@ -49,11 +45,10 @@ public class FilmControllerImpl implements FilmController {
      *
      * @param id    id of the film to return
      * @return      the corresponding Film
-     * @throws ControllerException  in case of any error
      */
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<FilmDTO> getFilmById(@PathVariable long id) throws ControllerException {
+    public ResponseEntity<FilmDTO> getFilmById(@PathVariable long id) {
         try {
             FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(id));
             return ResponseEntity.status(HttpStatus.OK).body(filmDTO);
@@ -67,11 +62,10 @@ public class FilmControllerImpl implements FilmController {
      *
      * @param title     title of the Film in the database
      * @return          the corresponding Film's DTO
-     * @throws ControllerException  in case of any error
      */
     @Override
     @GetMapping("/title")
-    public ResponseEntity<FilmDTO> getFilmByTitle(@RequestParam String title) throws ControllerException {
+    public ResponseEntity<FilmDTO> getFilmByTitle(@RequestParam String title) {
         try {
             FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmByTitle(title));
             return ResponseEntity.status(HttpStatus.OK).body(filmDTO);
@@ -85,14 +79,13 @@ public class FilmControllerImpl implements FilmController {
      *
      * @param id    id of the Director in the database
      * @return      the corresponding list of films' DTO
-     * @throws ControllerException  in case of any error
      */
     @Override
     @GetMapping("/director/{id}")
-    public ResponseEntity<List<FilmDTO>> getFilmByDirectorId(@PathVariable long id) throws ControllerException {
+    public ResponseEntity<List<FilmDTO>> getFilmByDirectorId(@PathVariable long id) {
         try {
             List<Film> filmList = myFilmsService.findFilmByDirectorId(id);
-            List<FilmDTO> returnList = filmList.stream().map(FilmMapper::convertFilmToFilmDTO).toList();
+            List<FilmDTO> returnList = FilmMapper.convertFilmToFilmDTOs(filmList);
             return ResponseEntity.status(HttpStatus.OK).body(returnList);
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -105,15 +98,14 @@ public class FilmControllerImpl implements FilmController {
      *
      * @param filmForm      form from which the Film is created
      * @return              the corresponding Film's DTO
-     * @throws ControllerException  in case of any error
      */
     @Override
     @PostMapping("")
-    public ResponseEntity<FilmDTO> createFilm(@Valid @RequestBody FilmForm filmForm) throws ControllerException {
+    public ResponseEntity<FilmDTO> createFilm(@Valid @RequestBody FilmForm filmForm) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createFilm(filmForm));
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible d'ajouter le film demandé", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
@@ -123,11 +115,10 @@ public class FilmControllerImpl implements FilmController {
      * @param id            id of the Film to update
      * @param filmForm      form with value updated
      * @return              the updated Film's DTO
-     * @throws ControllerException  in case of any error
      */
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<FilmDTO> updateFilm(@PathVariable long id, @RequestBody FilmForm filmForm) throws ControllerException {
+    public ResponseEntity<FilmDTO> updateFilm(@PathVariable long id, @RequestBody FilmForm filmForm) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateFilm(id, filmForm));
         } catch (ServiceException e) {
@@ -145,13 +136,15 @@ public class FilmControllerImpl implements FilmController {
      */
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFilm(@PathVariable long id) throws ControllerException {
+    public ResponseEntity<?> deleteFilm(@PathVariable long id) {
         try {
             myFilmsService.deleteFilm(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (ServiceException e) {
-            if (Objects.equals(e.getMessage(), "Le film demandé n'existe pas")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            throw new ControllerException("Impossible de supprimer le film demandé", e);
+            if (Objects.equals(e.getMessage(), "Erreur lors de la mise à jour de la célébrité")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 }

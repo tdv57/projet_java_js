@@ -61,7 +61,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public List<Film> findAll() throws ServiceException {
+    public List<Film> findAll() {
         return this.filmDAO.findAll();
     }
 
@@ -85,18 +85,16 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     public List<Film> findFilmByDirectorId(long id) throws ServiceException {
-        List<Film> films = this.filmDAO.findByDirectorId(id);
-        if (films.isEmpty()) {
-            throw new ServiceException("Director isn't related to any film.");
-        }
-        return films;
+        return this.filmDAO.findByDirectorId(id);
     }
 
     @Override
     @Transactional
     public FilmDTO updateFilm(long id, FilmForm filmForm) throws ServiceException {
         Optional<Director> director = this.directorDAO.findById(filmForm.getDirectorId());
-        if (director.isEmpty()) throw new ServiceException("Réalisateur inexistant");
+        if (director.isEmpty()) {
+            throw new ServiceException("Director don't exist");
+        }
         Film new_film = filmMapper.convertFilmFormToFilm(filmForm);
         Film film = this.filmDAO.update(id, new_film);
         return FilmMapper.convertFilmToFilmDTO(film);
@@ -213,7 +211,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public GenreDTO updateGenre(long id, String name) throws ServiceException {
         Genre genre = this.genreDAO.update(id, name);
         return GenreMapper.convertGenreToGenreDTO(genre);
@@ -250,7 +248,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public List<User> findAllUsers() throws ServiceException {
         return this.userDAO.findAll();
     }
@@ -288,7 +286,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public UserDTO setUserAsAdmin(long id) throws ServiceException {
         try {
             Optional<User> user = userDAO.findById(id);
