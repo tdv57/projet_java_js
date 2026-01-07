@@ -2,8 +2,8 @@ package com.ensta.myfilmlist.dao.impl;
 
 import com.ensta.myfilmlist.dao.DirectorDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
-import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Director;
+import com.ensta.myfilmlist.model.Film;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -26,52 +26,52 @@ public class JpaDirectorDAO implements DirectorDAO {
      * Returns the list of all Directors present in the database.
      * A ServicException is thrown in case of an error (can't get Directors, list empty)
      *
-     * @return      the list of Directors
+     * @return the list of Directors
      */
     @Override
-    public List<Director> findAll(){
-            return entityManager.createQuery("SELECT r FROM Director r", Director.class).getResultList();
+    public List<Director> findAll() {
+        return entityManager.createQuery("SELECT r FROM Director r", Director.class).getResultList();
     }
 
     /**
      * Returns the Director corresponding to the name and surname arguments (or an empty option if there is none)
      *
-     * @param  surname      the name of the director to return
-     * @param  name   the surname of the director to return
-     * @return          the corresponding director
+     * @param surname the name of the director to return
+     * @param name    the surname of the director to return
+     * @return the corresponding director
      */
     @Override
-    public Optional<Director> findBySurnameAndName(String surname, String name){
-        List<Director> directors =  entityManager.createQuery("SELECT r FROM Director r WHERE surname = :surname AND name = :name", Director.class)
-                                        .setParameter("surname", surname)
-                                        .setParameter("name", name)
-                                        .getResultList();
-        if (directors.size() == 0) return Optional.empty();
+    public Optional<Director> findBySurnameAndName(String surname, String name) {
+        List<Director> directors = entityManager.createQuery("SELECT r FROM Director r WHERE surname = :surname AND name = :name", Director.class)
+                .setParameter("surname", surname)
+                .setParameter("name", name)
+                .getResultList();
+        if (directors.isEmpty()) return Optional.empty();
         return Optional.of(directors.get(0));
     }
 
     /**
      * Returns the Director corresponding to the id argument (or an empty option if there is none)
      *
-     * @param  id   the id of the director to return
-     * @return      the corresponding director
+     * @param id the id of the director to return
+     * @return the corresponding director
      */
     @Override
-    public Optional<Director> findById(long id){
-        return  Optional.ofNullable(entityManager.find(Director.class, id));
+    public Optional<Director> findById(long id) {
+        return Optional.ofNullable(entityManager.find(Director.class, id));
     }
 
     /**
      * Updates the Director corresponding to the id argument with the new director
      *
-     * @param  id           the id of the director to update
-     * @param  director  the state of the director updated
-     * @return              the corresponding director
+     * @param id       the id of the director to update
+     * @param director the state of the director updated
+     * @return the corresponding director
      */
     @Override
     public Director update(long id, Director director) throws ServiceException {
         Optional<Director> prev_director = this.findById(id);
-        if  (prev_director.isEmpty()) {
+        if (prev_director.isEmpty()) {
             throw new ServiceException("Réalisateur inexistant");
         }
         Director director_to_modify = entityManager.merge(prev_director.get());
@@ -85,11 +85,14 @@ public class JpaDirectorDAO implements DirectorDAO {
     /**
      * Creates a Director in the database based on a director argument
      *
-     * @param  director  the director to register
-     * @return              the director created
+     * @param director the director to register
+     * @return the director created
      */
     @Override
-    public Director save(Director director){
+    public Director save(Director director) throws ServiceException {
+        if (findBySurnameAndName(director.getSurname(), director.getName()).isPresent()) {
+            throw new ServiceException("Director already exists");
+        }
         entityManager.persist(director);
         return director;
     }
@@ -97,7 +100,7 @@ public class JpaDirectorDAO implements DirectorDAO {
     /**
      * Deletes a Director in the database based on the id argument
      *
-     * @param  id   the id of the Director to delete
+     * @param id the id of the Director to delete
      */
     @Override
     public void delete(long id) {

@@ -1,7 +1,7 @@
 package com.ensta.myfilmlist.persistence.controller;
 
-import java.util.List;
-
+import com.ensta.myfilmlist.dto.FilmDTO;
+import com.ensta.myfilmlist.exception.ControllerException;
 import com.ensta.myfilmlist.form.FilmForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,20 +10,19 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import com.ensta.myfilmlist.dto.*;
-import com.ensta.myfilmlist.exception.*;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 @Api(tags = "Film")
 @Tag(name = "Film", description = "Opération sur les films")
 public interface FilmController {
 
-     @ApiOperation(value = "Lister les films", notes = "Permet de renvoyer la liste de tous les films.", produces = MediaType.APPLICATION_JSON_VALUE)
-     @ApiResponses(value = {
-             @ApiResponse(code = 200, message = "La liste des films a été renvoyée correctement")
-     })
-     ResponseEntity<List<FilmDTO>> getAllFilms();
+    @ApiOperation(value = "Lister les films", notes = "Permet de renvoyer la liste de tous les films.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "La liste des films a été renvoyée correctement")
+    })
+    ResponseEntity<List<FilmDTO>> getAllFilms();
 
     @ApiOperation(value = "Rechercher un film par son identifiant", notes = "Permet de renvoyer les détails d'un film grâce à son identifiant.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
@@ -49,7 +48,8 @@ public interface FilmController {
     @ApiOperation(value = "Ajouter un film", notes = "Permet d'ajouter un film d'après un formulaire.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le film a bien été ajouté"),
-            @ApiResponse(code = 404, message = "Le réalisateur donné n'existe pas")
+            @ApiResponse(code = 404, message = "Le réalisateur du film n'existe pas"),
+            @ApiResponse(code = 409, message = "Le film existe déjà")
     })
     ResponseEntity<FilmDTO> createFilm(FilmForm filmForm);
 

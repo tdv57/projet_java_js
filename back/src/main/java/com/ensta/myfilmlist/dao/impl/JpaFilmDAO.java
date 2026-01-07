@@ -23,23 +23,30 @@ public class JpaFilmDAO implements FilmDAO {
      * Returns the list of all Films present in the database.
      * A ServicException is thrown in case of an error (can't get Films, list empty)
      *
-     * @return      the list of Films
+     * @return the list of Films
      */
     @Override
     public List<Film> findAll() {
         return entityManager
-                    .createQuery("SELECT f FROM Film f", Film.class)
-                    .getResultList();
+                .createQuery("SELECT f FROM Film f", Film.class)
+                .getResultList();
     }
 
     /**
      * Creates a Film in the database based on a film argument
      *
-     * @param  film the film to register
-     * @return      the film created
+     * @param film the film to register
+     * @return the film created
      */
     @Override
-    public Film save(Film film){
+    public Film save(Film film) throws ServiceException {
+        Director director = film.getDirector();
+        List<Film> films = findByDirectorId(director.getId());
+        for (Film existing_film : films) {
+            if (existing_film.getTitle().trim().equals(film.getTitle().trim())) {
+                throw new ServiceException("Film already exists");
+            }
+        }
         entityManager.persist(film);
         return film;
     }
@@ -47,22 +54,22 @@ public class JpaFilmDAO implements FilmDAO {
     /**
      * Returns the Film corresponding to the id argument (or an empty option if there is none)
      *
-     * @param  id   the id of the film to return
-     * @return      the corresponding film
+     * @param id the id of the film to return
+     * @return the corresponding film
      */
     @Override
-    public Optional<Film> findById(long id){
+    public Optional<Film> findById(long id) {
         return Optional.ofNullable(entityManager.find(Film.class, id));
     }
 
     /**
      * Returns the Film corresponding to the title argument (or an empty option if there is none)
      *
-     * @param  title    the title of the film to return
-     * @return          the corresponding film
+     * @param title the title of the film to return
+     * @return the corresponding film
      */
     @Override
-    public Optional<Film> findByTitle(String title){
+    public Optional<Film> findByTitle(String title) {
         List<Film> films = entityManager
                 .createQuery("SELECT f FROM Film f WHERE f.title = :title", Film.class)
                 .setParameter("title", title)
@@ -76,34 +83,35 @@ public class JpaFilmDAO implements FilmDAO {
     /**
      * Returns the list of Films that were realised by the Director correpsonding to the director_id argument.
      *
-     * @param  director_id      the id of the Director
-     * @return                  the corresponding films
+     * @param director_id the id of the Director
+     * @return the corresponding films
      * @throws ServiceException in case the director doesn't exist
      */
     @Override
     public List<Film> findByDirectorId(long director_id) throws ServiceException {
-            if (entityManager.find(Director.class, director_id) == null) {
-                throw new ServiceException("Director don't exist");
-            }
-            return entityManager
-                    .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
-                    .setParameter("director_id", director_id)
-                    .getResultList();
+        Director director = entityManager.find(Director.class, director_id);
+        if (director == null) {
+            throw new ServiceException("Director doesn't exist");
+        }
+        return entityManager
+                .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
+                .setParameter("director_id", director_id)
+                .getResultList();
     }
 
     /**
      * Updates the Film corresponding to the id argument with the film argument
      *
-     * @param  id               the id of the film to update
-     * @param film              the state of the film updated
-     * @return                  the corresponding film updated
+     * @param id   the id of the film to update
+     * @param film the state of the film updated
+     * @return the corresponding film updated
      * @throws ServiceException in case the film doesn't exist
      */
     @Override
-    public Film update(long id, Film film)  throws ServiceException {
+    public Film update(long id, Film film) throws ServiceException {
         Optional<Film> prev_film = this.findById(id);
-        if  (prev_film.isEmpty()) {
-            throw new ServiceException("Film don't exist");
+        if (prev_film.isEmpty()) {
+            throw new ServiceException("Film doesn't exist");
         }
         Film film_to_modify = entityManager.merge(prev_film.get());
         film_to_modify.setTitle(film.getTitle());
@@ -116,10 +124,10 @@ public class JpaFilmDAO implements FilmDAO {
     /**
      * Deletes the Film corresponding to the film argument
      *
-     * @param  film the film to delete
+     * @param film the film to delete
      */
     @Override
-    public void delete(Film film){
+    public void delete(Film film) {
         Film managedFilm = entityManager.find(Film.class, film.getId());
         if (managedFilm != null) {
             entityManager.remove(managedFilm);

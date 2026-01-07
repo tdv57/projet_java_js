@@ -1,6 +1,9 @@
 package com.ensta.myfilmlist.dao.impl;
 
+import com.ensta.myfilmlist.dao.DirectorDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
+import com.ensta.myfilmlist.model.Director;
+import com.ensta.myfilmlist.persistence.ConnectionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,11 +17,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.*;
-
-import com.ensta.myfilmlist.dao.DirectorDAO;
-import com.ensta.myfilmlist.model.Director;
-import com.ensta.myfilmlist.persistence.ConnectionManager;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class JdbcDirectorDAO implements DirectorDAO {
@@ -45,7 +46,7 @@ public class JdbcDirectorDAO implements DirectorDAO {
     public Optional<Director> findBySurnameAndName(String surname, String name) {
         String query = "SELECT * FROM Director WHERE name=? AND surname=?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(query,this.rowMapper, name, surname));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query, this.rowMapper, name, surname));
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
             return Optional.empty();
         }
@@ -65,7 +66,7 @@ public class JdbcDirectorDAO implements DirectorDAO {
     @Override
     public Director update(long id, Director director) throws ServiceException {
         String query = "UPDATE Director SET name=?, surname=?, birthdate=?, famous=? WHERE id=?";
-        try{
+        try {
             this.jdbcTemplate.update(query,
                     director.getName(),
                     director.getSurname(),
@@ -80,7 +81,7 @@ public class JdbcDirectorDAO implements DirectorDAO {
     }
 
     @Override
-    public Director save(Director director) {
+    public Director save(Director director) throws ServiceException {
         String query = "INSERT INTO Director(surname, name, birthdate, famous) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         PreparedStatementCreator creator = conn -> {

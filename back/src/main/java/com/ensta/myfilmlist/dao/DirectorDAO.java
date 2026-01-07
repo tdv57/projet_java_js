@@ -9,6 +9,6 @@ public interface DirectorDAO {
     Optional<Director> findBySurnameAndName(String surname, String name);
     Optional<Director> findById(long id);
     Director update(long id, Director director) throws ServiceException;
-    Director save(Director director);
+    Director save(Director director) throws ServiceException;
     void delete(long id);
 }

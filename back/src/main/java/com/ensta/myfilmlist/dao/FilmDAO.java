@@ -6,7 +6,7 @@ import com.ensta.myfilmlist.model.*;
 
 public interface FilmDAO {
     List<Film> findAll();
-    Film save(Film film);
+    Film save(Film film) throws ServiceException;
     Optional<Film> findById(long id);
     Optional<Film> findByTitle(String title);
     List<Film> findByDirectorId(long director_id) throws ServiceException ;

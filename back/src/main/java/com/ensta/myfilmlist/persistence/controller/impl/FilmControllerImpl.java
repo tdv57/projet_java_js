@@ -1,13 +1,12 @@
 package com.ensta.myfilmlist.persistence.controller.impl;
 
+import com.ensta.myfilmlist.dto.FilmDTO;
+import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.FilmForm;
+import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.persistence.controller.FilmController;
 import com.ensta.myfilmlist.service.MyFilmsService;
-import com.ensta.myfilmlist.dto.*;
-import com.ensta.myfilmlist.exception.*;
-import com.ensta.myfilmlist.mapper.FilmMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,7 +71,11 @@ public class FilmControllerImpl implements FilmController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createFilm(filmForm));
         } catch (ServiceException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            if (Objects.equals(e.getMessage(), "Film already exists")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
         }
     }
 
