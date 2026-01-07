@@ -192,7 +192,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Transactional
     public void deleteDirector(long id) throws ServiceException {
         Optional<Director> optionalDirector = this.directorDAO.findById(id);
-        if (optionalDirector.isEmpty()) throw new ServiceException("Réalisateur inexistant");
+        if (optionalDirector.isEmpty()) throw new ServiceException("Can't get Director");
         this.directorDAO.delete(id);
     }
 
