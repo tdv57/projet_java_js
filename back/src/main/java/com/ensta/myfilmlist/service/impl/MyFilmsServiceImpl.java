@@ -58,7 +58,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public List<Film> findAll() throws ServiceException {
+    public List<Film> findAll() {
         return this.filmDAO.findAll();
     }
 
@@ -82,18 +82,16 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     public List<Film> findFilmByDirectorId(long id) throws ServiceException {
-        List<Film> films = this.filmDAO.findByDirectorId(id);
-        if (films.isEmpty()) {
-            throw new ServiceException("Le réalistauer n'a réalisé aucun film");
-        }
-        return films;
+        return this.filmDAO.findByDirectorId(id);
     }
 
     @Override
     @Transactional
     public FilmDTO updateFilm(long id, FilmForm filmForm) throws ServiceException {
         Optional<Director> director = this.directorDAO.findById(filmForm.getDirectorId());
-        if (director.isEmpty()) throw new ServiceException("Réalisateur inexistant");
+        if (director.isEmpty()) {
+            throw new ServiceException("Director don't exist");
+        }
         Film new_film = filmMapper.convertFilmFormToFilm(filmForm);
         Film film = this.filmDAO.update(id, new_film);
         return FilmMapper.convertFilmToFilmDTO(film);

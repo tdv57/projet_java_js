@@ -42,16 +42,12 @@ public class JdbcFilmDAO implements FilmDAO {
     };
 
     @Override
-    public List<Film> findAll() throws ServiceException {
+    public List<Film> findAll() {
         String query = "SELECT * FROM Film JOIN Director ON Director.id = Film.director_id;";
         try {
-            List<Film> films = this.jdbcTemplate.query(query, this.rowMapper);
-            if (films.isEmpty()) {
-                throw new ServiceException("JdbcFilmDAO::findAll no Film founded");
-            }
-            return films;
+            return this.jdbcTemplate.query(query, this.rowMapper);
         } catch (DataAccessException e) {
-            throw new ServiceException("Erreur pour trouver tous les films", e);
+            return null;
         }
     }
 

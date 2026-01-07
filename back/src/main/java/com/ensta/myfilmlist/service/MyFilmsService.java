@@ -12,7 +12,7 @@ import com.ensta.myfilmlist.dto.*;
 
 public interface MyFilmsService {
     FilmDTO createFilm(FilmForm filmForm) throws ServiceException;
-    List<Film> findAll() throws ServiceException;
+    List<Film> findAll();
     Film findFilmById(long id) throws ServiceException;
     Film findFilmByTitle(String title) throws ServiceException;
     List<Film> findFilmByDirectorId(long id) throws ServiceException;
