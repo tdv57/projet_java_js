@@ -530,16 +530,12 @@ public class FilmServiceTests {
   }
 
   @Test
-  void whenFindFilmByDirectorId_thenShouldHaveFilm() {
+  void whenFindFilmByDirectorId_thenShouldHaveFilm() throws ServiceException{
     when(jpaFilmDAO.findByDirectorId(anyLong())).thenAnswer(invocation -> {
       return mockJpaFilmDAOFindByDirectorId(invocation.getArgument(0));
     });
 
-    try {
-      assertEquals(jamesCameron.getFilmsProduced(), myFilmsServiceImpl.findFilmByDirectorId(1));
-    } catch (ServiceException e) {
-      System.out.println("whenFindFilmByDirectorId_thenShouldHaveFilm error");
-    }
+    assertEquals(jamesCameron.getFilmsProduced(), myFilmsServiceImpl.findFilmByDirectorId(1));
 
     ServiceException exception = assertThrows(ServiceException.class, () -> {
         myFilmsServiceImpl.findFilmByDirectorId(100L);
