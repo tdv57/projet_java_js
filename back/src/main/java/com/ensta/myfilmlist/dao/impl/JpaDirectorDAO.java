@@ -3,6 +3,7 @@ package com.ensta.myfilmlist.dao.impl;
 import com.ensta.myfilmlist.dao.DirectorDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.model.Film;
+import com.ensta.myfilmlist.model.History;
 import com.ensta.myfilmlist.model.Director;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -42,8 +43,16 @@ public class JpaDirectorDAO implements DirectorDAO {
      */
     @Override
     public Optional<Director> findByNameAndSurname(String name, String surname){
-        int director_id =  entityManager.createQuery("SELECT r FROM Director r WHERE surname = :surname AND name = :name").getFirstResult();
-        return Optional.ofNullable(entityManager.find(Director.class, director_id));
+        List<Director> director =  entityManager.createQuery("SELECT r FROM Director r WHERE surname = :surname AND name = :name")
+        .setParameter("name", name)
+        .setParameter("surname", surname)
+        .getResultList();
+
+        if (director.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(director.get(0));
+        }
     }
 
     /**
@@ -99,11 +108,20 @@ public class JpaDirectorDAO implements DirectorDAO {
     public void delete(long id) {
         Director managedDirector = entityManager.find(Director.class, id);
         if (managedDirector != null) {
+
             List<Film> films = entityManager
                     .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
                     .setParameter("director_id", id)
                     .getResultList();
-            films.forEach(film -> entityManager.remove(film));
+            films.forEach(film -> {
+            List<History> historys = entityManager
+                    .createQuery("SELECT h FROM History h WHERE h.film.id  = :film_id", History.class)
+                    .setParameter("film_id", film.getId())
+                    .getResultList();
+            historys.forEach(history -> entityManager.remove(history));
+                entityManager.remove(film);
+            });
+
             entityManager.remove(managedDirector);
         }
     }
