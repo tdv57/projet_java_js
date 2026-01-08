@@ -1,31 +1,26 @@
 package com.ensta.myfilmlist;
 
-import com.ensta.myfilmlist.dao.impl.*;
+import com.ensta.myfilmlist.dao.DirectorDAO;
+import com.ensta.myfilmlist.dao.FilmDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
-import com.ensta.myfilmlist.dao.*;
-import com.ensta.myfilmlist.model.*;
-import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Optional;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.management.RuntimeErrorException;
-import javax.transaction.Transactional;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.ensta.myfilmlist.model.Director;
+import com.ensta.myfilmlist.model.Film;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+
+import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -34,34 +29,32 @@ import org.springframework.test.context.jdbc.Sql;
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
 class DirectorsDAOTests {
+    private static int count = 0;
     @Autowired
     private FilmDAO filmDAO;
     @Autowired
     private DirectorDAO directorDAO;
-
-    private static int count = 0;
-
     @Autowired
     private FilmMapper filmMapper;
 
-    @BeforeEach 
+    @BeforeEach
     void setUp() {
         System.out.println("\n");
         System.out.println("Debut test n°" + count);
         System.out.println("\n");
     }
 
-    @AfterEach 
+    @AfterEach
     void setDown() {
         System.out.println("\n");
         System.out.println("Fin test n°" + count);
-        count ++;
+        count++;
         System.out.println("\n");
     }
 
     private Director getJamesCameron() {
         Director jamesCameron = new Director();
-        jamesCameron.setBirthdate(LocalDate.of(1954, 8, 16));    
+        jamesCameron.setBirthdate(LocalDate.of(1954, 8, 16));
         jamesCameron.setFamous(false);
         jamesCameron.setId(1L);
         jamesCameron.setName("James");
@@ -72,7 +65,7 @@ class DirectorsDAOTests {
 
     private Director getPeterJackson() {
         Director peterJackson = new Director();
-        peterJackson.setBirthdate(LocalDate.of(1961, 10, 31));        
+        peterJackson.setBirthdate(LocalDate.of(1961, 10, 31));
         peterJackson.setFamous(true);
         peterJackson.setId(2L);
         peterJackson.setName("Peter");
@@ -108,7 +101,7 @@ class DirectorsDAOTests {
         lesDeuxTours.setId(3);
         lesDeuxTours.setTitle("Les deux tours");
         lesDeuxTours.setGenre(null);
-        return lesDeuxTours;      
+        return lesDeuxTours;
     }
 
     private Film getLeRetourDuRoi() {
@@ -118,25 +111,25 @@ class DirectorsDAOTests {
         leRetourDuRoi.setId(4);
         leRetourDuRoi.setTitle("Le retour du roi");
         leRetourDuRoi.setGenre(null);
-        return leRetourDuRoi;      
+        return leRetourDuRoi;
     }
 
 
-    @Test  
+    @Test
     void printDatabaseTest() {
         filmDAO.findAll().forEach(System.out::println);
         System.out.println("\n");
         directorDAO.findAll().forEach(System.out::println);
     }
 
-    @Test 
+    @Test
     void whenFindAll_thenShouldHaveAllDirectors() {
         List<Director> directors = directorDAO.findAll();
         assertEquals(getJamesCameron(), directors.get(0));
         assertEquals(getPeterJackson(), directors.get(1));
     }
 
-    @Test 
+    @Test
     void whenFindBySurnameAndName_thenShouldHaveDirector() {
         Optional<Director> jamesCameron = directorDAO.findBySurnameAndName("Cameron", "James");
         assertEquals(Optional.of(getJamesCameron()), jamesCameron);
@@ -145,7 +138,7 @@ class DirectorsDAOTests {
         assertEquals(Optional.empty(), error);
     }
 
-    @Test 
+    @Test
     void whenFindById_thenShouldHaveDirector() {
         Optional<Director> jamesCameron = directorDAO.findById(1L);
         assertEquals(jamesCameron, Optional.of(getJamesCameron()));
@@ -155,7 +148,7 @@ class DirectorsDAOTests {
     }
 
     @Test
-    void whenUpdate_thenShouldHaveUpdatedDirector() throws ServiceException{
+    void whenUpdate_thenShouldHaveUpdatedDirector() throws ServiceException {
         Director newJamesCameron = new Director();
         newJamesCameron.setBirthdate((LocalDate.of(2000, 8, 16)));
         newJamesCameron.setFamous(false);
@@ -165,26 +158,29 @@ class DirectorsDAOTests {
         Director updatedJamesCameron = directorDAO.update(1L, newJamesCameron);
         assertEquals(Optional.of(newJamesCameron), directorDAO.findById(1));
 
-        ServiceException e = assertThrows(ServiceException.class, () -> {
-            directorDAO.update(100L, newJamesCameron);
-        });
+        ServiceException e = assertThrows(ServiceException.class, () -> directorDAO.update(100L, newJamesCameron));
 
-        assertEquals("Réalisateur inexistant", e.getMessage());
+        assertEquals("Director doesn't exist", e.getMessage());
     }
 
-    @Test 
+    @Test
     void whenSave_thenShouldHaveCreatedDirector() {
         Director newDirector = new Director();
-        newDirector.setBirthdate(LocalDate.of(2002,03, 20));
+        newDirector.setBirthdate(LocalDate.of(2002, 3, 20));
         newDirector.setFamous(false);
         newDirector.setName("name");
         newDirector.setSurname("surname");
-        Director savedDirector = directorDAO.save(newDirector);
+        Director savedDirector;
+        try {
+            savedDirector = directorDAO.save(newDirector);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
         newDirector.setId(3L);
         assertEquals(Optional.of(savedDirector), directorDAO.findById(3L));
     }
 
-    @Test 
+    @Test
     void whenDelete_thenShouldHaveDeleteDirector() {
         assertEquals(2, directorDAO.findAll().size());
         directorDAO.delete(1L);

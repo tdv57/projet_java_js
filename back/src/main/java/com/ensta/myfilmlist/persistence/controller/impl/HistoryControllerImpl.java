@@ -39,7 +39,7 @@ public class HistoryControllerImpl implements HistoryController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findWatchList(userId)));
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible de trouver tous les films de l'historique", e);
+            throw new ControllerException("Can't get all Films from History", e);
         }
     }
 
@@ -68,7 +68,7 @@ public class HistoryControllerImpl implements HistoryController {
             myFilmsService.removeFilmFromWatchList(userId, filmId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible de supprimer le film de l'historique", e);
+            throw new ControllerException("Can't delete Film from History", e);
         }
     }
 
@@ -79,7 +79,7 @@ public class HistoryControllerImpl implements HistoryController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.rateFilm(userId, filmId, rating)));
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible de noter ce film", e);
+            throw new ControllerException("Can't rate given Film", e);
         }
     }
 
@@ -89,7 +89,7 @@ public class HistoryControllerImpl implements HistoryController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getUserRating(userId, filmId)));
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible de trouver la note de ce film", e);
+            throw new ControllerException("Can't get Film's rating", e);
         }
     }
 
@@ -98,7 +98,7 @@ public class HistoryControllerImpl implements HistoryController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getMeanRating(filmId)));
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible de trouver la note de ce film", e);
+            throw new ControllerException("Can't get Film's rating", e);
         }
     }
 }

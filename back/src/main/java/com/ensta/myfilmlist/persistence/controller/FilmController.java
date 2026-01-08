@@ -41,7 +41,7 @@ public interface FilmController {
     @ApiOperation(value = "Rechercher des films par leur réalisateur", notes = "Permet de renvoyer les détails des films grâce à l'identifiant de leur réalisateur.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le(s) film(s) demandé(s) a(ont) été trouvé"),
-            @ApiResponse(code = 404, message = "Le réalisateur n'existe pas")
+            @ApiResponse(code = 404, message = "Le réalisateur demandé n'existe pas")
     })
     ResponseEntity<List<FilmDTO>> getFilmByDirectorId(@PathVariable long id);
 

@@ -1,26 +1,28 @@
 package com.ensta.myfilmlist;
 
+import com.ensta.myfilmlist.dao.DirectorDAO;
+import com.ensta.myfilmlist.dao.FilmDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
-import com.ensta.myfilmlist.dao.*;
-import com.ensta.myfilmlist.model.*;
-import com.ensta.myfilmlist.form.*;
+import com.ensta.myfilmlist.form.FilmForm;
 import com.ensta.myfilmlist.mapper.FilmMapper;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Optional;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.transaction.Transactional;
-import org.junit.jupiter.api.Test;
+import com.ensta.myfilmlist.model.Director;
+import com.ensta.myfilmlist.model.Film;
+import com.ensta.myfilmlist.model.Genre;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+
+import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -30,29 +32,26 @@ import org.springframework.test.context.jdbc.Sql;
 )
 class FilmsDAOTests {
 
+    private static int count = 0;
     @Autowired
     private FilmDAO filmDAO;
-
     @Autowired
     private DirectorDAO directorDAO;
-
-    private static int count = 0;
-
     @Autowired
     private FilmMapper filmMapper;
 
-    @BeforeEach 
+    @BeforeEach
     void setUp() {
         System.out.println("\n");
         System.out.println("Debut test n°" + count);
         System.out.println("\n");
     }
 
-    @AfterEach 
+    @AfterEach
     void setDown() {
         System.out.println("\n");
         System.out.println("Fin test n°" + count);
-        count ++;
+        count++;
         System.out.println("\n");
     }
 
@@ -121,7 +120,7 @@ class FilmsDAOTests {
 
     private Director getJamesCameron() {
         Director jamesCameron = new Director();
-        jamesCameron.setBirthdate(LocalDate.of(1954, 8, 16));    
+        jamesCameron.setBirthdate(LocalDate.of(1954, 8, 16));
         jamesCameron.setFamous(false);
         jamesCameron.setId(1L);
         jamesCameron.setName("James");
@@ -132,7 +131,7 @@ class FilmsDAOTests {
 
     private Director getPeterJackson() {
         Director peterJackson = new Director();
-        peterJackson.setBirthdate(LocalDate.of(1961, 10, 31));        
+        peterJackson.setBirthdate(LocalDate.of(1961, 10, 31));
         peterJackson.setFamous(true);
         peterJackson.setId(2L);
         peterJackson.setName("Peter");
@@ -168,7 +167,7 @@ class FilmsDAOTests {
         lesDeuxTours.setId(3);
         lesDeuxTours.setTitle("Les deux tours");
         lesDeuxTours.setGenre(getFantaisie());
-        return lesDeuxTours;      
+        return lesDeuxTours;
     }
 
     private Film getLeRetourDuRoi() {
@@ -178,7 +177,7 @@ class FilmsDAOTests {
         leRetourDuRoi.setId(4);
         leRetourDuRoi.setTitle("Le retour du roi");
         leRetourDuRoi.setGenre(getFantaisie());
-        return leRetourDuRoi;      
+        return leRetourDuRoi;
     }
 
 
@@ -206,7 +205,11 @@ class FilmsDAOTests {
         filmForm.setDirectorId(2);
         filmForm.setTitle("title");
         filmForm.setGenreId(1);
-        filmDAO.save(filmMapper.convertFilmFormToFilm(filmForm));
+        try {
+            filmDAO.save(filmMapper.convertFilmFormToFilm(filmForm));
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(5, filmDAO.findAll().size());
         Film newFilm = filmDAO.findById(5).get();
         assertEquals(15, newFilm.getDuration());
@@ -215,13 +218,13 @@ class FilmsDAOTests {
         assertEquals("title", newFilm.getTitle());
         assertEquals("action", newFilm.getGenre().getName());
     }
-    
+
     @Test
     void whenFindById_thenShouldHaveFilm() {
-        Optional<Film> filmInexistant = filmDAO.findById(100); 
-        assertEquals(Boolean.TRUE, filmInexistant.isEmpty() );
+        Optional<Film> filmInexistant = filmDAO.findById(100);
+        assertEquals(Boolean.TRUE, filmInexistant.isEmpty());
         Optional<Film> filmExistant = filmDAO.findById(1);
-        assertEquals(Boolean.FALSE, filmExistant.isEmpty() );
+        assertEquals(Boolean.FALSE, filmExistant.isEmpty());
         Film film = filmExistant.get();
         System.out.println(film);
         assertEquals("avatar", film.getTitle());
@@ -238,7 +241,7 @@ class FilmsDAOTests {
         Optional<Film> notFound = filmDAO.findByTitle("xxxxx");
         assertEquals(Optional.empty(), notFound);
     }
-    
+
     @Test
     void whenFindByDirectorId_thenShouldHaveFilms() {
         List<Film> filmsDeCameron;
@@ -259,12 +262,13 @@ class FilmsDAOTests {
         assertThrows(ServiceException.class, () -> filmDAO.findByDirectorId(3));
         try {
             filmsSansDirectors = filmDAO.findByDirectorId(3);
-        } catch (ServiceException ignored) {}
+        } catch (ServiceException ignored) {
+        }
         assertEquals(0, filmsSansDirectors.size());
     }
 
     @Test
-    void whenUpdateFilm_thenShouldHaveUpdatedFilm() throws ServiceException{
+    void whenUpdateFilm_thenShouldHaveUpdatedFilm() throws ServiceException {
         Film newAvatar = new Film();
         newAvatar.setDirector(getJamesCameron());
         newAvatar.setDuration(30);

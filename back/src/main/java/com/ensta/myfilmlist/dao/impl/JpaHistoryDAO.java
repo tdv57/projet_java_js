@@ -101,7 +101,7 @@ public class JpaHistoryDAO implements HistoryDAO {
             entityManager.merge(anhistory);
             return anhistory;
         }
-        throw new ServiceException("Can't update history.");
+        throw new ServiceException("Can't update History.");
     }
 
     /**
@@ -119,7 +119,7 @@ public class JpaHistoryDAO implements HistoryDAO {
         if (history.isPresent()) {
             return Optional.of(history.get().getRating());
         }
-        throw new ServiceException("Can't get rating.");
+        throw new ServiceException("Can't get Film's rating");
     }
 
     @Override
