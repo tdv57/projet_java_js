@@ -126,8 +126,13 @@ public class Director {
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) return true;
-        if (!(object instanceof Director director)) return false;
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Director)) {
+            return false;
+        }
+        Director director = (Director) object;
         return Objects.equals(this.id, director.getId())
                 && director.isFamous() == this.famous
                 && Objects.equals(director.getBirthdate(), this.birthdate)

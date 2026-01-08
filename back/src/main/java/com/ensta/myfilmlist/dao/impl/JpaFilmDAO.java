@@ -19,11 +19,11 @@ public class JpaFilmDAO implements FilmDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    void checkDuplicate(Film film) throws ServiceException {
+    void checkDuplicate(long id, Film film) throws ServiceException {
         Director director = film.getDirector();
         List<Film> filmList = findByDirectorId(director.getId());
         for (Film existing_film : filmList) {
-            if (existing_film.getTitle().trim().equals(film.getTitle().trim())) {
+            if (existing_film.getTitle().trim().equals(film.getTitle().trim()) && existing_film.getId() != id) {
                 throw new ServiceException("Film already exists");
             }
         }
@@ -54,7 +54,7 @@ public class JpaFilmDAO implements FilmDAO {
      */
     @Override
     public Film save(Film film) throws ServiceException {
-        checkDuplicate(film);
+        checkDuplicate(0, film);
         try {
             entityManager.persist(film);
             return film;
@@ -133,7 +133,7 @@ public class JpaFilmDAO implements FilmDAO {
      */
     @Override
     public Film update(long id, Film film) throws ServiceException {
-        checkDuplicate(film);
+        checkDuplicate(id, film);
         try {
             Optional<Film> prev_film = this.findById(id);
             if (prev_film.isEmpty()) {
