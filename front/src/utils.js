@@ -3,9 +3,9 @@ export function extractDate(d) {
   return d.toISOString().split("T")[0];
 }
 
-export async function doRequest(resPromise, messages) {
+export async function doRequest(reqPromise, messages) {
   try {
-    const res = await resPromise;
+    const res = await reqPromise;
     if (200 <= res.status && res.status < 300) {
       return [res.data || true, messages[res.status] || ""];
     } else if (res.status === 401) {

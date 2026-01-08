@@ -20,7 +20,7 @@ import useNotification from "../hooks/useNotification.js";
 function validateFilmData(film) {
   return (
     !!film.title &&
-    film.duration !== undefined &&
+    (film.duration > 0) &&
     film.directorDTO?.id !== undefined &&
     film.genreDTO?.id !== undefined
   );
@@ -29,9 +29,11 @@ function validateFilmData(film) {
 function FilmForm(props) {
   const { notifySuccess, notifyError, notifyInfo, notifyWarning } =
     useNotification();
+  const navigate = useNavigate();
 
   const [directors, setDirectors] = useState([]);
 
+  // fetch directors to populate select
   useEffect(() => {
     (async () => {
       const [res, msg] = await getAllDirectors();
@@ -44,39 +46,23 @@ function FilmForm(props) {
 
   const [genres, setGenres] = useState([]);
 
+  // fetch genres to populate select
   useEffect(() => {
-    getAllGenres()
-      .then((response) => {
-        setGenres(response.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    (async () => {
+      const [res, msg] = await getAllGenres();
+      if (!res) {
+        notifyError(msg);
+      }
+      setGenres(res || []);
+    })();
   }, []);
 
+  const [title, setTitle] = useState(props.film.title);
+  const [duration, setDuration] = useState(props.film.duration);
+  const [directorId, setDirectorId] = useState(props.film.directorDTO.id);
+  const [genreId, setGenreId] = useState(props.film.genreDTO.id);
+
   const [openGenresDialog, setOpenGenresDialog] = useState(false);
-
-  function onFormSubmit() {
-    if (!validateFilmData(props.film)) {
-      return;
-    }
-    return props.isNew
-      ? addFilm(
-          props.film.duration,
-          props.film.directorDTO.id,
-          props.film.title,
-          props.film.genreDTO.id,
-        )
-      : editFilm(
-          props.film.id,
-          props.film.duration,
-          props.film.directorDTO.id,
-          props.film.title,
-          props.film.genreDTO.id,
-        );
-  }
-
-  const navigate = useNavigate();
 
   return (
     <>
@@ -89,16 +75,16 @@ function FilmForm(props) {
           <Grid size={{ xs: 12, sm: 3.5 }}>
             <TextField
               label="Titre"
-              defaultValue={props.film.title}
-              onChange={(e) => (props.film.title = e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </Grid>
 
           <Grid size={{ xs: 12, sm: 1.5 }}>
             <TextField
               label="Durée"
-              defaultValue={props.film.duration}
-              onChange={(e) => (props.film.duration = e.target.value)}
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
             />
           </Grid>
 
@@ -108,8 +94,8 @@ function FilmForm(props) {
                 sx={{ display: "flex", width: "100%" }}
                 label="Genre"
                 select
-                defaultValue={props.film.genreDTO.id}
-                onChange={(e) => (props.film.genreDTO.id = e.target.value)}
+                value={genreId}
+                onChange={(e) => setGenreId(e.target.value)}
                 variant="outlined"
               >
                 {genres.map((genre) => (
@@ -147,9 +133,9 @@ function FilmForm(props) {
                 select
                 sx={{ display: "flex", width: "100%" }}
                 label="Réalisateur"
-                defaultValue={props.film.directorDTO.id || ""}
+                value={directorId}
                 onChange={(e) => {
-                  props.film.directorDTO.id = e.target.value;
+                  setDirectorId(e.target.value);
                 }}
                 variant="outlined"
               >
@@ -188,7 +174,21 @@ function FilmForm(props) {
               <Button
                 sx={{ height: "100%" }}
                 variant="contained"
-                onClick={() => onFormSubmit()}
+                onClick={async () => {
+                  const film = {
+                    id: props.film.id,
+                    title,
+                    duration,
+                    genreDTO: { id: genreId },
+                    directorDTO: { id: directorId },
+                  };
+                  if (validateFilmData(film)) {
+                    props.submit(film);
+                  } else {
+                    console.log(film);
+                    notifyWarning("Données invalides");
+                  }
+                }}
               >
                 Enregistrer
               </Button>
