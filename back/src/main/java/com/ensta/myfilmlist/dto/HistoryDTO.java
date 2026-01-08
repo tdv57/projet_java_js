@@ -1,5 +1,7 @@
 package com.ensta.myfilmlist.dto;
 
+import java.util.Optional;
+
 /**
  * Class representing data of a History.
  * DTO: transferred data between layers.
@@ -12,13 +14,13 @@ public class HistoryDTO {
 
     private UserDTO userDTO;
 
-    private int rating;
+    private Optional<Integer> rating;
 
     public HistoryDTO() {
         this.id = 0L;
         this.filmDTO = new FilmDTO();
         this.userDTO = new UserDTO();
-        this.rating = 0;
+        this.rating = Optional.empty();
     }
 
     public long getId() {
@@ -45,11 +47,15 @@ public class HistoryDTO {
         this.userDTO = userDTO;
     }
 
-    public int getRating() {
+    public Optional<Integer> getRating() {
         return rating;
     }
 
     public void setRating(int rating) {
-        this.rating = rating;
+        if (rating < 0) {
+            this.rating = Optional.empty();
+        } else {
+            this.rating = Optional.of(rating);
+        }
     }
 }

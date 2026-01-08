@@ -1,6 +1,7 @@
 package com.ensta.myfilmlist.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 
 /**
  * Data representing a History.
@@ -20,6 +21,7 @@ public class History {
     @JoinColumn(nullable = false)
     private User user;
 
+    @Max(value = 20, message = "La note du film est sur 20")
     private int rating;
 
     /**
@@ -29,12 +31,13 @@ public class History {
         this.id = 0L;
         this.film = new Film();
         this.user = new User();
-        this.rating = 0;
+        this.rating = -1;
     }
 
     public History(User user, Film film) {
         this.user = user;
         this.film = film;
+        this.rating = -1;
     }
 
     /**

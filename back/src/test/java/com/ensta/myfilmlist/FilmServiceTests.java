@@ -235,7 +235,11 @@ public class FilmServiceTests {
     void setUp() {
         when(jpaDirectorDAO.findById(anyLong())).thenAnswer(invocation -> mockJpaDirectorDAOFindById(invocation.getArgument(0)));
 
-        when(jpaGenreDAO.findById(anyLong())).thenAnswer(invocation -> mockJpaGenreDAOFindById(invocation.getArgument(0)));
+        try {
+            when(jpaGenreDAO.findById(anyLong())).thenAnswer(invocation -> mockJpaGenreDAOFindById(invocation.getArgument(0)));
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println("\n");
         System.out.println("Debut test n°" + count);
@@ -453,7 +457,11 @@ public class FilmServiceTests {
 
     @Test
     void whenFindFilmByTitle_thenShouldHaveFilm() {
-        when(jpaFilmDAO.findByTitle(anyString())).thenAnswer(invocation -> mockJpaFilmDAOFindByTitle(invocation.getArgument(0)));
+        try {
+            when(jpaFilmDAO.findByTitle(anyString())).thenAnswer(invocation -> mockJpaFilmDAOFindByTitle(invocation.getArgument(0)));
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             Film filmFound = myFilmsServiceImpl.findFilmByTitle("hihihi1");

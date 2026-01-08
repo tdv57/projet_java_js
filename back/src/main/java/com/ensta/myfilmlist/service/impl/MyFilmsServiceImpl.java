@@ -57,7 +57,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public List<Film> findAll() {
+    public List<Film> findAll() throws ServiceException {
         return this.filmDAO.findAll();
     }
 
@@ -114,7 +114,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public List<Director> findAllDirectors() {
+    public List<Director> findAllDirectors() throws ServiceException {
         return this.directorDAO.findAll();
     }
 
@@ -150,7 +150,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
         } catch (ServiceException e) {
             throw new ServiceException("Director doesn't exist");
         } catch (Throwable e) {
-            throw new ServiceException("Erreur lors de la mise à jour de la célébrité", e);
+            throw new ServiceException("Can't update famous", e);
         }
     }
 
@@ -215,7 +215,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     @Transactional
-    public List<Film> findWatchList(long userId) {
+    public List<Film> findWatchList(long userId) throws ServiceException {
         return this.historyDAO.getWatchList(userId);
     }
 
@@ -227,7 +227,11 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
     @Override
     public void removeFilmFromWatchList(long userId, long filmId) {
-        this.historyDAO.deleteFilm(userId, filmId);
+        try {
+            this.historyDAO.deleteFilm(userId, filmId);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -237,13 +241,17 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public Optional<Integer> getUserRating(long userId, long filmId) throws ServiceException {
+    public int getUserRating(long userId, long filmId) throws ServiceException {
         return this.historyDAO.getUserRating(userId, filmId);
     }
 
     @Override
-    public Optional<Double> getMeanRating(long filmId) throws ServiceException {
-        return this.historyDAO.getMeanRating(filmId);
+    public Optional<Double> getMeanRating(long filmId) {
+        try {
+            return this.historyDAO.getMeanRating(filmId);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

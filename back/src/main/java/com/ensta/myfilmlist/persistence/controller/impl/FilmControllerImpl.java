@@ -36,7 +36,11 @@ public class FilmControllerImpl implements FilmController {
     @Override
     @GetMapping("")
     public ResponseEntity<List<FilmDTO>> getAllFilms() {
-        return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findAll()));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findAll()));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     /**
@@ -52,6 +56,9 @@ public class FilmControllerImpl implements FilmController {
             FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(id));
             return ResponseEntity.status(HttpStatus.OK).body(filmDTO);
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -69,6 +76,9 @@ public class FilmControllerImpl implements FilmController {
             FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmByTitle(title));
             return ResponseEntity.status(HttpStatus.OK).body(filmDTO);
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -87,6 +97,9 @@ public class FilmControllerImpl implements FilmController {
             List<FilmDTO> returnList = FilmMapper.convertFilmToFilmDTOs(filmList);
             return ResponseEntity.status(HttpStatus.OK).body(returnList);
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -106,11 +119,13 @@ public class FilmControllerImpl implements FilmController {
         } catch (ServiceException e) {
             if (Objects.equals(e.getMessage(), "Film already exists")) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            } else if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
 
     /**
      * Updates a Film based on a form (user entry)
@@ -125,7 +140,11 @@ public class FilmControllerImpl implements FilmController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateFilm(id, filmForm));
         } catch (ServiceException e) {
-            if (Objects.equals(e.getMessage(), "Réalisateur inexistant")) throw new ControllerException(e.getMessage());
+            if (Objects.equals(e.getMessage(), "Film already exists")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            } else if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -144,7 +163,10 @@ public class FilmControllerImpl implements FilmController {
             myFilmsService.deleteFilm(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (ServiceException e) {
-            if (Objects.equals(e.getMessage(), "Erreur lors de la mise à jour de la célébrité")) {
+            if (Objects.equals(e.getMessage(), "Can't update famous")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+            if (e.getMessage().equals("Internal Server Error")) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

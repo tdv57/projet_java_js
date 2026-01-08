@@ -18,6 +18,15 @@ public class JpaFilmDAO implements FilmDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    void checkDuplicate(Film film) throws ServiceException {
+        Director director = film.getDirector();
+        List<Film> filmList = findByDirectorId(director.getId());
+        for (Film existing_film : filmList) {
+            if (existing_film.getTitle().trim().equals(film.getTitle().trim())) {
+                throw new ServiceException("Film already exists");
+            }
+        }
+    }
 
     /**
      * Returns the list of all Films present in the database.
@@ -26,10 +35,14 @@ public class JpaFilmDAO implements FilmDAO {
      * @return the list of Films
      */
     @Override
-    public List<Film> findAll() {
-        return entityManager
-                .createQuery("SELECT f FROM Film f", Film.class)
-                .getResultList();
+    public List<Film> findAll() throws ServiceException {
+        try {
+            return entityManager
+                    .createQuery("SELECT f FROM Film f", Film.class)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
+        }
     }
 
     /**
@@ -40,15 +53,13 @@ public class JpaFilmDAO implements FilmDAO {
      */
     @Override
     public Film save(Film film) throws ServiceException {
-        Director director = film.getDirector();
-        List<Film> films = findByDirectorId(director.getId());
-        for (Film existing_film : films) {
-            if (existing_film.getTitle().trim().equals(film.getTitle().trim())) {
-                throw new ServiceException("Film already exists");
-            }
+        checkDuplicate(film);
+        try {
+            entityManager.persist(film);
+            return film;
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
         }
-        entityManager.persist(film);
-        return film;
     }
 
     /**
@@ -58,8 +69,12 @@ public class JpaFilmDAO implements FilmDAO {
      * @return the corresponding film
      */
     @Override
-    public Optional<Film> findById(long id) {
-        return Optional.ofNullable(entityManager.find(Film.class, id));
+    public Optional<Film> findById(long id) throws ServiceException {
+        try {
+            return Optional.ofNullable(entityManager.find(Film.class, id));
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
+        }
     }
 
     /**
@@ -69,15 +84,19 @@ public class JpaFilmDAO implements FilmDAO {
      * @return the corresponding film
      */
     @Override
-    public Optional<Film> findByTitle(String title) {
-        List<Film> films = entityManager
-                .createQuery("SELECT f FROM Film f WHERE f.title = :title", Film.class)
-                .setParameter("title", title)
-                .getResultList();
-        if (films.isEmpty()) {
-            return Optional.empty();
+    public Optional<Film> findByTitle(String title) throws ServiceException {
+        try {
+            List<Film> films = entityManager
+                    .createQuery("SELECT f FROM Film f WHERE f.title = :title", Film.class)
+                    .setParameter("title", title)
+                    .getResultList();
+            if (films.isEmpty()) {
+                return Optional.empty();
+            }
+            return Optional.of(films.get(0));
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
         }
-        return Optional.of(films.get(0));
     }
 
     /**
@@ -89,14 +108,18 @@ public class JpaFilmDAO implements FilmDAO {
      */
     @Override
     public List<Film> findByDirectorId(long director_id) throws ServiceException {
-        Director director = entityManager.find(Director.class, director_id);
-        if (director == null) {
-            throw new ServiceException("Director doesn't exist");
+        try {
+            Director director = entityManager.find(Director.class, director_id);
+            if (director == null) {
+                throw new ServiceException("Director doesn't exist");
+            }
+            return entityManager
+                    .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
+                    .setParameter("director_id", director_id)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
         }
-        return entityManager
-                .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
-                .setParameter("director_id", director_id)
-                .getResultList();
     }
 
     /**
@@ -109,16 +132,21 @@ public class JpaFilmDAO implements FilmDAO {
      */
     @Override
     public Film update(long id, Film film) throws ServiceException {
-        Optional<Film> prev_film = this.findById(id);
-        if (prev_film.isEmpty()) {
-            throw new ServiceException("Film doesn't exist");
+        checkDuplicate(film);
+        try {
+            Optional<Film> prev_film = this.findById(id);
+            if (prev_film.isEmpty()) {
+                throw new ServiceException("Film doesn't exist");
+            }
+            Film film_to_modify = entityManager.merge(prev_film.get());
+            film_to_modify.setTitle(film.getTitle());
+            film_to_modify.setDuration(film.getDuration());
+            film_to_modify.setDirector(film.getDirector());
+            entityManager.merge(film_to_modify);
+            return film_to_modify;
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
         }
-        Film film_to_modify = entityManager.merge(prev_film.get());
-        film_to_modify.setTitle(film.getTitle());
-        film_to_modify.setDuration(film.getDuration());
-        film_to_modify.setDirector(film.getDirector());
-        entityManager.merge(film_to_modify);
-        return film_to_modify;
     }
 
     /**
@@ -127,10 +155,14 @@ public class JpaFilmDAO implements FilmDAO {
      * @param film the film to delete
      */
     @Override
-    public void delete(Film film) {
-        Film managedFilm = entityManager.find(Film.class, film.getId());
-        if (managedFilm != null) {
-            entityManager.remove(managedFilm);
+    public void delete(Film film) throws ServiceException {
+        try {
+            Film managedFilm = entityManager.find(Film.class, film.getId());
+            if (managedFilm != null) {
+                entityManager.remove(managedFilm);
+            }
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
         }
     }
 

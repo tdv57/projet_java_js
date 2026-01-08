@@ -185,7 +185,11 @@ class FilmsDAOTests {
     void printDatabaseTest() {
         filmDAO.findAll().forEach(System.out::println);
         System.out.println("\n");
-        directorDAO.findAll().forEach(System.out::println);
+        try {
+            directorDAO.findAll().forEach(System.out::println);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -235,10 +239,20 @@ class FilmsDAOTests {
 
     @Test
     void whenFindByTitle_thenShouldHaveTitle() {
-        Optional<Film> avatar = filmDAO.findByTitle("avatar");
+        Optional<Film> avatar = null;
+        try {
+            avatar = filmDAO.findByTitle("avatar");
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(Optional.of(getAvatar()), avatar);
 
-        Optional<Film> notFound = filmDAO.findByTitle("xxxxx");
+        Optional<Film> notFound = null;
+        try {
+            notFound = filmDAO.findByTitle("xxxxx");
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(Optional.empty(), notFound);
     }
 
@@ -285,7 +299,11 @@ class FilmsDAOTests {
     @Test
     void whenDeleteFilm_thenShouldDeleteFilm() {
         Film film = filmDAO.findById(1).get();
-        filmDAO.delete(film);
+        try {
+            filmDAO.delete(film);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(3, filmDAO.findAll().size());
         Optional<Film> filmDeleted = filmDAO.findById(1);
         assertEquals(Optional.empty(), filmDeleted);

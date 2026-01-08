@@ -20,32 +20,48 @@ import com.ensta.myfilmlist.dto.*;
 
 public interface MyFilmsService {
     FilmDTO createFilm(FilmForm filmForm) throws ServiceException;
-    List<Film> findAll();
+
+    List<Film> findAll() throws ServiceException;
+
     Film findFilmById(long id) throws ServiceException;
+
     Film findFilmByTitle(String title) throws ServiceException;
+
     List<Film> findFilmByDirectorId(long id) throws ServiceException;
+
     FilmDTO updateFilm(long id, FilmForm filmForm) throws ServiceException;
+
     void deleteFilm(long id) throws ServiceException;
 
     DirectorDTO createDirector(DirectorForm directorForm) throws ServiceException;
+
     List<Director> findAllDirectors() throws ServiceException;
+
     Director findDirectorById(long id) throws ServiceException;
     Director findDirectorByNameAndSurname(String name, String surname) throws ServiceException;
     Director updateDirectorFamous(Director director) throws ServiceException;
+
     List<Director> updateDirectorsFamous(List<Director> directors) throws ServiceException;
+
     DirectorDTO updateDirector(long id, DirectorForm directorForm) throws ServiceException;
+
     void deleteDirector(long id) throws ServiceException;
 
     List<Genre> findAllGenres() throws ServiceException;
+
     Genre findGenreById(long id) throws ServiceException;
+
     GenreDTO updateGenre(long id, String name) throws ServiceException;
 
     List<Film> findWatchList(long userId) throws ServiceException;
+
     History addFilmToWatchList(long userId, long filmId) throws ServiceException;
+
     void removeFilmFromWatchList(long userId, long filmId) throws ServiceException;
+
     History rateFilm(long userId, long filmId, int rating) throws ServiceException;
 
-    Optional<Integer> getUserRating(long userId, long filmId) throws ServiceException;
+    int getUserRating(long userId, long filmId) throws ServiceException;
 
     List<User> findAllUsers() throws ServiceException;
     UserDTO createUser(UserForm userForm) throws ServiceException;

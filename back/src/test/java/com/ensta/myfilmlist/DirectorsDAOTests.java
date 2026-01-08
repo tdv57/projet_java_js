@@ -116,30 +116,49 @@ class DirectorsDAOTests {
 
 
     @Test
-    void printDatabaseTest() {
+    void printDatabaseTest() throws ServiceException {
         filmDAO.findAll().forEach(System.out::println);
         System.out.println("\n");
-        directorDAO.findAll().forEach(System.out::println);
+        try {
+            directorDAO.findAll().forEach(System.out::println);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     void whenFindAll_thenShouldHaveAllDirectors() {
-        List<Director> directors = directorDAO.findAll();
+        List<Director> directors = null;
+        try {
+            directors = directorDAO.findAll();
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(getJamesCameron(), directors.get(0));
         assertEquals(getPeterJackson(), directors.get(1));
     }
 
     @Test
     void whenFindBySurnameAndName_thenShouldHaveDirector() {
-        Optional<Director> jamesCameron = directorDAO.findBySurnameAndName("Cameron", "James");
+        Optional<Director> jamesCameron = null;
+        try {
+            jamesCameron = directorDAO.findBySurnameAndName("Cameron", "James");
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(Optional.of(getJamesCameron()), jamesCameron);
 
-        Optional<Director> error = directorDAO.findBySurnameAndName("unknown", "unknown");
+        Optional<Director> error = null;
+        try {
+            error = directorDAO.findBySurnameAndName("unknown", "unknown");
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(Optional.empty(), error);
     }
 
     @Test
-    void whenFindById_thenShouldHaveDirector() {
+    void whenFindById_thenShouldHaveDirector() throws ServiceException {
         Optional<Director> jamesCameron = directorDAO.findById(1L);
         assertEquals(jamesCameron, Optional.of(getJamesCameron()));
 
@@ -164,7 +183,7 @@ class DirectorsDAOTests {
     }
 
     @Test
-    void whenSave_thenShouldHaveCreatedDirector() {
+    void whenSave_thenShouldHaveCreatedDirector() throws ServiceException {
         Director newDirector = new Director();
         newDirector.setBirthdate(LocalDate.of(2002, 3, 20));
         newDirector.setFamous(false);
@@ -181,14 +200,42 @@ class DirectorsDAOTests {
     }
 
     @Test
-    void whenDelete_thenShouldHaveDeleteDirector() {
-        assertEquals(2, directorDAO.findAll().size());
-        directorDAO.delete(1L);
-        assertEquals(1, directorDAO.findAll().size());
-        directorDAO.delete(3L);
-        assertEquals(1, directorDAO.findAll().size());
-        directorDAO.delete(2L);
-        assertEquals(0, directorDAO.findAll().size());
+    void whenDelete_thenShouldHaveDeleteDirector() throws ServiceException {
+        try {
+            assertEquals(2, directorDAO.findAll().size());
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            directorDAO.delete(1L);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            assertEquals(1, directorDAO.findAll().size());
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            directorDAO.delete(3L);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            assertEquals(1, directorDAO.findAll().size());
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            directorDAO.delete(2L);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            assertEquals(0, directorDAO.findAll().size());
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(filmDAO.findById(1), Optional.empty());
     }
 }

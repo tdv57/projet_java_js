@@ -1,19 +1,18 @@
 package com.ensta.myfilmlist.mapper;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
-
-import java.util.Optional;
-
-import com.ensta.myfilmlist.dao.impl.JpaGenreDAO;
 import com.ensta.myfilmlist.dao.impl.JpaDirectorDAO;
+import com.ensta.myfilmlist.dao.impl.JpaGenreDAO;
 import com.ensta.myfilmlist.dto.FilmDTO;
+import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.FilmForm;
+import com.ensta.myfilmlist.model.Director;
 import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.model.Genre;
-import com.ensta.myfilmlist.model.Director;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Functions to cast Films into and from DTO and Form.
@@ -21,11 +20,11 @@ import com.ensta.myfilmlist.model.Director;
 @Component
 public class FilmMapper {
 
-	private final JpaDirectorDAO jpaDirectorDAO;
+    private final JpaDirectorDAO jpaDirectorDAO;
 
-	private final JpaGenreDAO jpaGenreDAO;
-    
-	public FilmMapper(JpaDirectorDAO jpaDirectorDAO,
+    private final JpaGenreDAO jpaGenreDAO;
+
+    public FilmMapper(JpaDirectorDAO jpaDirectorDAO,
                       JpaGenreDAO jpaGenreDAO) {
         this.jpaDirectorDAO = jpaDirectorDAO;
         this.jpaGenreDAO = jpaGenreDAO;
@@ -57,8 +56,8 @@ public class FilmMapper {
 		filmDTO.setDuration(film.getDuration());
 		filmDTO.setDirectorDTO(DirectorMapper.convertDirectorToDirectorDTO(film.getDirector()));
         filmDTO.setGenreDTO(GenreMapper.convertGenreToGenreDTO(film.getGenre()));
-		return filmDTO;
-	}
+        return filmDTO;
+    }
 
     /**
      * Convert a film's DTO into a film.
@@ -74,8 +73,8 @@ public class FilmMapper {
 		film.setDuration(filmDTO.getDuration());
 		film.setDirector(DirectorMapper.convertDirectorDTOToDirector(filmDTO.getDirectorDTO()));
         film.setGenre(GenreMapper.convertGenreDTOToGenre(filmDTO.getGenreDTO()));
-		return film;
-	}
+        return film;
+    }
 
     /**
      * Convert a film's form into a film.
@@ -84,21 +83,30 @@ public class FilmMapper {
      * @return          film created from the parameter
      */
     public Film convertFilmFormToFilm(FilmForm filmForm) {
-		Film film = new Film();
-		film.setTitle(filmForm.getTitle());
-		film.setDuration(filmForm.getDuration());
-		Optional<Director> optionalDirector = this.jpaDirectorDAO.findById(filmForm.getDirectorId());
-		if (optionalDirector.isPresent()) {
-			film.setDirector(optionalDirector.get());
-		} else {
-			film.setDirector(null);
-		}
-        Optional<Genre> optionalGenre = this.jpaGenreDAO.findById(filmForm.getGenreId());
-        if (optionalGenre.isPresent()) {
-            film.setGenre(optionalGenre.get());
-        } else {
-            film.setGenre(null);
+        Film film = new Film();
+        film.setTitle(filmForm.getTitle());
+        film.setDuration(filmForm.getDuration());
+        try {
+            Optional<Director> optionalDirector = this.jpaDirectorDAO.findById(filmForm.getDirectorId());
+            if (optionalDirector.isPresent()) {
+                film.setDirector(optionalDirector.get());
+            } else {
+                film.setDirector(null);
+            }
+            Optional<Genre> optionalGenre = null;
+            try {
+                optionalGenre = this.jpaGenreDAO.findById(filmForm.getGenreId());
+            } catch (com.ensta.myfilmlist.exception.ServiceException e) {
+                throw new RuntimeException(e);
+            }
+            if (optionalGenre.isPresent()) {
+                film.setGenre(optionalGenre.get());
+            } else {
+                film.setGenre(null);
+            }
+        } catch (ServiceException e) {
+            System.err.println(e.getMessage());
         }
-		return film;
-	}
+        return film;
+    }
 }
