@@ -119,8 +119,9 @@ public class JpaHistoryDAO implements HistoryDAO {
                 throw new ServiceException("Internal Server Error");
             }
             return anhistory;
+        } else {
+            throw new ServiceException("Film not in watched list");
         }
-        throw new ServiceException("Can't update History.");
     }
 
     /**
