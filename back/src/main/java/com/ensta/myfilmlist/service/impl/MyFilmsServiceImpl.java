@@ -312,6 +312,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
             user.get().setRoles("USER, ADMIN");
             return UserMapper.convertUserToUserDTO(userDAO.update(id, user.get()));
         } catch(Throwable e) {
+            if (e.getMessage().equals("User can't be found.")) throw new  ServiceException ("User can't be found.");
             throw new ServiceException("User can't be updated.", e);
         }
     }

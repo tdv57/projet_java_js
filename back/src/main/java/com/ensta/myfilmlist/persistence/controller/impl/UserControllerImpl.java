@@ -120,6 +120,7 @@ public class UserControllerImpl implements UserController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateUser(id, userForm));
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Can't update User.")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Can't update User.", e);
         }
     }
@@ -137,6 +138,7 @@ public class UserControllerImpl implements UserController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.setUserAsAdmin(id));
         } catch (ServiceException e) {
+            if (e.getMessage().equals("User can't be found.")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Can't update User.", e);
         }
     }

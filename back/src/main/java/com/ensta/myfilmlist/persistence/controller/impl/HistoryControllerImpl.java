@@ -40,6 +40,7 @@ public class HistoryControllerImpl implements HistoryController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findWatchList(userId)));
         } catch (ServiceException e) {
+            if(e.getMessage().equals("Utilisateur introuvable")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Impossible de trouver tous les films de l'historique", e);
         }
     }
