@@ -212,7 +212,7 @@ public class HistorysDAOTests {
         filmsExpected.add(getAvatar());
         assertEquals(filmsExpected, filmsSeenByAxel);
 
-        assertEquals(new ArrayList<>(), historyDAO.getWatchList(2));
+        assertEquals(new ArrayList<>(), historyDAO.getWatchList(3));
 
         ServiceException error = assertThrows(ServiceException.class, () -> {
             historyDAO.getWatchList(100);
@@ -244,5 +244,40 @@ public class HistorysDAOTests {
         assertEquals(getHistoryFilm4User4(), historyDAO.findHistoryByUserIdAndFilmId(4, 4).get());
         historyDAO.deleteFilm(4, 4);
         assertEquals(Optional.empty(), historyDAO.findHistoryByUserIdAndFilmId(4, 4));
+    }
+
+    @Test
+    void whenRateFilm_thenShouldHaveRatedFilm() throws ServiceException{
+        History history = historyDAO.addFilmToWatchList(4, 1);
+        History _history = historyDAO.rateFilm(4, 1, 20);
+        history.setRating(20);
+        assertEquals(history, _history);
+        assertEquals(history, historyDAO.findHistoryByUserIdAndFilmId(4, 1).get());
+        ServiceException error = assertThrows(ServiceException.class, () -> {
+            historyDAO.rateFilm(100, 1, 20);
+        });
+        assertEquals("Historique introuvable", error.getMessage());
+    }
+
+    void whenGetRate_thenShouldHaveRate() throws ServiceException {
+        History history = historyDAO.addFilmToWatchList(4, 1);
+        Optional<Integer> emptyRate = historyDAO.getRate(4, 1);
+        assertEquals(Optional.empty(), emptyRate);
+        Optional<Integer> rate = historyDAO.getRate(4, 4);
+        assertEquals(18, rate.get());
+    }
+
+    @Test
+    void whenGetRatesByFilms_thenShouldHaveRatesForFilm() throws ServiceException{
+        List<Integer> rates = historyDAO.getRatesByFilmId(2);
+        List<Integer> ratesExpected = new ArrayList<>();
+        ratesExpected.add(20); 
+        ratesExpected.add(18);
+        assertEquals(ratesExpected, rates);
+
+        ServiceException error = assertThrows(ServiceException.class, () -> {
+            historyDAO.getRatesByFilmId(100);
+        });
+        assertEquals("Film inexistant", error.getMessage());
     }
 }
