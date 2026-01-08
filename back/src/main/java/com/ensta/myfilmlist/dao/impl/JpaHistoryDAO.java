@@ -119,7 +119,7 @@ public class JpaHistoryDAO implements HistoryDAO {
     }
 
     @Override
-    public List<Integer> getNotesByFilmId(long filmId) throws ServiceException {
+    public List<Integer> getRatesByFilmId(long filmId) throws ServiceException {
         Film film = entityManager.find(Film.class, filmId);
         if (film == null) {
             throw new ServiceException("Film inexistant");

@@ -14,5 +14,5 @@ public interface HistoryDAO {
     void deleteFilm(long userId, long filmId);
     History rateFilm(long userId, long filmId, int rating) throws ServiceException;
     Optional<Integer> getRate(long userId, long filmId) throws ServiceException;
-    List<Integer> getNotesByFilmId (long filmId) throws ServiceException;
+    List<Integer> getRatesByFilmId (long filmId) throws ServiceException;
 }
