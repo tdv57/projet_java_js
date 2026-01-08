@@ -1,18 +1,28 @@
 import axios from "axios";
 
+import { doRequest } from "../utils";
+
 const GENRE_URI = import.meta.env.VITE_API_URL + "/genre";
 
 export function getAllGenres() {
-  return axios.get(GENRE_URI);
+  return doRequest(axios.get(GENRE_URI), {
+    error: "Impossible de charger les genres.",
+  });
 }
 
 export function getGenreByID(id) {
-  return axios.get(GENRE_URI + `/${id}`);
+  return doRequest(axios.get(GENRE_URI + `/${id}`), {
+    error: "Impossible de récupérer le genre.",
+    404: "Le genre n'existe pas.",
+  });
 }
 
 export function editGenreByID(id, newName) {
-  return axios.put(GENRE_URI + `/${id}`, {
-    id,
-    name: newName,
-  });
+  return doRequest(
+    axios.put(GENRE_URI + `/${id}`, {
+      id,
+      name: newName,
+    }),
+    { 200: "Genre mis à jour.", 404: "Impossible de mettre à jour le genre." },
+  );
 }

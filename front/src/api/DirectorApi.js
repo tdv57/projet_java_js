@@ -10,16 +10,25 @@ export function getAllDirectors() {
 }
 
 export function getDirectorByName(name, surname) {
-  return axios.get(DIRECTORS_URI, {
-    params: {
-      surname,
-      name,
+  return doRequest(
+    axios.get(DIRECTORS_URI, {
+      params: {
+        surname,
+        name,
+      },
+    }),
+    {
+      error: "Impossible de récupérer le réalisateur.",
+      404: "Le réalisateur n'existe pas.",
     },
-  });
+  );
 }
 
 export function getDirectorById(id) {
-  return axios.get(DIRECTORS_URI + `/${id}`);
+  return doRequest(axios.get(DIRECTORS_URI + `/${id}`), {
+    error: "Impossible de récupérer le réalisateur.",
+    404: "Le réalisateur n'existe pas.",
+  });
 }
 
 export function addDirector(name, surname, birthdate) {

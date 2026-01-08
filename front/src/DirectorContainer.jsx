@@ -6,12 +6,10 @@ import {
 } from "./api/DirectorApi.js";
 
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router";
 
 import useNotification from "./hooks/useNotification.js";
 
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -19,7 +17,6 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-import Header from "./components/Header.jsx";
 import DirectorForm from "./components/DirectorForm.jsx";
 import DirectorList from "./components/DirectorList.jsx";
 

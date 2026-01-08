@@ -7,8 +7,8 @@ const NotificationContext = createContext({
   open: false,
   message: "",
   severity: "info",
-  showNotification: () => { },
-  hideNotification: () => { },
+  showNotification: () => {},
+  hideNotification: () => {},
 });
 
 export const useNotificationContext = () => useContext(NotificationContext);
