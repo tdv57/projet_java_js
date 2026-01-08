@@ -83,10 +83,11 @@ public class History {
         if (o==this) return true;
         if (! (o instanceof History)) return false;
         History history = (History) o;
-        if (history.getFilm() == this.getFilm()
+        if (history.getFilm().equals(this.getFilm())
             && history.getId() == this.getId()
-            && history.getUser() == this.getUser())
+            && history.getUser().equals(this.getUser())
+            && history.getRating() == this.getRating())
         return true;
-        return false;        
+        return false;     
     }
 }
