@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,6 +54,12 @@ public class FilmServiceTests {
   @MockBean 
   private JpaFilmDAO jpaFilmDAO;
 
+  @MockBean
+  private JpaHistoryDAO historyDAO;
+
+  @MockBean
+  private JpaUserDAO userDAO;
+
   @Autowired
   private FilmMapper filmMapper; 
 
@@ -71,6 +78,11 @@ public class FilmServiceTests {
   private static Long filmId = Long.valueOf(2L);
   private List<Genre> genres = new ArrayList<>();
   private int genreId = 1;
+  private User user = new User();
+  private User admin = new User();
+  private History historyFilm1User1 = new History();
+  private History historyFilm1User2 = new History();
+  private History historyFilm2User2 = new History();
 
   private Director mockJpaDirectorDAOUpdate(long id, Director director) throws ServiceException {
     switch ((int)id) {
@@ -269,6 +281,18 @@ public class FilmServiceTests {
     }
   }
 
+  private List<Film> mockJpaHistoryDAOGetWatchList(long userId) {
+    List<Film> films = new ArrayList<>();
+    if (userId == user.getId()) {
+      films.add(historyFilm1User1.getFilm());
+    } else if (userId == admin.getId()) {
+      films.add(historyFilm1User2.getFilm());
+      films.add(historyFilm2User2.getFilm());
+    } 
+    return films;
+  }
+
+
   @BeforeEach 
   void setUp() {
     when(jpaDirectorDAO.findById(anyLong())).thenAnswer(invocation -> {
@@ -380,6 +404,32 @@ public class FilmServiceTests {
 
     erreurInterne.setId(Long.valueOf(1000L));
 
+    user.setId(1);
+    user.setName("User");
+    user.setPassword("user");
+    user.setRoles("USER");
+    user.setSurname("User");
+    
+    admin.setId(2);
+    admin.setName("Admin");
+    admin.setPassword("admin");
+    admin.setRoles("ADMIN");
+    admin.setSurname("Admin");
+
+    historyFilm1User1.setFilm(hihihi1);
+    historyFilm1User1.setId(1);
+    historyFilm1User1.setRating(10);
+    historyFilm1User1.setUser(user);
+
+    historyFilm1User2.setFilm(hihihi1);
+    historyFilm1User2.setId(2);
+    historyFilm1User2.setRating(12);
+    historyFilm1User2.setUser(admin);
+
+    historyFilm2User2.setFilm(hihihi2);
+    historyFilm2User2.setId(2);
+    historyFilm2User2.setRating(14);
+    historyFilm2User2.setUser(admin);
   }
 
   @AfterEach
@@ -751,6 +801,19 @@ public class FilmServiceTests {
 
     assertEquals("Impossible de mettre à jour le genre", serviceException.getMessage());
   }
+
+  @Test 
+  void whenFindWatchList_thenShouldHaveWatchList() throws ServiceException{
+    when(historyDAO.getWatchList(anyLong())).thenAnswer(invocation -> {
+      return mockJpaHistoryDAOGetWatchList(invocation.getArgument(0));
+    });
+    List<Film> films = new ArrayList<>();
+    films.add(hihihi1);
+    films.add(hihihi2);
+    assertEquals(myFilmsServiceImpl.findWatchList(2), films);
+    assertEquals(new ArrayList<>(), myFilmsServiceImpl.findWatchList(3));
+  }
+
 
   @Test
   void whenCalculerDurationTotale_thenShouldHaveDurationTotale() {
