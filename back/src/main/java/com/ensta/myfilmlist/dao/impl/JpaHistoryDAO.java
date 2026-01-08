@@ -20,7 +20,7 @@ public class JpaHistoryDAO implements HistoryDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    Optional<History> findHistoryByUserIdAndFilmId(long userId, long filmId) {
+    public Optional<History> findHistoryByUserIdAndFilmId(long userId, long filmId) {
         List<History> histories = entityManager
                     .createQuery("SELECT h FROM History h WHERE h.user.id = :user_id AND  h.film.id = :film_id", History.class)
                     .setParameter("user_id", userId)
