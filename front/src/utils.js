@@ -25,3 +25,10 @@ const frenchHumanizer = humanizer({
   language: "fr",
 });
 export const humanizeDuration = frenchHumanizer;
+
+export function normalized(str) {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}

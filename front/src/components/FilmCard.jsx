@@ -9,7 +9,6 @@ import {
   Chip,
   Grid,
   Box,
-  CardActions,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -17,7 +16,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import { confirm } from "./ConfirmDialog.jsx";
 import { useState } from "react";
 import { humanizeDuration } from "../utils.js";
-import directorContainer from "../DirectorContainer.jsx";
 
 function FilmCard(props) {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);

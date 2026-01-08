@@ -69,26 +69,28 @@ function ResponsiveDrawer(props) {
       </List>
       <Divider />
       <List>
-        {routes.map((r) => (
-          <ListItem
-            key={r.title}
-            disablePadding
-            sx={
-              location.pathname === r.path
-                ? { bgcolor: "rgba(128, 128, 128, 0.5)" }
-                : {}
-            }
-          >
-            <ListItemButton
-              onClick={() => {
-                navigate(r.path);
-              }}
+        {routes
+          .filter((r) => !!r.icon)
+          .map((r) => (
+            <ListItem
+              key={r.title}
+              disablePadding
+              sx={
+                location.pathname === r.path
+                  ? { bgcolor: "rgba(128, 128, 128, 0.5)" }
+                  : {}
+              }
             >
-              <ListItemIcon>{r.icon}</ListItemIcon>
-              <ListItemText primary={r.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+              <ListItemButton
+                onClick={() => {
+                  navigate(r.path);
+                }}
+              >
+                <ListItemIcon>{r.icon}</ListItemIcon>
+                <ListItemText primary={r.title} />
+              </ListItemButton>
+            </ListItem>
+          ))}
       </List>
     </div>
   );

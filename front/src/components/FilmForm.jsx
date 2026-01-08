@@ -73,13 +73,12 @@ function FilmForm(props) {
       >
         <Grid
           container
+          spacing={2}
           sx={{
-            alignItems: "center",
-            //display: "flex",
             justifyContent: "center",
           }}
         >
-          <Grid size={{ xs: 12, sm: 3.5 }}>
+          <Grid size={{ xs: 12, sm: 3 }}>
             <TextField
               label="Titre"
               value={title}
@@ -87,7 +86,7 @@ function FilmForm(props) {
             />
           </Grid>
 
-          <Grid size={{ xs: 12, sm: 1.5 }}>
+          <Grid size={{ xs: 12, sm: 2 }}>
             <TextField
               label="Durée"
               value={duration}
@@ -206,7 +205,7 @@ function FilmForm(props) {
             </Box>
           </Grid>
         </Grid>
-      </Box>
+      </Box >
 
       <Dialog
         onClose={() => setOpenGenresDialog(false)}

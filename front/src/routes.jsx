@@ -3,6 +3,7 @@ import DirectorContainer from "./DirectorContainer.jsx";
 
 import LocalMoviesIcon from "@mui/icons-material/LocalMovies";
 import PhotoCameraFrontIcon from "@mui/icons-material/PhotoCameraFront";
+import Register from "./Register.jsx";
 
 export const routes = [
   {
@@ -16,5 +17,10 @@ export const routes = [
     element: <DirectorContainer />,
     title: "Réalisateurs",
     icon: <PhotoCameraFrontIcon />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+    title: "Créer un compte",
   },
 ];
