@@ -1,6 +1,7 @@
 package com.ensta.myfilmlist;
 
 import com.ensta.myfilmlist.exception.ServiceException;
+import com.ensta.myfilmlist.form.UserForm;
 import com.ensta.myfilmlist.dao.*;
 import com.ensta.myfilmlist.model.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
@@ -174,5 +175,83 @@ public class UsersDAOTests {
     void whenFindAllUsers_thenShouldHaveAllUser() throws ServiceException {
         List<User> users = userDAO.findAll();
         assertEquals(getAllUsers(), users);
+        userDAO.delete(1);
+        userDAO.delete(2);
+        userDAO.delete(3);
+        userDAO.delete(4);
+        ServiceException error = assertThrows(ServiceException.class, () -> {
+            userDAO.findAll();
+        });
+        assertEquals(error.getMessage(), "Can't find Users.");
+    }
+
+    @Test
+    void whenSaveUser_thenShouldCreateUser() {
+        User user = new User();
+        user.setName("User");
+        user.setSurname("User");
+        user.setPassword("user");
+        user.setRoles("USER");
+        User _user = userDAO.save(user);
+
+        user.setId(5);
+        assertEquals(user, _user);
+        assertEquals(userDAO.findById(5).get(), user);
+    }
+
+    @Test 
+    void whenRegister_thenShouldBeRegistered() {
+        User ferdinandAlain = getFerdinandAlain();
+        assertEquals(true, userDAO.register(ferdinandAlain.getName(), 
+                                                    ferdinandAlain.getSurname(), 
+                                                    ferdinandAlain.getPassword()));
+    }
+    
+    @Test 
+    void whenFindById_thenShouldHaveUser() {
+        Optional<User> axelRichard = userDAO.findById(1);
+        assertEquals(getAxelRichard(), axelRichard.get());
+        Optional<User> error = userDAO.findById(100);
+        assertEquals(Optional.empty(), error);
+    }
+
+    @Test 
+    void whenFindByNameAndSurname_thenShouldHaveUser() {
+        Optional<User> ferdinandAlain = userDAO.findByNameAndSurname("Alain", "Ferdinand");
+        assertEquals(getFerdinandAlain(), ferdinandAlain.get());
+        Optional<User> error = userDAO.findByNameAndSurname("user", "user");
+        assertEquals(Optional.empty(), error);
+    }
+
+    @Test 
+    void whenUpdate_thenShouldHaveUpdatedUser() throws ServiceException {
+        User user = getFerdinandAlain();
+        user.setName("User");
+        user.setSurname("User");
+        user.setPassword("user");
+        User _user = userDAO.update(4, user);
+        assertEquals(user, _user);
+        assertEquals(user, userDAO.findById(4).get());
+
+        ServiceException error = assertThrows(ServiceException.class, () -> {
+            userDAO.update(100, user);
+        });
+        assertEquals("Can't update User.",error.getMessage());
+    }   
+
+    @Test 
+    void whenDelete_thenShouldDeleteUser() throws ServiceException{
+        assertEquals(4, userDAO.findAll().size());
+        userDAO.delete(1);
+        assertEquals(3, userDAO.findAll().size());
+        userDAO.delete(1);
+        assertEquals(3, userDAO.findAll().size());
+        userDAO.delete(2);
+        userDAO.delete(3);
+        userDAO.delete(4);
+        ServiceException error = assertThrows(ServiceException.class, () -> {
+            userDAO.findAll();
+        });
+        assertEquals("Can't find Users.", error.getMessage());
     }
 }
