@@ -20,7 +20,7 @@ import useNotification from "../hooks/useNotification.js";
 function validateFilmData(film) {
   return (
     !!film.title &&
-    (film.duration > 0) &&
+    film.duration > 0 &&
     film.directorDTO?.id !== undefined &&
     film.genreDTO?.id !== undefined
   );
@@ -71,7 +71,14 @@ function FilmForm(props) {
           padding: 2,
         }}
       >
-        <Grid container spacing={2} sx={{ alignItems: "center" }}>
+        <Grid
+          container
+          sx={{
+            alignItems: "center",
+            //display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <Grid size={{ xs: 12, sm: 3.5 }}>
             <TextField
               label="Titre"
@@ -105,24 +112,26 @@ function FilmForm(props) {
                 ))}
 
                 {/* 'manage directors' button */}
-                <MenuItem
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    padding: "0",
-                  }}
-                >
-                  <Button
-                    sx={{ width: "100%" }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setOpenGenresDialog(true);
+                {props.isNew && (
+                  <MenuItem
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "0",
                     }}
                   >
-                    Gérer
-                  </Button>
-                </MenuItem>
+                    <Button
+                      sx={{ width: "100%" }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setOpenGenresDialog(true);
+                      }}
+                    >
+                      Gérer
+                    </Button>
+                  </MenuItem>
+                )}
               </TextField>
             )}
           </Grid>
@@ -147,24 +156,26 @@ function FilmForm(props) {
                 ))}
 
                 {/* 'manage directors' button */}
-                <MenuItem
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    padding: "0",
-                  }}
-                >
-                  <Button
-                    sx={{ width: "100%" }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      navigate("/directors");
+                {props.isNew && (
+                  <MenuItem
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "0",
                     }}
                   >
-                    Gérer...
-                  </Button>
-                </MenuItem>
+                    <Button
+                      sx={{ width: "100%" }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navigate("/directors");
+                      }}
+                    >
+                      Gérer...
+                    </Button>
+                  </MenuItem>
+                )}
               </TextField>
             )}
           </Grid>

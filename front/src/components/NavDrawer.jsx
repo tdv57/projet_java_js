@@ -99,9 +99,9 @@ function ResponsiveDrawer(props) {
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-          display: { sm: "none" },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
+          display: { md: "none" },
         }}
       >
         <Toolbar>
@@ -119,7 +119,7 @@ function ResponsiveDrawer(props) {
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -129,7 +129,7 @@ function ResponsiveDrawer(props) {
           onTransitionEnd={handleDrawerTransitionEnd}
           onClose={handleDrawerClose}
           sx={{
-            display: { xs: "block", sm: "none" },
+            display: { xs: "block", sm: "block", md: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
@@ -146,7 +146,7 @@ function ResponsiveDrawer(props) {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: "none", sm: "block" },
+            display: { xs: "none", sm: "none", md: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
@@ -161,8 +161,9 @@ function ResponsiveDrawer(props) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          px: [2, 5, 10],
+          py: [10, 10, 5],
+          width: { md: `calc(100% - ${drawerWidth}px)` },
         }}
       >
         {props.children}
