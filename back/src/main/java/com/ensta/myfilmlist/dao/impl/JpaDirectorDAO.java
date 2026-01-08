@@ -22,9 +22,9 @@ public class JpaDirectorDAO implements DirectorDAO {
         this.entityManager = entityManager;
     }
 
-    void checkDuplicate(Director director) throws ServiceException {
+    void checkDuplicate(Long id, Director director) throws ServiceException {
         Optional<Director> another = findByNameAndSurname(director.getName(), director.getSurname());
-        if (another.isPresent() && another.get().getId() != director.getId()) {
+        if (another.isPresent() && another.get().getId() != id) {
             throw new ServiceException("Director already exists");
         }
     }
@@ -91,7 +91,7 @@ public class JpaDirectorDAO implements DirectorDAO {
      */
     @Override
     public Director update(long id, Director director) throws ServiceException {
-        checkDuplicate(director);
+        checkDuplicate(id, director);
         Optional<Director> prev_director = this.findById(id);
         if (prev_director.isEmpty()) {
             throw new ServiceException("Director doesn't exist");
@@ -116,7 +116,7 @@ public class JpaDirectorDAO implements DirectorDAO {
      */
     @Override
     public Director save(Director director) throws ServiceException {
-        checkDuplicate(director);
+        checkDuplicate(0L, director);
         try {
             entityManager.persist(director);
             return director;
