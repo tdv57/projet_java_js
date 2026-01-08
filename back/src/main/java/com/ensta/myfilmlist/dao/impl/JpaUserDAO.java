@@ -77,6 +77,7 @@ public class JpaUserDAO implements UserDAO {
                 .setParameter("name", name)
                 .setParameter("surname", surname)
                 .getResultList();
+        if (users.isEmpty()) return Optional.empty();
         return Optional.ofNullable(users.get(0));
     }
 
