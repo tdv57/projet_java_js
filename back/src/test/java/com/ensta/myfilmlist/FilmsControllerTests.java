@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import org.springframework.http.MediaType;
 
@@ -237,12 +238,26 @@ public class FilmsControllerTests {
     if (filmForm.getDirectorId() > 2 ) throw new ServiceException("Le réalisateur n'existe pas");
     Film film = filmMapper.convertFilmFormToFilm(filmForm);
     film.setId(filmId++);
+    if (filmForm.getDirectorId() == 1) {
+      film.setDirector(jamesCameron);
+    } else if (filmForm.getDirectorId() == 2) {
+      film.setDirector(peterJackson);
+    }
+
+    film.setGenre(genres.get((int)filmForm.getGenreId()-1));
     return filmMapper.convertFilmToFilmDTO(film);
   }
 
   private FilmDTO mockMyFilmsServiceUpdateFilm(long id, FilmForm filmForm) throws ServiceException {
     if (filmForm.getDirectorId() > 2) throw new ServiceException("Réalisateur inexistant");
     Film film = filmMapper.convertFilmFormToFilm(filmForm);
+    if (filmForm.getDirectorId() == 1) {
+      film.setDirector(jamesCameron);
+    } else if (filmForm.getDirectorId() == 2) {
+      film.setDirector(peterJackson);
+    }
+
+    film.setGenre(genres.get((int) filmForm.getGenreId() - 1));
     film.setId(id);
     switch((int) id) {
       case 1:
@@ -378,6 +393,7 @@ public class FilmsControllerTests {
             "  \"genreId\": 3\n" +
             "}";
 
+    System.out.println("whenCreateFilm_thenShouldCreateFilm");
     mockMvc.perform(post("/film/")
     .contentType(MediaType.APPLICATION_JSON)
     .content(hihihi4))

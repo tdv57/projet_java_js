@@ -52,9 +52,16 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Transactional
     public FilmDTO createFilm(FilmForm filmForm) throws ServiceException {
         Film film = filmMapper.convertFilmFormToFilm(filmForm);
-        if (directorDAO.findById(filmForm.getDirectorId()).isEmpty()) {
+        Optional<Director> director = directorDAO.findById(filmForm.getDirectorId());
+        if (director.isEmpty()) {
             throw new ServiceException("Director can't be found.");
         }
+        film.setDirector(director.get());
+        Optional<Genre> genre = genreDAO.findById(filmForm.getGenreId());
+        if (genre.isEmpty()) {
+            throw new ServiceException("Genre can't be found.");
+        }
+        film.setGenre(genre.get());
         film = this.filmDAO.save(film);
         film.setDirector(updateDirectorFamous(film.getDirector()));
         return FilmMapper.convertFilmToFilmDTO(film);

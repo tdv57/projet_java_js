@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 /**
  * Data representing a User.
@@ -105,6 +106,21 @@ public class User implements UserDetails {
     public void setRoles(String roles) {
         User.roles = roles;
     }
+
+    @Override 
+    public boolean equals(Object o) {
+        if (o==this) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        if (this.getId() == user.getId()
+           && user.getName().equals(this.getName())
+           && user.getPassword().equals(this.getPassword())
+           && user.getRoles().equals(this.getRoles())
+           && user.getSurname().equals(this.getSurname()))
+        return true;
+        return false;
+    }
+
 
     @Override
     public String toString() {

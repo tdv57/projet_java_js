@@ -6,7 +6,7 @@ INSERT INTO Director(surname, name, birthdate, famous) VALUES('Jackson', 'Peter'
 INSERT INTO APP_USER(surname, name, password, roles) VALUES('Axel', 'Richard', 'axel', 'USER');
 INSERT INTO APP_USER(surname, name, password, roles) VALUES('Benoit', 'Boero', 'benoit', 'USER');
 INSERT INTO APP_USER(surname, name, password, roles) VALUES('Elfie', 'Molina--Bonnefoy', 'elfie', 'ADMIN');
-INSERT INTO APP_USER(surname, name, password, roles) VALUES('Ferdinand', 'Alain', 'alain', 'USER');
+INSERT INTO APP_USER(surname, name, password, roles) VALUES('Ferdinand', 'Alain', 'ferdinand', 'USER');
 
 -- Film table
 INSERT INTO Film(title, duration, director_id, genre_id) VALUES('avatar', 162, 1, 1);
