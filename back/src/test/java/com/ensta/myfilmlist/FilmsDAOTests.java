@@ -182,7 +182,7 @@ class FilmsDAOTests {
 
 
     @Test
-    void printDatabaseTest() {
+    void printDatabaseTest() throws ServiceException {
         filmDAO.findAll().forEach(System.out::println);
         System.out.println("\n");
         try {
@@ -193,7 +193,7 @@ class FilmsDAOTests {
     }
 
     @Test
-    void whenFindAll_thenShouldHaveAllFilms() {
+    void whenFindAll_thenShouldHaveAllFilms() throws ServiceException {
         List<Film> films = this.filmDAO.findAll();
         assertEquals(films.get(0), getAvatar());
         assertEquals(films.get(1), getLaCommunauteDeLAnneau());
@@ -203,7 +203,7 @@ class FilmsDAOTests {
 
 
     @Test
-    void whenSave_thenShouldHaveSaveFilm() {
+    void whenSave_thenShouldHaveSaveFilm() throws ServiceException {
         FilmForm filmForm = new FilmForm();
         filmForm.setDuration(15);
         filmForm.setDirectorId(2);
@@ -224,7 +224,7 @@ class FilmsDAOTests {
     }
 
     @Test
-    void whenFindById_thenShouldHaveFilm() {
+    void whenFindById_thenShouldHaveFilm() throws ServiceException {
         Optional<Film> filmInexistant = filmDAO.findById(100);
         assertEquals(Boolean.TRUE, filmInexistant.isEmpty());
         Optional<Film> filmExistant = filmDAO.findById(1);
@@ -297,7 +297,7 @@ class FilmsDAOTests {
     }
 
     @Test
-    void whenDeleteFilm_thenShouldDeleteFilm() {
+    void whenDeleteFilm_thenShouldDeleteFilm() throws ServiceException {
         Film film = filmDAO.findById(1).get();
         try {
             filmDAO.delete(film);
