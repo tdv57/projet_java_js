@@ -10,19 +10,22 @@ export function getAllGenres() {
   });
 }
 
-export function getGenreByID(id) {
+export function getGenre(id) {
   return doRequest(axios.get(GENRE_URI + `/${id}`), {
     error: "Impossible de récupérer le genre.",
     404: "Le genre n'existe pas.",
   });
 }
 
-export function editGenreByID(id, newName) {
+export function editGenre(id, newName) {
   return doRequest(
-    axios.put(GENRE_URI + `/${id}`, {
-      id,
-      name: newName,
+    axios.put(GENRE_URI + `/${id}`, newName, {
+      headers: { "Content-Type": "text/plain" },
     }),
-    { 200: "Genre mis à jour.", 404: "Impossible de mettre à jour le genre." },
+    {
+      200: "Genre mis à jour.",
+      404: "Impossible de mettre à jour le genre.",
+      409: "Ce nom est déjà pris.",
+    },
   );
 }

@@ -4,18 +4,27 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  TextField,
+  Grid,
+  Typography,
+  Stack,
+  MenuItem,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 
 import FilmForm from "./components/FilmForm.jsx";
 import FilmList from "./components/FilmList.jsx";
+import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
 import { addFilm, editFilm, deleteFilmById, getAllFilms } from "./api/FilmApi";
 import useNotification from "./hooks/useNotification.js";
+import { normalized } from "./utils.js";
 
 const BLANK_FILM = {
   title: "",
   directorDTO: { id: 1 },
-  duration: 0,
+  duration: 60,
   genreDTO: { id: 1 },
 };
 
@@ -38,6 +47,9 @@ function FilmContainer() {
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [currentFilm, setCurrentFilm] = useState({});
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOder] = useState(0);
 
   async function handleAdd(film) {
     const [res, msg] = await addFilm(
@@ -90,11 +102,55 @@ function FilmContainer() {
   }
 
   return (
-    <>
+    <Stack spacing={2}>
+      <Typography variant="h5">Ajouter un film</Typography>
+
       <FilmForm film={{ ...BLANK_FILM }} isNew submit={handleAdd} />
 
+      <Typography variant="h5">Mes films</Typography>
+
+      <Grid container sx={{ width: "100%", pb: 2 }} spacing={1}>
+        <Grid size={[12, 9]}>
+          <TextField
+            placeholder="Rechercher..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ width: "100%" }}
+            slotProps={{
+              input: {
+                endAdornment: searchQuery ? (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setSearchQuery("")}>
+                      <CloseIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ) : (
+                  <></>
+                ),
+              },
+            }}
+          />
+        </Grid>
+
+        <Grid size={[12, 3]}>
+          <TextField
+            label="Trier"
+            select
+            sx={{ width: "100%" }}
+            value={sortOrder}
+            onChange={(e) => setSortOder(e.target.value)}
+          >
+            <MenuItem value={0}> Par défaut</MenuItem>
+            <MenuItem value={1}> Croissant</MenuItem>
+            <MenuItem value={-1}>Décroissant</MenuItem>
+          </TextField>
+        </Grid>
+      </Grid>
+
       <FilmList
-        films={films}
+        films={films
+          .filter((f) => normalized(f.title).includes(normalized(searchQuery)))
+          .sort((a, b) => sortOrder * a.title.localeCompare(b.title))}
         edit={(f) => {
           setCurrentFilm(f);
           setOpenEditDialog(true);
@@ -116,7 +172,7 @@ function FilmContainer() {
           <Button onClick={() => setOpenEditDialog(false)}>Annuler</Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Stack>
   );
 }
 

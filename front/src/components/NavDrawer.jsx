@@ -16,15 +16,17 @@ import CssBaseline from "@mui/material/CssBaseline";
 import MenuIcon from "@mui/icons-material/Menu";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import PersonIcon from "@mui/icons-material/Person";
 
 import { routes } from "../routes.jsx";
 
 import { useLocation, useNavigate } from "react-router";
 import { useTheme } from "@mui/material/styles";
+import { useCurrentUser } from "../contexts/UserContext.jsx";
 
 const drawerWidth = 240;
 
-function ResponsiveDrawer(props) {
+function NawDrawer(props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
@@ -45,8 +47,8 @@ function ResponsiveDrawer(props) {
 
   const navigate = useNavigate();
   const location = useLocation();
-
   const theme = useTheme();
+  const { user, _ } = useCurrentUser();
 
   const drawer = (
     <div>
@@ -69,26 +71,39 @@ function ResponsiveDrawer(props) {
       </List>
       <Divider />
       <List>
-        {routes.map((r) => (
-          <ListItem
-            key={r.title}
-            disablePadding
-            sx={
-              location.pathname === r.path
-                ? { bgcolor: "rgba(128, 128, 128, 0.5)" }
-                : {}
-            }
-          >
-            <ListItemButton
-              onClick={() => {
-                navigate(r.path);
-              }}
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText primary={user.username} />
+          </ListItemButton>
+        </ListItem>
+      </List>
+      <Divider />
+      <List>
+        {routes
+          .filter((r) => !!r.icon)
+          .map((r) => (
+            <ListItem
+              key={r.title}
+              disablePadding
+              sx={
+                location.pathname === r.path
+                  ? { bgcolor: "rgba(128, 128, 128, 0.5)" }
+                  : {}
+              }
             >
-              <ListItemIcon>{r.icon}</ListItemIcon>
-              <ListItemText primary={r.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+              <ListItemButton
+                onClick={() => {
+                  navigate(r.path);
+                }}
+              >
+                <ListItemIcon>{r.icon}</ListItemIcon>
+                <ListItemText primary={r.title} />
+              </ListItemButton>
+            </ListItem>
+          ))}
       </List>
     </div>
   );
@@ -172,4 +187,4 @@ function ResponsiveDrawer(props) {
   );
 }
 
-export default ResponsiveDrawer;
+export default NawDrawer;

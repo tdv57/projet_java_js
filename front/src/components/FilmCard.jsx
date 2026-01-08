@@ -9,7 +9,7 @@ import {
   Chip,
   Grid,
   Box,
-  CardActions,
+  useTheme,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -17,10 +17,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import { confirm } from "./ConfirmDialog.jsx";
 import { useState } from "react";
 import { humanizeDuration } from "../utils.js";
-import directorContainer from "../DirectorContainer.jsx";
+import FilmDetails from "./FilmDetails.jsx";
 
 function FilmCard(props) {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
+
+  const theme = useTheme();
 
   return (
     <>
@@ -34,7 +36,11 @@ function FilmCard(props) {
       >
         <CardContent sx={{ display: "flex", gap: "20px" }}>
           <Box>
-            <img src="/public/vite.svg" alt="" style={{ width: "100px" }} />
+            <img
+              src={`/genres/${theme.palette.mode}/${props.film.genreDTO.id}.png`}
+              alt=""
+              style={{ width: "100px" }}
+            />
           </Box>
           <Grid container spacing={2}>
             <Grid size={12}>
@@ -86,8 +92,12 @@ function FilmCard(props) {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle>{props.film.title}</DialogTitle>
-        <DialogContent>todo </DialogContent>
+        <DialogTitle sx={{ typography: "h4" }}>{props.film.title}</DialogTitle>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
+          <FilmDetails film={props.film} />
+        </DialogContent>
       </Dialog>
     </>
   );

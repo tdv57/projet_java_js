@@ -12,6 +12,7 @@ import Header from "./components/Header.jsx";
 import NavDrawer from "./components/NavDrawer.jsx";
 import { routes } from "./routes.jsx";
 import { useMemo, useState } from "react";
+import { UserProvider } from "./contexts/UserContext.jsx";
 
 function App() {
   const [mode, setMode] = useState("light");
@@ -43,28 +44,30 @@ function App() {
         <CssBaseline />
         <ContextAwareConfirmation.ConfirmationRoot />
         <NotificationProvider>
-          <BrowserRouter>
-            <Routes>
-              {routes.map((r) => (
-                <Route
-                  key={r.path}
-                  path={r.path}
-                  element={
-                    <>
-                      <NavDrawer
-                        header={<Header title={r.title} />}
-                        toggleMode={() => {
-                          setMode(mode === "light" ? "dark" : "light");
-                        }}
-                      >
-                        {r.element}
-                      </NavDrawer>
-                    </>
-                  }
-                />
-              ))}
-            </Routes>
-          </BrowserRouter>
+          <UserProvider>
+            <BrowserRouter>
+              <Routes>
+                {routes.map((r) => (
+                  <Route
+                    key={r.path}
+                    path={r.path}
+                    element={
+                      <>
+                        <NavDrawer
+                          header={<Header title={r.title} />}
+                          toggleMode={() => {
+                            setMode(mode === "light" ? "dark" : "light");
+                          }}
+                        >
+                          {r.element}
+                        </NavDrawer>
+                      </>
+                    }
+                  />
+                ))}
+              </Routes>
+            </BrowserRouter>
+          </UserProvider>
           <NotificationSystem />
         </NotificationProvider>
       </ThemeProvider>

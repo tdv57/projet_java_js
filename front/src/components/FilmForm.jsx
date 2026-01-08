@@ -1,6 +1,6 @@
 import { getAllDirectors } from "../api/DirectorApi.js";
 import { getAllGenres } from "../api/GenreApi.js";
-import { editFilm, addFilm } from "../api/FilmApi.js";
+import GenreList from "./GenreList.jsx";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -66,147 +66,140 @@ function FilmForm(props) {
 
   return (
     <>
-      <Box
+      <Grid
+        container
+        spacing={2}
         sx={{
-          padding: 2,
+          py: 2,
         }}
       >
-        <Grid
-          container
-          sx={{
-            alignItems: "center",
-            //display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Grid size={{ xs: 12, sm: 3.5 }}>
-            <TextField
-              label="Titre"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 1.5 }}>
-            <TextField
-              label="Durée"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-            />
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 2.5 }}>
-            {genres?.length && (
-              <TextField
-                sx={{ display: "flex", width: "100%" }}
-                label="Genre"
-                select
-                value={genreId}
-                onChange={(e) => setGenreId(e.target.value)}
-                variant="outlined"
-              >
-                {genres.map((genre) => (
-                  <MenuItem key={genre.id} value={genre.id}>
-                    {genre.name}
-                  </MenuItem>
-                ))}
-
-                {/* 'manage directors' button */}
-                {props.isNew && (
-                  <MenuItem
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      padding: "0",
-                    }}
-                  >
-                    <Button
-                      sx={{ width: "100%" }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setOpenGenresDialog(true);
-                      }}
-                    >
-                      Gérer
-                    </Button>
-                  </MenuItem>
-                )}
-              </TextField>
-            )}
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 2.5 }}>
-            {directors?.length && (
-              <TextField
-                select
-                sx={{ display: "flex", width: "100%" }}
-                label="Réalisateur"
-                value={directorId}
-                onChange={(e) => {
-                  setDirectorId(e.target.value);
-                }}
-                variant="outlined"
-              >
-                {/* director list */}
-                {directors.map((director) => (
-                  <MenuItem key={director.id} value={director.id}>
-                    {director.name} {director.surname}
-                  </MenuItem>
-                ))}
-
-                {/* 'manage directors' button */}
-                {props.isNew && (
-                  <MenuItem
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      padding: "0",
-                    }}
-                  >
-                    <Button
-                      sx={{ width: "100%" }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        navigate("/directors");
-                      }}
-                    >
-                      Gérer...
-                    </Button>
-                  </MenuItem>
-                )}
-              </TextField>
-            )}
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 2 }}>
-            <Box sx={{ display: "flex", width: "100%" }}>
-              <Button
-                sx={{ height: "100%" }}
-                variant="contained"
-                onClick={async () => {
-                  const film = {
-                    id: props.film.id,
-                    title,
-                    duration,
-                    genreDTO: { id: genreId },
-                    directorDTO: { id: directorId },
-                  };
-                  if (validateFilmData(film)) {
-                    props.submit(film);
-                  } else {
-                    console.log(film);
-                    notifyWarning("Données invalides");
-                  }
-                }}
-              >
-                Enregistrer
-              </Button>
-            </Box>
-          </Grid>
+        <Grid size={[12, 8, 8, 8]}>
+          <TextField
+            sx={{ width: "100%" }}
+            label="Titre"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </Grid>
-      </Box>
+
+        <Grid size={[12, 4, 4, 4]}>
+          <TextField
+            label="Durée (minutes)"
+            type="number"
+            error={duration <= 0}
+            sx={{ width: "100%" }}
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+          />
+        </Grid>
+
+        <Grid size={[12, 4, 6, 4]}>
+          {genres?.length && (
+            <TextField
+              label="Genre"
+              sx={{ width: "100%" }}
+              select
+              value={genreId}
+              onChange={(e) => setGenreId(e.target.value)}
+              variant="outlined"
+            >
+              {genres.map((genre) => (
+                <MenuItem key={genre.id} value={genre.id}>
+                  {genre.name}
+                </MenuItem>
+              ))}
+
+              {/* 'manage directors' button */}
+              {props.isNew && (
+                <MenuItem
+                  sx={{
+                    justifyContent: "center",
+                  }}
+                >
+                  <Button
+                    sx={{ width: "95%" }}
+                    variant="contained"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setOpenGenresDialog(true);
+                    }}
+                  >
+                    Gérer
+                  </Button>
+                </MenuItem>
+              )}
+            </TextField>
+          )}
+        </Grid>
+
+        <Grid size={[12, 5, 6, 5]}>
+          {directors?.length && (
+            <TextField
+              select
+              label="Réalisateur"
+              sx={{ width: "100%" }}
+              value={directorId}
+              onChange={(e) => {
+                setDirectorId(e.target.value);
+              }}
+              variant="outlined"
+            >
+              {/* director list */}
+              {directors.map((director) => (
+                <MenuItem key={director.id} value={director.id}>
+                  {director.name} {director.surname}
+                </MenuItem>
+              ))}
+
+              {/* 'manage directors' button */}
+              {props.isNew && (
+                <MenuItem
+                  sx={{
+                    justifyContent: "center",
+                  }}
+                >
+                  <Button
+                    sx={{ width: "95%" }}
+                    variant="contained"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigate("/directors");
+                    }}
+                  >
+                    Gérer...
+                  </Button>
+                </MenuItem>
+              )}
+            </TextField>
+          )}
+        </Grid>
+
+        <Grid size={[12, 3, 12, 3]} sx={{ alignContent: "center" }}>
+          <Button
+            sx={{ width: "100%", height: "90%" }}
+            variant="contained"
+            onClick={async () => {
+              const film = {
+                id: props.film.id,
+                title,
+                duration,
+                genreDTO: { id: genreId },
+                directorDTO: { id: directorId },
+              };
+              if (validateFilmData(film)) {
+                props.submit(film);
+              } else {
+                console.log(film);
+                notifyWarning("Données invalides");
+              }
+            }}
+          >
+            {props.isNew ? "Ajouter" : "Enregistrer"}
+          </Button>
+        </Grid>
+      </Grid>
 
       <Dialog
         onClose={() => setOpenGenresDialog(false)}
@@ -215,7 +208,9 @@ function FilmForm(props) {
         maxWidth="md"
       >
         <DialogTitle>Modifier les genres</DialogTitle>
-        <DialogContent>todo : genre edit</DialogContent>
+        <DialogContent>
+          <GenreList genres={genres} />
+        </DialogContent>
       </Dialog>
     </>
   );
