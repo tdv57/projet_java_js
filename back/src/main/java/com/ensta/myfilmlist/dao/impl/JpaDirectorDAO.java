@@ -110,7 +110,7 @@ public class JpaDirectorDAO implements DirectorDAO {
         if (managedDirector != null) {
 
             List<Film> films = entityManager
-                    .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
+                    .createQuery("SELECT f FROM Film f WHERE f.director.id = :director_id", Film.class)
                     .setParameter("director_id", id)
                     .getResultList();
             films.forEach(film -> {

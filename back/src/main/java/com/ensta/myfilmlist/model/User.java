@@ -13,7 +13,7 @@ import java.util.Collections;
 /**
  * Data representing a User.
  */
-@Table
+@Table(name = "APP_USER")
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity

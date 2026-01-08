@@ -4,11 +4,11 @@ INSERT INTO Director(surname, name, birthdate, famous) VALUES('Cameron', 'James'
 INSERT INTO Director(surname, name, birthdate, famous) VALUES('Jackson', 'Peter', '1961-10-31', true);
 
 -- User table
-CREATE TABLE IF NOT EXISTS User(id INT primary key auto_increment, surname VARCHAR(100), name VARCHAR(100), hash VARCHAR(100), roles VARCHAR(100));
-INSERT INTO User(surname, name) VALUES('Axel', 'Richard');
-INSERT INTO User(surname, name) VALUES('Benoit', 'Boero');
-INSERT INTO User(surname, name, roles) VALUES('Elfie', 'Molina--Bonnefoy', 'ADMIN');
-INSERT INTO User(surname, name) VALUES('Ferdinand', 'Alain');
+CREATE TABLE IF NOT EXISTS APP_USER(id INT primary key auto_increment, surname VARCHAR(100), name VARCHAR(100), password VARCHAR(100), roles VARCHAR(100));
+INSERT INTO APP_USER(surname, name, password, roles) VALUES('Axel', 'Richard', 'axel', 'USER');
+INSERT INTO APP_USER(surname, name, password, roles) VALUES('Benoit', 'Boero', 'benoit', 'USER');
+INSERT INTO APP_USER(surname, name, password, roles) VALUES('Elfie', 'Molina--Bonnefoy', 'elfie', 'ADMIN');
+INSERT INTO APP_USER(surname, name, password, roles) VALUES('Ferdinand', 'Alain', 'alain', 'USER');
 
 -- Film table
 CREATE TABLE IF NOT EXISTS Film(id INT primary key auto_increment, title VARCHAR(100), duration INT, director_id INT, genre_id INT);
