@@ -75,7 +75,7 @@ public class JpaHistoryDAO implements HistoryDAO {
     public void deleteFilm(long userId, long filmId) {
         Optional<History> history = findHistoryByUserIdAndFilmId(userId, filmId);
         if (history.isPresent()) {
-            entityManager.remove(history);
+            entityManager.remove(history.get());
         }
     }
 

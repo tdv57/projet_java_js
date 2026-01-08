@@ -27,3 +27,5 @@ INSERT INTO Genre(name) VALUES('thriller');
 
 -- History table
 INSERT INTO History(film_id, user_id, rating) VALUES(2, 1, 20);
+INSERT INTO History(film_id, user_id, rating) VALUES(4, 4, 18);
+INSERT INTO History(film_id, user_id, rating) VALUES (1, 1, 16);
