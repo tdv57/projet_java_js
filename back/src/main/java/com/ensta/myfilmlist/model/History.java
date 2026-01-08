@@ -3,6 +3,9 @@ package com.ensta.myfilmlist.model;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 
+/**
+ * Data representing a History.
+ */
 @Entity
 @Table
 public class History {
@@ -21,6 +24,9 @@ public class History {
     @Max(value = 20, message = "La note du film est sur 20")
     private int rating;
 
+    /**
+     * Constructors for a History
+     */
     public History() {
         this.id = 0L;
         this.film = new Film();
@@ -33,6 +39,10 @@ public class History {
         this.film = film;
         this.rating = -1;
     }
+
+    /**
+     * Getter and setter for every attribute
+     */
 
     public long getId() {
         return id;

@@ -56,6 +56,7 @@ export function editDirector(id, name, surname, birthdate) {
     {
       200: "Réalisateur mis à jour.",
       404: "Impossible de modifier le réalisateur.",
+      409: "Le réalisateur existe déjà.",
     },
   );
 }

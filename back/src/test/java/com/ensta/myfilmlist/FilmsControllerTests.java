@@ -40,8 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FilmsControllerTests {
 
     private static int count = 0;
-    private static Long directorId = Long.valueOf(1L);
-    private static Long filmId = Long.valueOf(2L);
+    private static Long directorId = 1L;
+    private static Long filmId = 2L;
     @MockBean
     private MyFilmsService myFilmsService;
     @Autowired
@@ -65,18 +65,18 @@ public class FilmsControllerTests {
         System.out.println("Debut test n°" + count);
         System.out.println("\n");
         jamesCameron.setFamous(false);
-        jamesCameron.setBirthdate(LocalDate.of(1950, 03, 20));
-        jamesCameron.setId(Long.valueOf(1L));
+        jamesCameron.setBirthdate(LocalDate.of(1950, 3, 20));
+        jamesCameron.setId(1L);
         jamesCameron.setSurname("Cameron");
         jamesCameron.setName("James");
 
         peterJackson.setFamous(false);
-        peterJackson.setBirthdate(LocalDate.of(1980, 02, 02));
-        peterJackson.setId(Long.valueOf(2L));
+        peterJackson.setBirthdate(LocalDate.of(1980, 2, 2));
+        peterJackson.setId(2L);
         peterJackson.setSurname("Jackson");
         peterJackson.setName("Peter");
 
-        directorId = Long.valueOf(3L);
+        directorId = 3L;
 
         Genre action = new Genre();
         action.setId(genreId++);
@@ -127,28 +127,28 @@ public class FilmsControllerTests {
         hihihi1.setDuration(60);
         hihihi1.setDirector(jamesCameron);
         hihihi1.setTitle("hihihi1");
-        hihihi1.setId(Long.valueOf(1L));
+        hihihi1.setId(1L);
         hihihi1.setGenre(genres.get(2));
 
         hihihi2.setDuration(61);
         hihihi2.setDirector(jamesCameron);
         hihihi2.setTitle("hihihi2");
-        hihihi2.setId(Long.valueOf(2L));
+        hihihi2.setId(2L);
         hihihi2.setGenre(genres.get(2));
 
         hihihi3.setDuration(62);
         hihihi3.setDirector(jamesCameron);
         hihihi3.setTitle("hihihi3");
-        hihihi3.setId(Long.valueOf(3L));
+        hihihi3.setId(3L);
         hihihi3.setGenre(genres.get(2));
 
         deBonMatin.setDuration(90);
-        deBonMatin.setId(Long.valueOf(4L));
+        deBonMatin.setId(4L);
         deBonMatin.setDirector(peterJackson);
         deBonMatin.setTitle("de bon matin");
         deBonMatin.setGenre(genres.get(4));
 
-        filmId = Long.valueOf(5L);
+        filmId = 5L;
 
         List<Film> jamesCameronFilms = new ArrayList<>();
         jamesCameronFilms.add(hihihi1);
@@ -160,7 +160,7 @@ public class FilmsControllerTests {
         peterJacksonFilms.add(deBonMatin);
         peterJackson.setFilmsProduced(peterJacksonFilms);
 
-        erreurInterne.setId(Long.valueOf(1000L));
+        erreurInterne.setId(1000L);
     }
 
     @AfterEach
@@ -312,9 +312,7 @@ public class FilmsControllerTests {
 
     @Test
     void whenGetFilmByTitle_thenShouldHaveFilm() throws Exception {
-        when(myFilmsService.findFilmByTitle(anyString())).thenAnswer(invocation -> {
-            return mockMyFilmsServiceFindFilmByTitle(invocation.getArgument(0));
-        });
+        when(myFilmsService.findFilmByTitle(anyString())).thenAnswer(invocation -> mockMyFilmsServiceFindFilmByTitle(invocation.getArgument(0)));
 
         mockMvc.perform(get("/film/title?title=hihihi1"))
                 .andExpect(status().isOk())
@@ -331,9 +329,7 @@ public class FilmsControllerTests {
 
     @Test
     void whenGetFilmByDirectorId_thenShouldHaveFilm() throws Exception {
-        when(myFilmsService.findFilmByDirectorId(anyLong())).thenAnswer(invocation -> {
-            return mockMyFilmsServiceFindFilmByDirectorId(invocation.getArgument(0));
-        });
+        when(myFilmsService.findFilmByDirectorId(anyLong())).thenAnswer(invocation -> mockMyFilmsServiceFindFilmByDirectorId(invocation.getArgument(0)));
 
         mockMvc.perform(get("/film/director/1"))
                 .andExpect(status().isOk())
@@ -363,17 +359,8 @@ public class FilmsControllerTests {
 
     @Test
     void whenCreateFilm_thenShouldCreateFilm() throws Exception {
-        when(myFilmsService.createFilm(any(FilmForm.class))).thenAnswer(invocation -> {
-            return mockMyFilmsServiceCreateFilm(invocation.getArgument(0));
-        });
-        String hihihi4 = """
-                {
-                  "title": "hihihi4",
-                  "duration": 63,
-                  "directorId": 1,
-                  "genreId": 3
-                }
-                """;
+        when(myFilmsService.createFilm(any(FilmForm.class))).thenAnswer(invocation -> mockMyFilmsServiceCreateFilm(invocation.getArgument(0)));
+        String hihihi4 = "{\"title\": \"hihihi4\", \"duration\": 63, \"directorId\": 1, \"genreId\": 3}";
 
         mockMvc.perform(post("/film/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -386,14 +373,7 @@ public class FilmsControllerTests {
                 .andExpect(jsonPath("$.directorDTO.surname").value("Cameron"))
                 .andExpect(jsonPath("$.genreDTO.name").value("comédie"));
 
-        String unknown = """
-                {
-                  "title": "unknown",
-                  "duration": 60,
-                  "directorId": 100,
-                  "genreId": 3
-                }
-                """;
+        String unknown = "{\"title\": \"unknown\", \"duration\": 64, \"directorId\": 100, \"genreId\": 3}";
         mockMvc.perform(post("/film/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(unknown))
@@ -403,18 +383,10 @@ public class FilmsControllerTests {
 
     @Test
     void whenUpdateFilm_thenShouldHaveFilmUpdated() throws Exception {
-        when(myFilmsService.updateFilm(anyLong(), any(FilmForm.class))).thenAnswer(invocation -> {
-            return mockMyFilmsServiceUpdateFilm(invocation.getArgument(0), invocation.getArgument(1));
-        });
+        when(myFilmsService.updateFilm(anyLong(), any(FilmForm.class))).thenAnswer(invocation -> mockMyFilmsServiceUpdateFilm(invocation.getArgument(0), invocation.getArgument(1)));
 
-        String _hihihi1 = """
-                {
-                  "title": "hihihi1",
-                  "duration": 63,
-                  "directorId": 1,
-                  "genreId": 3
-                }
-                """;
+        String _hihihi1 = "{\"title\": \"hihihi1\", \"duration\": 63, \"directorId\": 1, \"genreId\": 3}";
+
         mockMvc.perform(put("/film/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(_hihihi1))
@@ -432,14 +404,7 @@ public class FilmsControllerTests {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(""));
 
-        String hihihi1Error = """
-                {
-                  "title": "hihihi1",
-                  "duration": 63,
-                  "directorId": 100,
-                  "genreId": 3
-                }
-                """;
+        String hihihi1Error = "{\"title\": \"hihihi1\", \"duration\": 63, \"directorId\": 100, \"genreId\": 3}";
 
         mockMvc.perform(put("/film/1")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -5,7 +5,7 @@ import java.util.Objects;
 import javax.persistence.*;
 
 /**
- * Represente un Film.
+ * Data representing a Film.
  */
 @Entity
 @Table
@@ -27,6 +27,10 @@ public class Film {
     @ManyToOne
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+    /**
+     * Constructors for a Film
+     */
 
     public Film() {
 		this.id = 0L;
@@ -51,6 +55,10 @@ public class Film {
 		this.director = new Director(director);
         this.genre = new Genre(genre);
 	}
+
+    /**
+     * Getter and setter for every attribute
+     */
 
     public long getId() {
         return id;
@@ -83,7 +91,7 @@ public class Film {
     public Genre getGenre() { return this.genre; }
     public void setGenre(Genre genre) { this.genre = genre; }
 
-	@Override
+    @Override
 	public String toString() {
 		String directorNameEtSurname = "";
 		if (!(this.director == null)) {

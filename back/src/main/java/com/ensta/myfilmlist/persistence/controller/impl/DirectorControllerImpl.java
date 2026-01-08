@@ -17,6 +17,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Api routes for a Director
+ */
 @RestController
 @RequestMapping("/director")
 @CrossOrigin
@@ -29,6 +32,11 @@ public class DirectorControllerImpl implements DirectorController {
         this.myFilmsService = myFilmsService;
     }
 
+    /**
+     * Returns the list of all directors registered in database.
+     *
+     * @return  list of existing Directors' DTO
+     */
     @Override
     @GetMapping("")
     public ResponseEntity<List<DirectorDTO>> getAllDirectors() {
@@ -39,6 +47,12 @@ public class DirectorControllerImpl implements DirectorController {
         }
     }
 
+    /**
+     * Returns a Director's DTO based on its id.
+     *
+     * @param id    id of the Director to return
+     * @return      the corresponding Director's DTO
+     */
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<DirectorDTO> getDirectorById(@PathVariable long id) {
@@ -53,11 +67,18 @@ public class DirectorControllerImpl implements DirectorController {
         }
     }
 
+    /**
+     * Returns a Director's DTO based on its name and surname
+     *
+     * @param surname   surname of the Director in the database
+     * @param name      name of the Director in the database
+     * @return          the corresponding Director's DTO
+     */
     @Override
     @GetMapping("/names")
     public ResponseEntity<DirectorDTO> getDirectorByNameAndSurname(@RequestParam String surname, @RequestParam String name) {
         try {
-            DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorBySurnameAndName(surname, name));
+            DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorByNameAndSurname(name, surname));
             return ResponseEntity.status(HttpStatus.OK).body(directorDTO);
         } catch (ServiceException e) {
             if (e.getMessage().equals("Internal Server Error")) {
@@ -67,6 +88,13 @@ public class DirectorControllerImpl implements DirectorController {
         }
     }
 
+    /**
+     * Adds a Director into the database and returns the corresponding Director's DTO.
+     * The Director is created based on a form (user entry).
+     *
+     * @param directorForm  form from which the Director is created
+     * @return              the corresponding Director's DTO
+     */
     @Override
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DirectorDTO> createDirector(@Valid @RequestBody DirectorForm directorForm) {
@@ -80,6 +108,14 @@ public class DirectorControllerImpl implements DirectorController {
         }
     }
 
+    /**
+     * Updates a Director based on a form (user entry)
+     *
+     * @param id            id of the Director to update
+     * @param directorForm  form with value updated
+     * @return              the updated Director's DTO
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<DirectorDTO> updateDirector(@PathVariable long id, @RequestBody DirectorForm directorForm) throws ControllerException {
@@ -97,6 +133,13 @@ public class DirectorControllerImpl implements DirectorController {
         }
     }
 
+    /**
+     * Deletes a Director based on its id.
+     *
+     * @param id    id of the Director to delete
+     * @return      no content
+     * @throws ControllerException  in case of any error
+     */
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDirector(@PathVariable long id) throws ControllerException {

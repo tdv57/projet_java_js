@@ -1,22 +1,19 @@
 package com.ensta.myfilmlist.service.impl;
 
-import com.ensta.myfilmlist.dao.DirectorDAO;
-import com.ensta.myfilmlist.dao.FilmDAO;
-import com.ensta.myfilmlist.dao.GenreDAO;
-import com.ensta.myfilmlist.dao.HistoryDAO;
+import com.ensta.myfilmlist.dao.*;
 import com.ensta.myfilmlist.dto.DirectorDTO;
 import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.dto.GenreDTO;
+import com.ensta.myfilmlist.dto.UserDTO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.form.DirectorForm;
 import com.ensta.myfilmlist.form.FilmForm;
+import com.ensta.myfilmlist.form.UserForm;
 import com.ensta.myfilmlist.mapper.DirectorMapper;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.mapper.GenreMapper;
-import com.ensta.myfilmlist.model.Director;
-import com.ensta.myfilmlist.model.Film;
-import com.ensta.myfilmlist.model.Genre;
-import com.ensta.myfilmlist.model.History;
+import com.ensta.myfilmlist.mapper.UserMapper;
+import com.ensta.myfilmlist.model.*;
 import com.ensta.myfilmlist.service.MyFilmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,10 +36,16 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     private GenreDAO genreDAO;
 
     @Autowired
+    private UserDAO userDAO;
+
+    @Autowired
     private HistoryDAO historyDAO;
 
     @Autowired
     private FilmMapper filmMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     @Transactional
@@ -128,8 +131,8 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public Director findDirectorBySurnameAndName(String surname, String name) throws ServiceException {
-        Optional<Director> director = this.directorDAO.findBySurnameAndName(surname, name);
+    public Director findDirectorByNameAndSurname(String name, String surname) throws ServiceException {
+        Optional<Director> director = this.directorDAO.findByNameAndSurname(name, surname);
         if (director.isEmpty()) {
             throw new ServiceException("Given Director doesn't exist");
         }
@@ -216,6 +219,65 @@ public class MyFilmsServiceImpl implements MyFilmsService {
 
 
     @Override
+    //@PreAuthorize("hasRole('ADMIN')")
+    public List<User> findAllUsers() throws ServiceException {
+        return this.userDAO.findAll();
+    }
+
+    @Override
+    public UserDTO createUser(UserForm userForm) {
+        User user = UserMapper.convertUserFormToUser(userForm);
+        user = this.userDAO.save(user);
+        return UserMapper.convertUserToUserDTO(user);
+    }
+
+    @Override
+    public User findUserById(long id) throws ServiceException {
+        Optional<User> user = this.userDAO.findById(id);
+        if (user.isEmpty()) {
+            throw new ServiceException("User can't be found.");
+        }
+        return user.get();
+    }
+
+    @Override
+    public User findByUsername(String username) throws ServiceException {
+        Optional<User> user = this.userDAO.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new ServiceException("User can't be found.");
+        }
+        return user.get();
+    }
+
+    @Override
+    public UserDTO updateUser(long id, UserForm userForm) throws ServiceException {
+        User new_user = UserMapper.convertUserFormToUser(userForm);
+        User user = this.userDAO.update(id, new_user);
+        return UserMapper.convertUserToUserDTO(user);
+    }
+
+    @Override
+    //@PreAuthorize("hasRole('ADMIN')")
+    public UserDTO setUserAsAdmin(long id) throws ServiceException {
+        try {
+            Optional<User> user = userDAO.findById(id);
+            if (user.isEmpty()) {
+                throw new ServiceException("User can't be found.");
+            }
+            user.get().setRoles("USER, ADMIN");
+            return UserMapper.convertUserToUserDTO(userDAO.update(id, user.get()));
+        } catch (Throwable e) {
+            throw new ServiceException("User can't be updated.", e);
+        }
+    }
+
+    @Override
+    public void deleteUser(long id) {
+        this.userDAO.delete(id);
+    }
+
+
+    @Override
     @Transactional
     public List<Film> findWatchList(long userId) throws ServiceException {
         return this.historyDAO.getWatchList(userId);
@@ -246,6 +308,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     public int getUserRating(long userId, long filmId) throws ServiceException {
         return this.historyDAO.getUserRating(userId, filmId);
     }
+
 
     @Override
     public Optional<Double> getMeanRating(long filmId) {

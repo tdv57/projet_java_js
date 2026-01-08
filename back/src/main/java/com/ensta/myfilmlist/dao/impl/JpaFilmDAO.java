@@ -31,7 +31,7 @@ public class JpaFilmDAO implements FilmDAO {
 
     /**
      * Returns the list of all Films present in the database.
-     * A ServicException is thrown in case of an error (can't get Films, list empty)
+     * A ServiceException is thrown in case of an error (can't get Films, list empty)
      *
      * @return the list of Films
      */
@@ -101,7 +101,7 @@ public class JpaFilmDAO implements FilmDAO {
     }
 
     /**
-     * Returns the list of Films that were realised by the Director correpsonding to the director_id argument.
+     * Returns the list of Films that were realised by the Director corresponding to the director_id argument.
      *
      * @param director_id the id of the Director
      * @return the corresponding films

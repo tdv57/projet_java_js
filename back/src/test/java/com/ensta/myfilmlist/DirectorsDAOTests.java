@@ -128,7 +128,7 @@ class DirectorsDAOTests {
 
     @Test
     void whenFindAll_thenShouldHaveAllDirectors() {
-        List<Director> directors = null;
+        List<Director> directors;
         try {
             directors = directorDAO.findAll();
         } catch (ServiceException e) {
@@ -140,17 +140,17 @@ class DirectorsDAOTests {
 
     @Test
     void whenFindBySurnameAndName_thenShouldHaveDirector() {
-        Optional<Director> jamesCameron = null;
+        Optional<Director> jamesCameron;
         try {
-            jamesCameron = directorDAO.findBySurnameAndName("Cameron", "James");
+            jamesCameron = directorDAO.findByNameAndSurname("James", "Cameron");
         } catch (ServiceException e) {
             throw new RuntimeException(e);
         }
         assertEquals(Optional.of(getJamesCameron()), jamesCameron);
 
-        Optional<Director> error = null;
+        Optional<Director> error;
         try {
-            error = directorDAO.findBySurnameAndName("unknown", "unknown");
+            error = directorDAO.findByNameAndSurname("unknown", "unknown");
         } catch (ServiceException e) {
             throw new RuntimeException(e);
         }

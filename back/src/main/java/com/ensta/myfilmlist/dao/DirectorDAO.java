@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface DirectorDAO {
     List<Director> findAll() throws ServiceException;
 
-    Optional<Director> findBySurnameAndName(String surname, String name) throws ServiceException;
+    Optional<Director> findByNameAndSurname(String name, String surname) throws ServiceException;
 
     Optional<Director> findById(long id) throws ServiceException;
 

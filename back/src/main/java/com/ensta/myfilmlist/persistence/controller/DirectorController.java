@@ -31,7 +31,7 @@ public interface DirectorController {
     })
     ResponseEntity<DirectorDTO> getDirectorById(long id) throws ControllerException;
 
-    @ApiOperation(value = "Recherche un réalisateur par son surname et présurname", notes = "Permet de renvoyer les détails d'un réalisateur grâce à son surname et présurname.", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Recherche un réalisateur par son nom et prénom", notes = "Permet de renvoyer les détails d'un réalisateur grâce à son nom et prénom.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le réalisateur demandé a été trouvé avec succès"),
             @ApiResponse(code = 404, message = "Le réalisateur demandé n'existe pas"),

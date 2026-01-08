@@ -23,6 +23,7 @@ public class HistoryControllerImpl implements HistoryController {
     @Autowired
     private MyFilmsService myFilmsService;
 
+
     Optional<Integer> checkRating(int rating) {
         if (rating < 0) {
             return Optional.empty();
@@ -30,8 +31,15 @@ public class HistoryControllerImpl implements HistoryController {
         return Optional.of(rating);
     }
 
+    /**
+     * Returns the list of all films watched by a user in the database.
+     *
+     * @param userId id of the user to collect watched films
+     * @return list of watched Film's DTO
+     */
     @Override
     @GetMapping("/{userId}")
+    //@PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<List<FilmDTO>> getWatchList(@PathVariable long userId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findWatchList(userId)));
@@ -40,8 +48,14 @@ public class HistoryControllerImpl implements HistoryController {
         }
     }
 
+    /**
+     * Returns the list of all directors registered in database.
+     *
+     * @return list of existing Directors' DTO
+     */
     @Override
     @PostMapping("")
+    //@PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<HistoryDTO> addToWatchList(long userId, long filmId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.addFilmToWatchList(userId, filmId)));
@@ -55,6 +69,7 @@ public class HistoryControllerImpl implements HistoryController {
 
     @Override
     @DeleteMapping("")
+    //@PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<?> removeFromWatchList(long userId, long filmId) {
         try {
             myFilmsService.removeFilmFromWatchList(userId, filmId);
@@ -66,6 +81,7 @@ public class HistoryControllerImpl implements HistoryController {
 
     @Override
     @PutMapping("")
+    //@PreAuthorize("#userId == authentication.principal.id")
     public ResponseEntity<HistoryDTO> rateFilm(long userId, long filmId, int rating) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.rateFilm(userId, filmId, rating)));
@@ -84,15 +100,22 @@ public class HistoryControllerImpl implements HistoryController {
     @GetMapping("/rate/{userId}")
     public ResponseEntity<Optional<Integer>> getUserRating(@PathVariable long userId, long filmId) {
         try {
-            Integer rating = myFilmsService.getUserRating(userId, filmId);
+            int rating = myFilmsService.getUserRating(userId, filmId);
             return ResponseEntity.status(HttpStatus.OK).body(checkRating(rating));
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Can't find Film in watched list of User")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @GetMapping("/rate")
     public ResponseEntity<Optional<Double>> getMeanRating(long filmId) {
-        return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getMeanRating(filmId)));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getMeanRating(filmId)));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }
