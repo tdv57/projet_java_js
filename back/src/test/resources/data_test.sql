@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS Film;
 DROP TABLE IF EXISTS Director;
 DROP TABLE IF EXISTS Genre;
 
--- Data pour les tests
+-- Database pour les tests
 CREATE TABLE IF NOT EXISTS Director(id INT primary key auto_increment, surname VARCHAR(100), name VARCHAR(100), birthdate TIMESTAMP, famous BOOLEAN);
 INSERT INTO Director(surname, name, birthdate, famous) VALUES('Cameron', 'James', '1954-08-16', false);
 INSERT INTO Director(surname, name, birthdate, famous) VALUES('Jackson', 'Peter', '1961-10-31', true);
@@ -24,3 +24,9 @@ INSERT INTO Genre(name) VALUES('horreur');
 INSERT INTO Genre(name) VALUES('policier');
 INSERT INTO Genre(name) VALUES('SF');
 INSERT INTO Genre(name) VALUES('thriller');
+
+CREATE TABLE IF NOT EXISTS User(id INT primary key auto_increment, username VARCHAR(100), surname VARCHAR(100), name VARCHAR(100), hash VARCHAR(100), roles VARCHAR(100));
+INSERT INTO User(surname, name) VALUES('Test', 'Test');
+
+CREATE TABLE IF NOT EXISTS History(id INT primary key auto_increment, film_id INT, user_id INT, rating INT);
+INSERT INTO History(film_id, user_id, rating) VALUES(2, 1, 20);

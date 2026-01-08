@@ -93,7 +93,7 @@ public class FilmMapper {
             } else {
                 film.setDirector(null);
             }
-            Optional<Genre> optionalGenre = null;
+            Optional<Genre> optionalGenre;
             try {
                 optionalGenre = this.jpaGenreDAO.findById(filmForm.getGenreId());
             } catch (com.ensta.myfilmlist.exception.ServiceException e) {
@@ -104,8 +104,7 @@ public class FilmMapper {
             } else {
                 film.setGenre(null);
             }
-        } catch (ServiceException e) {
-            System.err.println(e.getMessage());
+        } catch (ServiceException ignored) {
         }
         return film;
     }
