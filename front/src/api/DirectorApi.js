@@ -11,7 +11,7 @@ export function getAllDirectors() {
 
 export function getDirectorByName(name, surname) {
   return doRequest(
-    axios.get(DIRECTORS_URI, {
+    axios.get(DIRECTORS_URI + "/names", {
       params: {
         surname,
         name,
@@ -33,7 +33,7 @@ export function getDirectorById(id) {
 
 export function addDirector(name, surname, birthdate) {
   return doRequest(
-    axios.post(DIRECTORS_URI + "/", {
+    axios.post(DIRECTORS_URI, {
       surname,
       name,
       birthdate,
@@ -41,6 +41,7 @@ export function addDirector(name, surname, birthdate) {
     {
       200: "Réalisateur ajouté.",
       404: "Impossible d'ajouter ce réalisateur.",
+      409: "Le réalisateur existe déjà.",
     },
   );
 }

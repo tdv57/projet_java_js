@@ -1,3 +1,5 @@
+import { humanizer } from "humanize-duration";
+
 export function extractDate(d) {
   d.setHours(10);
   return d.toISOString().split("T")[0];
@@ -18,3 +20,8 @@ export async function doRequest(reqPromise, messages) {
     return [null, messages.error || "Erreur serveur"];
   }
 }
+
+const frenchHumanizer = humanizer({
+  language: "fr",
+});
+export const humanizeDuration = frenchHumanizer;

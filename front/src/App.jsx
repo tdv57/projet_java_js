@@ -47,6 +47,7 @@ function App() {
             <Routes>
               {routes.map((r) => (
                 <Route
+                  key={r.path}
                   path={r.path}
                   element={
                     <>
