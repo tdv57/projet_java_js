@@ -286,7 +286,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     }
 
     @Override
-    public User findUserBySurnameAndName(String name, String surname) throws ServiceException {
+    public User findUserBySurnameAndName(String surname, String name) throws ServiceException {
         Optional<User> user = this.userDAO.findByNameAndSurname(name, surname);
         if (user.isEmpty()) {
             throw new  ServiceException ("User can't be found.");

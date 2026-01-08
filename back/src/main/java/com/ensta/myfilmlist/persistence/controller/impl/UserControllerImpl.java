@@ -61,11 +61,9 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<UserDTO> getUserById(@PathVariable long id) throws ControllerException {
         try {
             UserDTO userDTO = UserMapper.convertUserToUserDTO(myFilmsService.findUserById(id));
-            if (userDTO == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
             return ResponseEntity.status(HttpStatus.OK).body(userDTO);
         } catch (ServiceException e) {
+            if (e.getMessage().equals("User can't be found.")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Can't get User.", e);
         }
     }
@@ -82,12 +80,10 @@ public class UserControllerImpl implements UserController {
     @GetMapping("/")
     public ResponseEntity<UserDTO> getUserByNameAndSurname(@RequestParam String name, @RequestParam String surname) throws ControllerException {
         try {
-            UserDTO userDTO = UserMapper.convertUserToUserDTO(myFilmsService.findUserBySurnameAndName(name, surname));
-            if (userDTO == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
+            UserDTO userDTO = UserMapper.convertUserToUserDTO(myFilmsService.findUserBySurnameAndName(surname, name));
             return ResponseEntity.status(HttpStatus.OK).body(userDTO);
         } catch (ServiceException e) {
+            if (e.getMessage().equals("User can't be found.")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Can't get User.", e);
         }
     }
