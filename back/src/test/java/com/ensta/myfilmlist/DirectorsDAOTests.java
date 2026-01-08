@@ -179,7 +179,7 @@ class DirectorsDAOTests {
 
         ServiceException e = assertThrows(ServiceException.class, () -> directorDAO.update(100L, newJamesCameron));
 
-        assertEquals("Director doesn't exist", e.getMessage());
+        assertEquals("Director already exists", e.getMessage());
     }
 
     @Test
