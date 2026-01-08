@@ -258,7 +258,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
         
     @Override 
     public Optional<Double> getFilmMeanRating(long filmId) throws ServiceException {
-        List<Integer> notes = this.historyDAO.getNotesByFilmId(filmId);
+        List<Integer> notes = this.historyDAO.getRatesByFilmId(filmId);
         return calculateMeanRating(notes.stream().map(Integer::doubleValue).collect(Collectors.toList()));
     }
 
