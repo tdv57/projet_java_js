@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -329,7 +331,7 @@ public class HistorysControllerTests {
         History history = new History();
         history.setFilm(getLaCommunauteDeLAnneau());
         history.setId(1);
-        history.setRating(20);
+        history.setRating(18);
         history.setUser(getBenoitBoero());
         return history;
     }
@@ -367,6 +369,57 @@ public class HistorysControllerTests {
 
     }
 
+    private History mockMyFilmsServiceRateFilm(long userId, long filmId, int rating) throws ServiceException {
+        if (userId == 4 && filmId == 4 ) {
+            History history = getHistoryFilm4User4();
+            history.setRating(rating);
+            return history;
+        } else if (userId == 1 && filmId == 1) {
+            History history = getHistoryFilm1User1();
+            history.setRating(rating);
+            return history;
+        } else if (userId == 1 && filmId == 2) {
+            History history = getHistoryFilm2User1();
+            history.setRating(rating);
+            return history;
+        } else if (userId == 2 && filmId == 2) {
+            History history = getHistoryFilm2User2();
+            history.setRating(rating);
+            return history;
+        } else {
+            throw new ServiceException("Historique introuvable");
+        }
+    }
+
+    private Optional<Integer> mockMyFilmsServiceGetRate(long userId, long filmId) throws ServiceException {
+        if (userId == 4 && filmId == 4 ) {
+            return Optional.of(getHistoryFilm4User4().getRating());
+        } else if (userId == 1 && filmId == 1) {
+            return Optional.of(getHistoryFilm1User1().getRating());
+        } else if (userId == 1 && filmId == 2) {
+            return Optional.of(getHistoryFilm2User1().getRating());
+        } else if (userId == 2 && filmId == 2) {
+            return Optional.of(getHistoryFilm2User2().getRating());
+        } else {
+            throw new ServiceException("Note introuvable");
+        }
+    }
+
+    private Optional<Double> mockMyFilmsServiceGetFilmMeanRating(long filmId) throws ServiceException {
+        switch((int) filmId) {
+            case 1:
+                return Optional.of((double)getHistoryFilm1User1().getRating());
+            case 2:
+                return Optional.of(((double)getHistoryFilm2User1().getRating() + (double)getHistoryFilm2User2().getRating())/2);
+            case 3:
+                return Optional.empty();
+            case 4:
+                return Optional.of((double) getHistoryFilm4User4().getRating());
+            default:
+                throw new ServiceException("Film inexistant");
+        }
+    }
+    
     @Test 
     void whenGetWatchList_thenShouldHaveWatchList() throws Exception {
         when(myFilmsService.findWatchList(anyLong())).thenAnswer(invocation -> {
@@ -388,6 +441,93 @@ public class HistorysControllerTests {
             return mockMyFilmsServiceAddFilmToWatchList(invocation.getArgument(0), invocation.getArgument(1));
         });
 
-        
+        mockMvc.perform(post("/history/")
+                .param("userId", "4")
+                .param("filmId", "3"))
+        .andExpect(status().isOk())
+        .andDo(print())
+        .andExpect(jsonPath("$.userDTO.id").value(4))
+        .andExpect(jsonPath("$.filmDTO.title").value("Le retour du roi"));
+
+        mockMvc.perform(post("/history/")
+                .param("userId", "100")
+                .param("filmId", "3"))
+        .andExpect(status().isNotFound());
+
+        mockMvc.perform(post("/history/")
+                .param("userId", "4")
+                .param("filmId", "300"))
+        .andExpect(status().isNotFound());
+    }
+
+    @Test 
+    void whenRemoveFromWatchList_thenShouldRemoveFromWatchList() throws Exception {
+        doNothing().when(myFilmsService).removeFilmFromWatchList(anyLong(), anyLong());
+
+        mockMvc.perform(delete("/history/")
+                .param("userId", "1")
+                .param("filmId", "1"))
+        .andExpect(status().isNoContent());
+        mockMvc.perform(delete("/history/")
+                .param("userId", "100")
+                .param("filmId", "1"))
+        .andExpect(status().isNoContent());
+    }
+
+    @Test 
+    void whenRateFilm_thenShouldRateFilm() throws Exception {
+        when(myFilmsService.rateFilm(anyLong(), anyLong(), anyInt())).thenAnswer(invocation -> {
+            return mockMyFilmsServiceRateFilm(invocation.getArgument(0), invocation.getArgument(1), invocation.getArgument(2));
+        });
+
+        mockMvc.perform(put("/history/")
+                .param("userId", "1")
+                .param("filmId", "1")
+                .param("rating", "10"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.filmDTO.id").value(1))
+        .andExpect(jsonPath("$.userDTO.id").value(1))
+        .andExpect(jsonPath("$.rating").value(10));
+
+        mockMvc.perform(put("/history/")
+                .param("userId", "100")
+                .param("filmId", "100")
+                .param("rating", "10"))
+        .andExpect(status().isNotFound());
+    }
+
+    @Test 
+    void whenGetRate_thenShouldHaveRate() throws Exception{
+        when((myFilmsService.getRate(anyLong(), anyLong()))).thenAnswer(invocation -> {
+            return mockMyFilmsServiceGetRate(invocation.getArgument(0), invocation.getArgument(1));
+        });
+
+        mockMvc.perform(get("/history/rate")
+                .param("userId", "1")
+                .param("filmId", "1"))
+        .andExpect(status().isOk())
+        .andExpect(content().string("20"));
+
+        mockMvc.perform(get("/history/rate")
+                .param("userId", "100")
+                .param("filmId", "100"))
+        .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void whenGetFilmMeanRating_thenShouldHaveMeanRating() throws Exception {
+        when(myFilmsService.getFilmMeanRating(anyLong())).thenAnswer(invocation -> {
+            return mockMyFilmsServiceGetFilmMeanRating(invocation.getArgument(0));
+        });
+
+        mockMvc.perform(get("/history/mean/2"))
+        .andExpect(status().isOk())
+        .andExpect(content().string("19.0"));
+
+        mockMvc.perform(get("/history/mean/3"))
+        .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/history/mean/100"))
+        .andExpect(status().isNotFound());
     }
 }

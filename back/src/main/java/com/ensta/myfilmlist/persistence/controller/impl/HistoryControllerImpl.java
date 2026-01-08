@@ -109,7 +109,7 @@ public class HistoryControllerImpl implements HistoryController {
      */
     @Override
     @GetMapping("/rate")
-    public ResponseEntity<Optional<Integer>> getRate(long userId, long filmId) throws ControllerException {
+    public ResponseEntity<Optional<Integer>> getRate(@RequestParam long userId,@RequestParam long filmId) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getRate(userId, filmId)));
         } catch (ServiceException e) {
@@ -122,9 +122,11 @@ public class HistoryControllerImpl implements HistoryController {
     @GetMapping("/mean/{filmId}")
     public ResponseEntity<Optional<Double>> getFilmMeanRating(@PathVariable("filmId") long filmId) throws ControllerException {
         try {
+            Optional<Double> rate = myFilmsService.getFilmMeanRating(filmId);
+            if (rate.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
             return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getFilmMeanRating(filmId)));
         } catch (ServiceException e) {
-            if (Objects.equals(e.getMessage(), "Film inexistant")) ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            if (Objects.equals(e.getMessage(), "Film inexistant")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             throw new ControllerException("Impossible de trouver la note de ce film", e);
         }
     }
