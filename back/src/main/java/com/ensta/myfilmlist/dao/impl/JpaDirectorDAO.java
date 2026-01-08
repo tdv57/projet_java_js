@@ -1,6 +1,7 @@
 package com.ensta.myfilmlist.dao.impl;
 
 import com.ensta.myfilmlist.dao.DirectorDAO;
+import com.ensta.myfilmlist.dao.FilmDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.model.Director;
 import com.ensta.myfilmlist.model.Film;
@@ -139,7 +140,10 @@ public class JpaDirectorDAO implements DirectorDAO {
                         .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
                         .setParameter("director_id", id)
                         .getResultList();
-                films.forEach(film -> entityManager.remove(film));
+                FilmDAO filmDAO = new JpaFilmDAO(entityManager);
+                for (Film film : films) {
+                    filmDAO.delete(film);
+                }
                 entityManager.remove(managedDirector);
             }
         } catch (Exception e) {

@@ -19,6 +19,10 @@ public class JpaFilmDAO implements FilmDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public JpaFilmDAO(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     void checkDuplicate(long id, Film film) throws ServiceException {
         Director director = film.getDirector();
         List<Film> filmList = findByDirectorId(director.getId());
@@ -169,7 +173,8 @@ public class JpaFilmDAO implements FilmDAO {
                 entityManager.remove(managedFilm);
             }
         } catch (Exception e) {
-            throw new ServiceException("Internal Server Error ?");
+            System.err.println(e.getMessage());
+            throw new ServiceException("Internal Server Error");
         }
     }
 
