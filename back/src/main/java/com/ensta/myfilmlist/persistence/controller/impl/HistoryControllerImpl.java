@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -71,8 +70,10 @@ public class HistoryControllerImpl implements HistoryController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.rateFilm(userId, filmId, rating)));
         } catch (ServiceException e) {
-            if (Objects.equals(e.getMessage(), "Film's rating should be positive")) {
+            if (e.getMessage().equals("Film's rating should be positive")) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            } else if (e.getMessage().equals("Film not in watched list")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
