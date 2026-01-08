@@ -143,6 +143,7 @@ public class JpaFilmDAO implements FilmDAO {
             film_to_modify.setTitle(film.getTitle());
             film_to_modify.setDuration(film.getDuration());
             film_to_modify.setDirector(film.getDirector());
+            film_to_modify.setGenre(film.getGenre());
             entityManager.merge(film_to_modify);
             return film_to_modify;
         } catch (Exception e) {
