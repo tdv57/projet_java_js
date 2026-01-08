@@ -10,7 +10,6 @@ import { ThemeContext } from "@emotion/react";
 import { useContext } from "react";
 
 const ThemedDialog = ({ show, proceed, message }) => {
-  const theme = useContext(ThemeContext);
   return (
     <Dialog open={show} fullWidth maxWidth="md">
       <DialogTitle>Confirmation</DialogTitle>

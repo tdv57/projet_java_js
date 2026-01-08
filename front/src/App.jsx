@@ -2,7 +2,7 @@ import "./App.css";
 
 import { BrowserRouter, Route, Routes } from "react-router";
 
-import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { ContextAwareConfirmation } from "react-confirm";
 import CssBaseline from "@mui/material/CssBaseline";
 

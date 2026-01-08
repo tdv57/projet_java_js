@@ -72,11 +72,15 @@ function NawDrawer(props) {
       <Divider />
       <List>
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
             <ListItemIcon>
               <PersonIcon />
             </ListItemIcon>
-            <ListItemText primary={user.username} />
+            <ListItemText primary="Se connecter" />
           </ListItemButton>
         </ListItem>
       </List>
