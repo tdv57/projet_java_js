@@ -26,8 +26,8 @@ public class JpaHistoryDAO implements HistoryDAO {
                     .setParameter("user_id", userId)
                     .setParameter("film_id", filmId)
                     .getResultList();
-        History history = histories.get(0);
-        return Optional.ofNullable(history);
+        if (histories.isEmpty()) return Optional.empty();
+        return Optional.ofNullable(histories.get(0));
     }
 
     /**
