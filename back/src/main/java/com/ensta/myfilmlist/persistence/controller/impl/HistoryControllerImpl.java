@@ -72,7 +72,7 @@ public class HistoryControllerImpl implements HistoryController {
     @Override
     @DeleteMapping("/")
     @PreAuthorize("#userId == authentication.principal.id")
-    public ResponseEntity<?> removeFromWatchList(long userId, long filmId) throws ControllerException {
+    public ResponseEntity<?> removeFromWatchList(@RequestParam long userId,@RequestParam long filmId) throws ControllerException {
         try {
             myFilmsService.removeFilmFromWatchList(userId, filmId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
