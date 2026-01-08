@@ -76,12 +76,12 @@ public class JdbcDirectorDAO implements DirectorDAO {
             );
             return director;
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
-            throw new ServiceException("Le réalisateur n'a pas pu être mis à jour");
+            throw new ServiceException("Can't update Director");
         }
     }
 
     @Override
-    public Director save(Director director) throws ServiceException {
+    public Director save(Director director) {
         String query = "INSERT INTO Director(surname, name, birthdate, famous) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         PreparedStatementCreator creator = conn -> {

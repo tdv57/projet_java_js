@@ -187,7 +187,7 @@ public class DirectorsControllerTests {
             case 2:
                 return peterJackson;
             default:
-                throw new ServiceException("Le réalisateur demandé n'existe pas");
+                throw new ServiceException("Given Director doesn't exist");
         }
     }
 
@@ -197,7 +197,7 @@ public class DirectorsControllerTests {
         } else if (Objects.equals(surname, peterJackson.getSurname()) && Objects.equals(name, peterJackson.getName())) {
             return peterJackson;
         } else {
-            throw new ServiceException("Le réalisateur demandé n'existe pas");
+            throw new ServiceException("Given Director doesn't exist");
         }
     }
 
@@ -220,7 +220,7 @@ public class DirectorsControllerTests {
                 peterJackson.setSurname(directorForm.getSurname());
                 return DirectorMapper.convertDirectorToDirectorDTO(peterJackson);
             default:
-                throw new ServiceException("Réalisateur inexistant");
+                throw new ServiceException("Director doesn't exist");
         }
     }
 
@@ -233,7 +233,7 @@ public class DirectorsControllerTests {
                 peterJackson = null;
                 break;
             default:
-                throw new ServiceException("Réalisateur inexistant");
+                throw new ServiceException("Director doesn't exist");
         }
     }
 

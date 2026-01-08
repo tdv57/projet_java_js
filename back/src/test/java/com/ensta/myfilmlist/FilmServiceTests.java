@@ -74,7 +74,7 @@ public class FilmServiceTests {
                 peterJackson.setId(id);
                 return peterJackson;
             default:
-                throw new ServiceException("Impossible de mettre à jour le réalisateur");
+                throw new ServiceException("Can't update Director");
         }
     }
 
@@ -143,7 +143,7 @@ public class FilmServiceTests {
             case 2 -> hihihi2;
             case 3 -> hihihi3;
             case 4 -> deBonMatin;
-            default -> throw new ServiceException("Impossible de mettre à jour le film");
+            default -> throw new ServiceException("Can't update Film");
         };
 
         filmFound.setDirector(film.getDirector());
@@ -227,7 +227,7 @@ public class FilmServiceTests {
             genre.setName(name);
             return genre;
         } else {
-            throw new ServiceException("Impossible de mettre à jour le genre");
+            throw new ServiceException("Can't update Genre");
         }
     }
 
@@ -355,7 +355,7 @@ public class FilmServiceTests {
         peterJackson = myFilmsServiceImpl.updateDirectorFamous(peterJackson);
         assertEquals(Boolean.FALSE, peterJackson.isFamous());
         Exception exception = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.updateDirectorFamous(erreurInterne));
-        assertEquals("Réalisateur inexistant", exception.getMessage());
+        assertEquals("Director doesn't exist", exception.getMessage());
     }
 
     @Test
@@ -445,7 +445,7 @@ public class FilmServiceTests {
             Film filmFound = myFilmsServiceImpl.findFilmById(1);
             ServiceException filmNotFoundError = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findFilmById(100));
             assertEquals(hihihi1, filmFound);
-            assertEquals("Le film demandé n'existe pas", filmNotFoundError.getMessage());
+            assertEquals("Given Film doesn't exist", filmNotFoundError.getMessage());
         } catch (ServiceException e) {
             System.out.println("whenFindFilmById_thenShouldHaveFilm error");
         }
@@ -459,7 +459,7 @@ public class FilmServiceTests {
             Film filmFound = myFilmsServiceImpl.findFilmByTitle("hihihi1");
             ServiceException filmNotFoundError = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findFilmByTitle("not existing"));
             assertEquals(hihihi1, filmFound);
-            assertEquals("Le film demandé n'existe pas", filmNotFoundError.getMessage());
+            assertEquals("Given Film doesn't exist", filmNotFoundError.getMessage());
         } catch (ServiceException e) {
             System.out.println("whenFilmByTitle_thenShouldHaveFilm error");
         }
@@ -499,7 +499,7 @@ public class FilmServiceTests {
 
         ServiceException serviceException = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.updateFilm(100, hahaha1));
 
-        assertEquals("Impossible de mettre à jour le film", serviceException.getMessage());
+        assertEquals("Can't update Film", serviceException.getMessage());
 
         hahaha1.setDirectorId(100);
         ServiceException serviceException2 = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.updateFilm(1, hahaha1));
@@ -531,7 +531,7 @@ public class FilmServiceTests {
 
         ServiceException serviceException = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.deleteFilm(100L));
 
-        assertEquals("Le film demandé n'existe pas", serviceException.getMessage());
+        assertEquals("Given Film doesn't exist", serviceException.getMessage());
     }
 
 
@@ -558,8 +558,12 @@ public class FilmServiceTests {
     }
 
     @Test
-    void whenCreateDirector_thenShouldCreateDirector() {
-        when(jpaDirectorDAO.save(any(Director.class))).thenAnswer(invocation -> mockJpaDirectorDAOSave(invocation.getArgument(0)));
+    void whenCreateDirector_thenShouldCreateDirector() throws ServiceException {
+        try {
+            when(jpaDirectorDAO.save(any(Director.class))).thenAnswer(invocation -> mockJpaDirectorDAOSave(invocation.getArgument(0)));
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
 
         DirectorForm directorForm = new DirectorForm();
         directorForm.setBirthdate(LocalDate.of(2000, 3, 20));
@@ -583,7 +587,7 @@ public class FilmServiceTests {
 
         assertEquals(jamesCameron, myFilmsServiceImpl.findDirectorById(1L));
         ServiceException serviceException = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findDirectorById(100L));
-        assertEquals("Le réalisateur demandé n'existe pas", serviceException.getMessage());
+        assertEquals("Given Director doesn't exist", serviceException.getMessage());
     }
 
     @Test
@@ -597,7 +601,7 @@ public class FilmServiceTests {
         assertEquals(jamesCameron, myFilmsServiceImpl.findDirectorBySurnameAndName(JAMES, CAMERON));
         assertEquals(peterJackson, myFilmsServiceImpl.findDirectorBySurnameAndName(PETER, JACKSON));
         ServiceException serviceException = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findDirectorBySurnameAndName(UNKNOWN, UNKNOWN));
-        assertEquals("Le réalisateur demandé n'existe pas", serviceException.getMessage());
+        assertEquals("Given Director doesn't exist", serviceException.getMessage());
     }
 
     @Test
@@ -632,7 +636,7 @@ public class FilmServiceTests {
         assertEquals(genres.get(0), genre);
 
         ServiceException serviceException = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findGenreById(100L));
-        assertEquals("Le genre demandé n'existe pas", serviceException.getMessage());
+        assertEquals("Given Genre doesn't exist", serviceException.getMessage());
     }
 
     @Test
@@ -648,7 +652,7 @@ public class FilmServiceTests {
 
         ServiceException serviceException = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.updateGenre(100L, "truc"));
 
-        assertEquals("Impossible de mettre à jour le genre", serviceException.getMessage());
+        assertEquals("Can't update Genre", serviceException.getMessage());
     }
 
     @Test
@@ -662,9 +666,9 @@ public class FilmServiceTests {
         notesComplexes.add(7.123213);
         notesComplexes.add(1.123213);
         Double moyenne = 15.0;
-        assertEquals(moyenne, myFilmsServiceImpl.calculerNoteMoyenne(troisNotes).get());
-        assertEquals(Boolean.TRUE, myFilmsServiceImpl.calculerNoteMoyenne(pasDeNote).isEmpty());
-        assertEquals(Double.valueOf(10.65), myFilmsServiceImpl.calculerNoteMoyenne(notesComplexes).get());
+        assertEquals(moyenne, myFilmsServiceImpl.getMeanRating(troisNotes).get());
+        assertEquals(Boolean.TRUE, myFilmsServiceImpl.getMeanRating(pasDeNote).isEmpty());
+        assertEquals(Double.valueOf(10.65), myFilmsServiceImpl.getMeanRating(notesComplexes).get());
     }
 
     @Test
@@ -674,9 +678,9 @@ public class FilmServiceTests {
         notes.add(17.4);
         notes.add(14.3);
 
-        Optional<Double> noteMoyenne = myFilmsServiceImpl.calculerNoteMoyenne(notes);
+        Optional<Double> noteMoyenne = myFilmsServiceImpl.getMeanRating(notes);
         List<Double> notesVides = new ArrayList<>();
-        Optional<Double> noteMoyenneVide = myFilmsServiceImpl.calculerNoteMoyenne(notesVides);
+        Optional<Double> noteMoyenneVide = myFilmsServiceImpl.getMeanRating(notesVides);
         assertEquals(Optional.of(14.0), noteMoyenne);
         assertEquals(Optional.empty(), noteMoyenneVide);
     }

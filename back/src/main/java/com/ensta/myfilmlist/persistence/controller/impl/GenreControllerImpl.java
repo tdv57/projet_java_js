@@ -29,18 +29,18 @@ public class GenreControllerImpl implements GenreController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(GenreMapper.convertGenreToGenreDTOs(myFilmsService.findAllGenres()));
         } catch (ServiceException e) {
-            throw new ControllerException("Impossible de trouver tous les films", e);
+            throw new ControllerException("Can't get all Films", e);
         }
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<GenreDTO> getGenreById(@PathVariable long id) throws ControllerException {
+    public ResponseEntity<GenreDTO> getGenreById(@PathVariable long id) {
         try {
             GenreDTO genreDTO = GenreMapper.convertGenreToGenreDTO(myFilmsService.findGenreById(id));
             return ResponseEntity.status(HttpStatus.OK).body(genreDTO);
         } catch (ServiceException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);        
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
@@ -50,9 +50,10 @@ public class GenreControllerImpl implements GenreController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateGenre(id, name));
         } catch (ServiceException e) {
-            if (Objects.equals(e.getMessage(), "Genre introuvable")) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);     
-            throw new ControllerException("Impossible d'éditer le genre demandé", e);
+            if (Objects.equals(e.getMessage(), "Genre introuvable"))
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            throw new ControllerException("Can't edit Genre", e);
         }
     }
-    
+
 }

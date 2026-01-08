@@ -192,7 +192,7 @@ public class FilmsControllerTests {
             case 4:
                 return deBonMatin;
             default:
-                throw new ServiceException("Le film demandé n'existe pas");
+                throw new ServiceException("Given Film doesn't exist");
         }
     }
 
@@ -207,7 +207,7 @@ public class FilmsControllerTests {
             case "de bon matin":
                 return deBonMatin;
             default:
-                throw new ServiceException("Le film demandé n'existe pas");
+                throw new ServiceException("Given Film doesn't exist");
         }
     }
 
@@ -224,19 +224,19 @@ public class FilmsControllerTests {
                 films.add(deBonMatin);
                 return films;
             default:
-                throw new ServiceException("Le réalistauer n'a réalisé aucun film");
+                throw new ServiceException("Director didn't produce any Film");
         }
     }
 
     private FilmDTO mockMyFilmsServiceCreateFilm(FilmForm filmForm) throws ServiceException {
-        if (filmForm.getDirectorId() > 2) throw new ServiceException("Le réalisateur n'existe pas");
+        if (filmForm.getDirectorId() > 2) throw new ServiceException("Director doens't exist");
         Film film = filmMapper.convertFilmFormToFilm(filmForm);
         film.setId(filmId++);
         return filmMapper.convertFilmToFilmDTO(film);
     }
 
     private FilmDTO mockMyFilmsServiceUpdateFilm(long id, FilmForm filmForm) throws ServiceException {
-        if (filmForm.getDirectorId() > 2) throw new ServiceException("Réalisateur inexistant");
+        if (filmForm.getDirectorId() > 2) throw new ServiceException("Director doesn't exist");
         Film film = filmMapper.convertFilmFormToFilm(filmForm);
         film.setId(id);
         switch ((int) id) {
@@ -253,7 +253,7 @@ public class FilmsControllerTests {
                 deBonMatin = film;
                 break;
             default:
-                throw new ServiceException("Impossible de mettre à jour le film");
+                throw new ServiceException("Can't update Film");
         }
 
         return filmMapper.convertFilmToFilmDTO(film);
@@ -274,7 +274,7 @@ public class FilmsControllerTests {
                 deBonMatin = null;
                 break;
             default:
-                throw new ServiceException("Le film demandé n'existe pas");
+                throw new ServiceException("Given Film doesn't exist");
         }
     }
 

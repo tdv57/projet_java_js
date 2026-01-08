@@ -1,31 +1,28 @@
 package com.ensta.myfilmlist;
 
-import com.ensta.myfilmlist.dao.impl.*;
+import com.ensta.myfilmlist.dao.DirectorDAO;
+import com.ensta.myfilmlist.dao.FilmDAO;
+import com.ensta.myfilmlist.dao.GenreDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
-import com.ensta.myfilmlist.dao.*;
-import com.ensta.myfilmlist.model.*;
-import com.ensta.myfilmlist.form.*;
 import com.ensta.myfilmlist.mapper.FilmMapper;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Optional;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.management.RuntimeErrorException;
-import javax.transaction.Transactional;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.ensta.myfilmlist.model.Director;
+import com.ensta.myfilmlist.model.Film;
+import com.ensta.myfilmlist.model.Genre;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+
+import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -34,33 +31,29 @@ import org.springframework.test.context.jdbc.Sql;
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
 class GenresDAOTests {
-    
-    @Autowired
-    private FilmDAO filmDAO;
-    
-    @Autowired
-    private DirectorDAO directorDAO;
-
-    @Autowired
-    private GenreDAO genreDAO;
 
     private static int count = 0;
-
+    @Autowired
+    private FilmDAO filmDAO;
+    @Autowired
+    private DirectorDAO directorDAO;
+    @Autowired
+    private GenreDAO genreDAO;
     @Autowired
     private FilmMapper filmMapper;
 
-    @BeforeEach 
+    @BeforeEach
     void setUp() {
         System.out.println("\n");
         System.out.println("Debut test n°" + count);
         System.out.println("\n");
     }
 
-    @AfterEach 
+    @AfterEach
     void setDown() {
         System.out.println("\n");
         System.out.println("Fin test n°" + count);
-        count ++;
+        count++;
         System.out.println("\n");
     }
 
@@ -129,7 +122,7 @@ class GenresDAOTests {
 
     private Director getJamesCameron() {
         Director jamesCameron = new Director();
-        jamesCameron.setBirthdate(LocalDate.of(1954, 8, 16));    
+        jamesCameron.setBirthdate(LocalDate.of(1954, 8, 16));
         jamesCameron.setFamous(false);
         jamesCameron.setId(1L);
         jamesCameron.setName("James");
@@ -140,7 +133,7 @@ class GenresDAOTests {
 
     private Director getPeterJackson() {
         Director peterJackson = new Director();
-        peterJackson.setBirthdate(LocalDate.of(1961, 10, 31));        
+        peterJackson.setBirthdate(LocalDate.of(1961, 10, 31));
         peterJackson.setFamous(true);
         peterJackson.setId(2L);
         peterJackson.setName("Peter");
@@ -176,7 +169,7 @@ class GenresDAOTests {
         lesDeuxTours.setId(3);
         lesDeuxTours.setTitle("Les deux tours");
         lesDeuxTours.setGenre(getFantaisie());
-        return lesDeuxTours;      
+        return lesDeuxTours;
     }
 
     private Film getLeRetourDuRoi() {
@@ -186,10 +179,10 @@ class GenresDAOTests {
         leRetourDuRoi.setId(4);
         leRetourDuRoi.setTitle("Le retour du roi");
         leRetourDuRoi.setGenre(getFantaisie());
-        return leRetourDuRoi;      
+        return leRetourDuRoi;
     }
 
-    @Test 
+    @Test
     void whenFindAll_thenShouldHaveAllGenre() throws ServiceException {
         List<Genre> genres = genreDAO.findAll();
         assertEquals(genres.get(0), getAction());
@@ -204,7 +197,7 @@ class GenresDAOTests {
     }
 
     @Test
-    void whenFindById_thenShouldHaveGenre() throws ServiceException {
+    void whenFindById_thenShouldHaveGenre() {
         assertEquals(Optional.of(getAction()), genreDAO.findById(1));
         assertEquals(Optional.of(getThriller()), genreDAO.findById(9));
         assertEquals(Optional.empty(), genreDAO.findById(100));
@@ -218,8 +211,6 @@ class GenresDAOTests {
         Genre _newAction = genreDAO.update(1, "new action");
         assertEquals(newAction, _newAction);
         assertEquals(Optional.of(newAction), genreDAO.findById(1));
-        assertThrows(ServiceException.class, () -> {
-            genreDAO.update(100, "new action");
-        });
+        assertThrows(ServiceException.class, () -> genreDAO.update(100, "new action"));
     }
 } 

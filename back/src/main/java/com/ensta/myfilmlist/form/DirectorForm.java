@@ -8,10 +8,10 @@ import java.time.LocalDate;
  */
 public class DirectorForm {
 
-    @NotBlank(message = "Le surname du réalisateur ne peut pas être vide")
+    @NotBlank(message = "Le nom du réalisateur ne peut pas être vide")
     private String surname;
 
-    @NotBlank(message = "Le présurname du réalisateur ne peut pas être vide")
+    @NotBlank(message = "Le prénom du réalisateur ne peut pas être vide")
     private String name;
 
     private LocalDate birthdate;
