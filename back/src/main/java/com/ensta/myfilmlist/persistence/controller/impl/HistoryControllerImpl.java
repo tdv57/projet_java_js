@@ -54,7 +54,7 @@ public class HistoryControllerImpl implements HistoryController {
     @Override
     @PostMapping("/")
     @PreAuthorize("#userId == authentication.principal.id")
-    public ResponseEntity<HistoryDTO> addToWatchList(long userId, long filmId) throws ControllerException {
+    public ResponseEntity<HistoryDTO> addToWatchList(@RequestParam long userId, @RequestParam long filmId) throws ControllerException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.addFilmToWatchList(userId, filmId)));
         } catch (ServiceException e) {
