@@ -232,7 +232,7 @@ public class FilmServiceTests {
     }
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws ServiceException {
         when(jpaDirectorDAO.findById(anyLong())).thenAnswer(invocation -> mockJpaDirectorDAOFindById(invocation.getArgument(0)));
 
         try {
@@ -442,7 +442,7 @@ public class FilmServiceTests {
     }
 
     @Test
-    void whenFindFilmById_thenShouldHaveFilm() {
+    void whenFindFilmById_thenShouldHaveFilm() throws ServiceException {
         when(jpaFilmDAO.findById(anyLong())).thenAnswer(invocation -> mockJpaFilmDAOFindById(invocation.getArgument(0)));
 
         try {
