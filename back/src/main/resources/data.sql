@@ -48,16 +48,25 @@ INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Insaisissables 
 
 -- Genre table
 CREATE TABLE IF NOT EXISTS Genre(id INT primary key auto_increment, name VARCHAR(100));
-INSERT INTO Genre(name) VALUES('action');
-INSERT INTO Genre(name) VALUES('romance');
-INSERT INTO Genre(name) VALUES('comédie');
-INSERT INTO Genre(name) VALUES('drame');
-INSERT INTO Genre(name) VALUES('fantaisie');
-INSERT INTO Genre(name) VALUES('horreur');
-INSERT INTO Genre(name) VALUES('policier');
+INSERT INTO Genre(name) VALUES('Action');
+INSERT INTO Genre(name) VALUES('Romance');
+INSERT INTO Genre(name) VALUES('Comédie');
+INSERT INTO Genre(name) VALUES('Drame');
+INSERT INTO Genre(name) VALUES('Fantaisie');
+INSERT INTO Genre(name) VALUES('Horreur');
+INSERT INTO Genre(name) VALUES('Policier');
 INSERT INTO Genre(name) VALUES('SF');
-INSERT INTO Genre(name) VALUES('thriller');
+INSERT INTO Genre(name) VALUES('Thriller');
 
 -- History table
 CREATE TABLE IF NOT EXISTS History(id INT primary key auto_increment, film_id INT, user_id INT, rating INT);
+INSERT INTO History(film_id, user_id, rating) VALUES(1, 1, 1);
 INSERT INTO History(film_id, user_id, rating) VALUES(2, 1, 20);
+INSERT INTO History(film_id, user_id, rating) VALUES(4, 1, 10);
+INSERT INTO History(film_id, user_id, rating) VALUES(6, 1, 15);
+INSERT INTO History(film_id, user_id, rating) VALUES(7, 1, 5);
+INSERT INTO History(film_id, user_id, rating) VALUES(9, 1, 19);
+INSERT INTO History(film_id, user_id, rating) VALUES(10, 1, 20);
+INSERT INTO History(film_id, user_id, rating) VALUES(11, 1, 20);
+INSERT INTO History(film_id, user_id, rating) VALUES(13, 1, 16);
+INSERT INTO History(film_id, user_id, rating) VALUES(15, 1, 8);
