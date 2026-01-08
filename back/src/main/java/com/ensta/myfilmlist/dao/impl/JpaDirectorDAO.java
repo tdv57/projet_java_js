@@ -22,6 +22,12 @@ public class JpaDirectorDAO implements DirectorDAO {
         this.entityManager = entityManager;
     }
 
+    void checkDuplicate(Director director) throws ServiceException {
+        if (findBySurnameAndName(director.getSurname(), director.getName()).isPresent()) {
+            throw new ServiceException("Director already exists");
+        }
+    }
+
     /**
      * Returns the list of all Directors present in the database.
      * A ServicException is thrown in case of an error (can't get Directors, list empty)
@@ -29,8 +35,12 @@ public class JpaDirectorDAO implements DirectorDAO {
      * @return the list of Directors
      */
     @Override
-    public List<Director> findAll() {
-        return entityManager.createQuery("SELECT r FROM Director r", Director.class).getResultList();
+    public List<Director> findAll() throws ServiceException {
+        try {
+            return entityManager.createQuery("SELECT r FROM Director r", Director.class).getResultList();
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
+        }
     }
 
     /**
@@ -41,13 +51,19 @@ public class JpaDirectorDAO implements DirectorDAO {
      * @return the corresponding director
      */
     @Override
-    public Optional<Director> findBySurnameAndName(String surname, String name) {
-        List<Director> directors = entityManager.createQuery("SELECT r FROM Director r WHERE surname = :surname AND name = :name", Director.class)
-                .setParameter("surname", surname)
-                .setParameter("name", name)
-                .getResultList();
-        if (directors.isEmpty()) return Optional.empty();
-        return Optional.of(directors.get(0));
+    public Optional<Director> findBySurnameAndName(String surname, String name) throws ServiceException {
+        try {
+            List<Director> directors = entityManager.createQuery("SELECT r FROM Director r WHERE surname = :surname AND name = :name", Director.class)
+                    .setParameter("surname", surname)
+                    .setParameter("name", name)
+                    .getResultList();
+            if (directors.isEmpty()) {
+                return Optional.empty();
+            }
+            return Optional.of(directors.get(0));
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
+        }
     }
 
     /**
@@ -57,8 +73,12 @@ public class JpaDirectorDAO implements DirectorDAO {
      * @return the corresponding director
      */
     @Override
-    public Optional<Director> findById(long id) {
-        return Optional.ofNullable(entityManager.find(Director.class, id));
+    public Optional<Director> findById(long id) throws ServiceException {
+        try {
+            return Optional.ofNullable(entityManager.find(Director.class, id));
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
+        }
     }
 
     /**
@@ -70,16 +90,21 @@ public class JpaDirectorDAO implements DirectorDAO {
      */
     @Override
     public Director update(long id, Director director) throws ServiceException {
+        checkDuplicate(director);
         Optional<Director> prev_director = this.findById(id);
         if (prev_director.isEmpty()) {
             throw new ServiceException("Director doesn't exist");
         }
-        Director director_to_modify = entityManager.merge(prev_director.get());
-        director_to_modify.setSurname(director.getSurname());
-        director_to_modify.setName(director.getName());
-        director_to_modify.setBirthdate(director.getBirthdate());
-        entityManager.merge(director_to_modify);
-        return director_to_modify;
+        try {
+            Director director_to_modify = entityManager.merge(prev_director.get());
+            director_to_modify.setSurname(director.getSurname());
+            director_to_modify.setName(director.getName());
+            director_to_modify.setBirthdate(director.getBirthdate());
+            entityManager.merge(director_to_modify);
+            return director_to_modify;
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
+        }
     }
 
     /**
@@ -90,11 +115,13 @@ public class JpaDirectorDAO implements DirectorDAO {
      */
     @Override
     public Director save(Director director) throws ServiceException {
-        if (findBySurnameAndName(director.getSurname(), director.getName()).isPresent()) {
-            throw new ServiceException("Director already exists");
+        checkDuplicate(director);
+        try {
+            entityManager.persist(director);
+            return director;
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
         }
-        entityManager.persist(director);
-        return director;
     }
 
     /**
@@ -103,15 +130,19 @@ public class JpaDirectorDAO implements DirectorDAO {
      * @param id the id of the Director to delete
      */
     @Override
-    public void delete(long id) {
-        Director managedDirector = entityManager.find(Director.class, id);
-        if (managedDirector != null) {
-            List<Film> films = entityManager
-                    .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
-                    .setParameter("director_id", id)
-                    .getResultList();
-            films.forEach(film -> entityManager.remove(film));
-            entityManager.remove(managedDirector);
+    public void delete(long id) throws ServiceException {
+        try {
+            Director managedDirector = entityManager.find(Director.class, id);
+            if (managedDirector != null) {
+                List<Film> films = entityManager
+                        .createQuery("SELECT f FROM Film f WHERE director.id = :director_id", Film.class)
+                        .setParameter("director_id", id)
+                        .getResultList();
+                films.forEach(film -> entityManager.remove(film));
+                entityManager.remove(managedDirector);
+            }
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
         }
     }
 }

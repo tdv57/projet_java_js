@@ -33,11 +33,15 @@ public class JpaHistoryDAO implements HistoryDAO {
     }
 
     @Override
-    public List<Film> getWatchList(long userId) {
-        return entityManager
-                .createQuery("SELECT h.film FROM History h WHERE h.user.id = :user_id", Film.class)
-                .setParameter("user_id", userId)
-                .getResultList();
+    public List<Film> getWatchList(long userId) throws ServiceException {
+        try {
+            return entityManager
+                    .createQuery("SELECT h.film FROM History h WHERE h.user.id = :user_id", Film.class)
+                    .setParameter("user_id", userId)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
+        }
     }
 
     @Override
@@ -48,51 +52,71 @@ public class JpaHistoryDAO implements HistoryDAO {
                 throw new ServiceException("Film already in watched list");
             }
         }
-        User user = entityManager.find(User.class, userId);
-        Film film = entityManager.find(Film.class, filmId);
-        History history = new History(user, film);
-        entityManager.persist(history);
-        return history;
+        try {
+            User user = entityManager.find(User.class, userId);
+            Film film = entityManager.find(Film.class, filmId);
+            History history = new History(user, film);
+            entityManager.persist(history);
+            return history;
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
+        }
     }
 
     @Override
-    public void deleteFilm(long userId, long filmId) {
+    public void deleteFilm(long userId, long filmId) throws ServiceException {
         Optional<History> history = findHistoryByUserIdAndFilmId(userId, filmId);
-        if (history.isPresent()) {
-            entityManager.remove(history);
+        try {
+            if (history.isPresent()) {
+                entityManager.remove(history);
+            }
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
         }
     }
 
     @Override
     public History rateFilm(long userId, long filmId, int rating) throws ServiceException {
+        if (rating < 0) {
+            throw new ServiceException("Film's rating should be positive");
+        }
         Optional<History> history = findHistoryByUserIdAndFilmId(userId, filmId);
         if (history.isPresent()) {
             History anhistory = history.get();
             anhistory.setRating(rating);
-            entityManager.merge(anhistory);
+            try {
+                entityManager.merge(anhistory);
+            } catch (Exception e) {
+                throw new ServiceException("Internal Server Error");
+            }
             return anhistory;
         }
         throw new ServiceException("Can't update History.");
     }
 
     @Override
-    public Optional<Integer> getUserRating(long userId, long filmId) throws ServiceException {
+    public int getUserRating(long userId, long filmId) throws ServiceException {
         Optional<History> history = findHistoryByUserIdAndFilmId(userId, filmId);
         if (history.isPresent()) {
-            return Optional.of(history.get().getRating());
+            return history.get().getRating();
         }
         throw new ServiceException("Can't get Film's rating");
     }
 
     @Override
-    public Optional<Double> getMeanRating(long filmId) {
-        List<Double> ratings = entityManager.createQuery("SELECT h.rating FROM History h WHERE h.film.id = :film_id", Integer.class)
-                .setParameter("film_id", filmId)
-                .getResultList()
-                .stream()
-                .map(Double::valueOf)
-                .toList();
-        return getMeanRating(ratings);
+    public Optional<Double> getMeanRating(long filmId) throws ServiceException {
+        try {
+            List<Double> ratings = entityManager.createQuery("SELECT h.rating FROM History h WHERE h.film.id = :film_id", Integer.class)
+                    .setParameter("film_id", filmId)
+                    .getResultList()
+                    .stream()
+                    .filter(rating -> rating > 0)
+                    .map(Double::valueOf)
+                    .toList();
+            return getMeanRating(ratings);
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
+        }
     }
 
     @Override

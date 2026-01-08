@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface HistoryDAO {
-    List<Film> getWatchList(long userId);
+    List<Film> getWatchList(long userId) throws ServiceException;
 
     History addFilmToWatchList(long userId, long filmId) throws ServiceException;
 
-    void deleteFilm(long userId, long filmId);
+    void deleteFilm(long userId, long filmId) throws ServiceException;
 
     History rateFilm(long userId, long filmId, int rating) throws ServiceException;
 
-    Optional<Integer> getUserRating(long userId, long filmId) throws ServiceException;
+    int getUserRating(long userId, long filmId) throws ServiceException;
 
     Optional<Double> getMeanRating(long filmId) throws ServiceException;
 

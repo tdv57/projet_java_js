@@ -18,7 +18,7 @@ import java.util.Optional;
 public interface MyFilmsService {
     FilmDTO createFilm(FilmForm filmForm) throws ServiceException;
 
-    List<Film> findAll();
+    List<Film> findAll() throws ServiceException;
 
     Film findFilmById(long id) throws ServiceException;
 
@@ -60,9 +60,9 @@ public interface MyFilmsService {
 
     History rateFilm(long userId, long filmId, int rating) throws ServiceException;
 
-    Optional<Integer> getUserRating(long userId, long filmId) throws ServiceException;
+    int getUserRating(long userId, long filmId) throws ServiceException;
 
-    Optional<Double> getMeanRating(long filmId) throws ServiceException;
+    Optional<Double> getMeanRating(long filmId);
 
     int getFullWatchTime(List<Film> filmsProduced);
 

@@ -2,7 +2,6 @@ package com.ensta.myfilmlist.persistence.controller.impl;
 
 import com.ensta.myfilmlist.dto.FilmDTO;
 import com.ensta.myfilmlist.dto.HistoryDTO;
-import com.ensta.myfilmlist.exception.ControllerException;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.mapper.FilmMapper;
 import com.ensta.myfilmlist.mapper.HistoryMapper;
@@ -14,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -24,13 +24,20 @@ public class HistoryControllerImpl implements HistoryController {
     @Autowired
     private MyFilmsService myFilmsService;
 
+    Optional<Integer> checkRating(int rating) {
+        if (rating < 0) {
+            return Optional.empty();
+        }
+        return Optional.of(rating);
+    }
+
     @Override
     @GetMapping("/{userId}")
-    public ResponseEntity<List<FilmDTO>> getWatchList(@PathVariable long userId) throws ControllerException {
+    public ResponseEntity<List<FilmDTO>> getWatchList(@PathVariable long userId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(FilmMapper.convertFilmToFilmDTOs(myFilmsService.findWatchList(userId)));
         } catch (ServiceException e) {
-            throw new ControllerException("Can't get all Films from History", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -40,47 +47,51 @@ public class HistoryControllerImpl implements HistoryController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.addFilmToWatchList(userId, filmId)));
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
     }
 
     @Override
     @DeleteMapping("")
-    public ResponseEntity<?> removeFromWatchList(long userId, long filmId) throws ControllerException {
+    public ResponseEntity<?> removeFromWatchList(long userId, long filmId) {
         try {
             myFilmsService.removeFilmFromWatchList(userId, filmId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (ServiceException e) {
-            throw new ControllerException("Can't delete Film from History", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @Override
     @PutMapping("")
-    public ResponseEntity<HistoryDTO> rateFilm(long userId, long filmId, int rating) throws ControllerException {
+    public ResponseEntity<HistoryDTO> rateFilm(long userId, long filmId, int rating) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(HistoryMapper.convertHistoryToHistoryDTO(myFilmsService.rateFilm(userId, filmId, rating)));
         } catch (ServiceException e) {
-            throw new ControllerException("Can't rate given Film", e);
+            if (Objects.equals(e.getMessage(), "Film's rating should be positive")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
         }
     }
 
     @Override
     @GetMapping("/rate/{userId}")
-    public ResponseEntity<Optional<Integer>> getUserRating(@PathVariable long userId, long filmId) throws ControllerException {
+    public ResponseEntity<Optional<Integer>> getUserRating(@PathVariable long userId, long filmId) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getUserRating(userId, filmId)));
+            Integer rating = myFilmsService.getUserRating(userId, filmId);
+            return ResponseEntity.status(HttpStatus.OK).body(checkRating(rating));
         } catch (ServiceException e) {
-            throw new ControllerException("Can't get Film's rating", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @GetMapping("/rate")
-    public ResponseEntity<Optional<Double>> getMeanRating(long filmId) throws ControllerException {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getMeanRating(filmId)));
-        } catch (ServiceException e) {
-            throw new ControllerException("Can't get Film's rating", e);
-        }
+    public ResponseEntity<Optional<Double>> getMeanRating(long filmId) {
+        return ResponseEntity.status(HttpStatus.OK).body((myFilmsService.getMeanRating(filmId)));
     }
 }

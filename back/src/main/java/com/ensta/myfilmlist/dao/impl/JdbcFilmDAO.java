@@ -1,15 +1,10 @@
 package com.ensta.myfilmlist.dao.impl;
+
 import com.ensta.myfilmlist.dao.FilmDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
-
-import java.util.*;
-import com.ensta.myfilmlist.model.*;
+import com.ensta.myfilmlist.model.Director;
+import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.persistence.ConnectionManager;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -19,6 +14,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class JdbcFilmDAO implements FilmDAO {
@@ -73,18 +75,18 @@ public class JdbcFilmDAO implements FilmDAO {
         try {
             Film film = this.jdbcTemplate.queryForObject(query, this.rowMapper, id);
             return Optional.ofNullable(film);
-        } catch(EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
     @Override
-    public Optional<Film> findByTitle(String title) {
+    public Optional<Film> findByTitle(String title) throws ServiceException {
         String query = "SELECT * FROM Film JOIN Director ON Film.director_id = Director.id WHERE Film.title=?";
         try {
             Film film = this.jdbcTemplate.queryForObject(query, this.rowMapper, title);
             return Optional.ofNullable(film);
-        } catch(EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
@@ -99,9 +101,9 @@ public class JdbcFilmDAO implements FilmDAO {
     public Film update(long id, Film film) throws ServiceException {
         return null;
     }
-    
+
     @Override
-    public void delete(Film film) {
+    public void delete(Film film) throws ServiceException {
         String query = "DELETE FROM Film WHERE id=?";
         this.jdbcTemplate.update(query, film.getId());
     }

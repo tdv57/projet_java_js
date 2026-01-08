@@ -37,13 +37,13 @@ public class JdbcDirectorDAO implements DirectorDAO {
     };
 
     @Override
-    public List<Director> findAll() {
+    public List<Director> findAll() throws ServiceException {
         String query = "SELECT * FROM Director;";
         return jdbcTemplate.query(query, this.rowMapper);
     }
 
     @Override
-    public Optional<Director> findBySurnameAndName(String surname, String name) {
+    public Optional<Director> findBySurnameAndName(String surname, String name) throws ServiceException {
         String query = "SELECT * FROM Director WHERE name=? AND surname=?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(query, this.rowMapper, name, surname));
@@ -98,7 +98,7 @@ public class JdbcDirectorDAO implements DirectorDAO {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(long id) throws ServiceException {
         // Not used
     }
 }

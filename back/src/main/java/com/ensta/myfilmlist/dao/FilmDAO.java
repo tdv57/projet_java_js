@@ -1,15 +1,23 @@
 package com.ensta.myfilmlist.dao;
-import java.util.*;
 
 import com.ensta.myfilmlist.exception.ServiceException;
-import com.ensta.myfilmlist.model.*;
+import com.ensta.myfilmlist.model.Film;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface FilmDAO {
-    List<Film> findAll();
+    List<Film> findAll() throws ServiceException;
+
     Film save(Film film) throws ServiceException;
-    Optional<Film> findById(long id);
-    Optional<Film> findByTitle(String title);
-    List<Film> findByDirectorId(long director_id) throws ServiceException ;
+
+    Optional<Film> findById(long id) throws ServiceException;
+
+    Optional<Film> findByTitle(String title) throws ServiceException;
+
+    List<Film> findByDirectorId(long director_id) throws ServiceException;
+
     Film update(long id, Film film) throws ServiceException;
-    void delete(Film film);
+
+    void delete(Film film) throws ServiceException;
 }

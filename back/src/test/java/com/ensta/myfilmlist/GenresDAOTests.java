@@ -198,9 +198,21 @@ class GenresDAOTests {
 
     @Test
     void whenFindById_thenShouldHaveGenre() {
-        assertEquals(Optional.of(getAction()), genreDAO.findById(1));
-        assertEquals(Optional.of(getThriller()), genreDAO.findById(9));
-        assertEquals(Optional.empty(), genreDAO.findById(100));
+        try {
+            assertEquals(Optional.of(getAction()), genreDAO.findById(1));
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            assertEquals(Optional.of(getThriller()), genreDAO.findById(9));
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            assertEquals(Optional.empty(), genreDAO.findById(100));
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test

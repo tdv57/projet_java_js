@@ -31,11 +31,11 @@ public class DirectorControllerImpl implements DirectorController {
 
     @Override
     @GetMapping("")
-    public ResponseEntity<List<DirectorDTO>> getAllDirectors() throws ControllerException {
+    public ResponseEntity<List<DirectorDTO>> getAllDirectors() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(DirectorMapper.convertDirectorToDirectorDTOs(myFilmsService.findAllDirectors()));
         } catch (ServiceException e) {
-            throw new ControllerException("DirectorControllerImpl::getAllDirectors", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -46,6 +46,9 @@ public class DirectorControllerImpl implements DirectorController {
             DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorById(id));
             return ResponseEntity.status(HttpStatus.OK).body(directorDTO);
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -57,6 +60,9 @@ public class DirectorControllerImpl implements DirectorController {
             DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorBySurnameAndName(surname, name));
             return ResponseEntity.status(HttpStatus.OK).body(directorDTO);
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -67,6 +73,9 @@ public class DirectorControllerImpl implements DirectorController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.createDirector(directorForm));
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
     }
@@ -77,8 +86,13 @@ public class DirectorControllerImpl implements DirectorController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateDirector(id, directorForm));
         } catch (ServiceException e) {
-            if (Objects.equals(e.getMessage(), "Director doesn't exist"))
+            if (e.getMessage().equals("Director doesn't exist")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            } else if (e.getMessage().equals("Director already exists")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            } else if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             throw new ControllerException("Can't edit Director", e);
         }
     }
@@ -90,8 +104,11 @@ public class DirectorControllerImpl implements DirectorController {
             myFilmsService.deleteDirector(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         } catch (ServiceException e) {
-            if (Objects.equals(e.getMessage(), "Director doesn't exist"))
+            if (Objects.equals(e.getMessage(), "Director doesn't exist")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            } else if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             throw new ControllerException("Can't delete Director", e);
         }
     }

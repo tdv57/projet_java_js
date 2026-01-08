@@ -231,12 +231,14 @@ public class MyfilmlistTests {
      * Permet de tester la recuperation des films.
      */
     public void findAllFilmsTest() {
-        List<Film> films = myFilmsService.findAll();
-
-        // Attendue : 4
-        System.out.println("Combien y a-t-il de films ? " + films.size());
-
-        films.forEach(System.out::println);
+        try {
+            List<Film> films = myFilmsService.findAll();
+            // Attendue : 4
+            System.out.println("Combien y a-t-il de films ? " + films.size());
+            films.forEach(System.out::println);
+        } catch (ServiceException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     /**

@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/genre")
@@ -25,11 +24,11 @@ public class GenreControllerImpl implements GenreController {
 
     @Override
     @GetMapping("")
-    public ResponseEntity<List<GenreDTO>> getAllGenres() throws ControllerException {
+    public ResponseEntity<List<GenreDTO>> getAllGenres() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(GenreMapper.convertGenreToGenreDTOs(myFilmsService.findAllGenres()));
         } catch (ServiceException e) {
-            throw new ControllerException("Can't get all Films", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -40,6 +39,9 @@ public class GenreControllerImpl implements GenreController {
             GenreDTO genreDTO = GenreMapper.convertGenreToGenreDTO(myFilmsService.findGenreById(id));
             return ResponseEntity.status(HttpStatus.OK).body(genreDTO);
         } catch (ServiceException e) {
+            if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -50,10 +52,10 @@ public class GenreControllerImpl implements GenreController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateGenre(id, name));
         } catch (ServiceException e) {
-            if (Objects.equals(e.getMessage(), "Genre introuvable"))
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            throw new ControllerException("Can't edit Genre", e);
+            if (e.getMessage().equals("Internal Server Error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
 }

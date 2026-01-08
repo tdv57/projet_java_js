@@ -20,51 +20,58 @@ public interface FilmController {
 
     @ApiOperation(value = "Lister les films", notes = "Permet de renvoyer la liste de tous les films.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "La liste des films a été renvoyée correctement")
+            @ApiResponse(code = 200, message = "La liste des films a été renvoyée avec succès"),
+            @ApiResponse(code = 500, message = "Erreur interne lors de la requête")
     })
     ResponseEntity<List<FilmDTO>> getAllFilms();
 
     @ApiOperation(value = "Rechercher un film par son identifiant", notes = "Permet de renvoyer les détails d'un film grâce à son identifiant.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Le film demandé a été trouvé"),
-            @ApiResponse(code = 404, message = "Le film demandé n'existe pas")
+            @ApiResponse(code = 200, message = "Le film demandé a été trouvé avec succès"),
+            @ApiResponse(code = 404, message = "Le film demandé n'existe pas"),
+            @ApiResponse(code = 500, message = "Erreur interne lors de la requête")
     })
     ResponseEntity<FilmDTO> getFilmById(long id);
 
     @ApiOperation(value = "Rechercher un film par son title", notes = "Permet de renvoyer les détails d'un film grâce à son title.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Le film demandé a été trouvé"),
-            @ApiResponse(code = 404, message = "Le film demandé n'existe pas")
+            @ApiResponse(code = 200, message = "Le film demandé a été trouvé avec succès"),
+            @ApiResponse(code = 404, message = "Le film demandé n'existe pas"),
+            @ApiResponse(code = 500, message = "Erreur interne lors de la requête")
     })
     ResponseEntity<FilmDTO> getFilmByTitle(String title);
 
     @ApiOperation(value = "Rechercher des films par leur réalisateur", notes = "Permet de renvoyer les détails des films grâce à l'identifiant de leur réalisateur.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Le(s) film(s) demandé(s) a(ont) été trouvé"),
-            @ApiResponse(code = 404, message = "Le réalisateur demandé n'existe pas")
+            @ApiResponse(code = 200, message = "Le(s) film(s) demandé(s) a(ont) été trouvé avec succès"),
+            @ApiResponse(code = 404, message = "Le réalisateur demandé n'existe pas"),
+            @ApiResponse(code = 500, message = "Erreur interne lors de la requête")
     })
     ResponseEntity<List<FilmDTO>> getFilmByDirectorId(@PathVariable long id);
 
     @ApiOperation(value = "Ajouter un film", notes = "Permet d'ajouter un film d'après un formulaire.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Le film a bien été ajouté"),
+            @ApiResponse(code = 200, message = "Le film a été ajouté avec succès"),
             @ApiResponse(code = 404, message = "Le réalisateur du film n'existe pas"),
-            @ApiResponse(code = 409, message = "Le film existe déjà")
+            @ApiResponse(code = 409, message = "Le film existe déjà"),
+            @ApiResponse(code = 500, message = "Erreur interne lors de la requête")
     })
     ResponseEntity<FilmDTO> createFilm(FilmForm filmForm);
 
     @ApiOperation(value = "Éditer un film", notes = "Permet d'éditer un film d'après un formulaire.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Le film a bien été édité"),
+            @ApiResponse(code = 200, message = "Le film a été édité avec succès"),
             @ApiResponse(code = 404, message = "Le film ou le réalisateur n'existe pas"),
+            @ApiResponse(code = 409, message = "Le film existe déjà"),
+            @ApiResponse(code = 500, message = "Erreur interne lors de la requête")
     })
     ResponseEntity<FilmDTO> updateFilm(long id, FilmForm filmForm);
 
     @ApiOperation(value = "Supprimer un film", notes = "Permet de supprimer un film d'après son identifiant.")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "Le film a bien été supprimé"),
+            @ApiResponse(code = 204, message = "Le film a été supprimé avec succès"),
             @ApiResponse(code = 404, message = "Le film n'existe pas"),
-            @ApiResponse(code = 500, message = "Erreur interne lors de la mise à jour du réalisateur")
+            @ApiResponse(code = 500, message = "Erreur interne lors de la requête")
     })
     ResponseEntity<?> deleteFilm(long id) throws ControllerException;
 }

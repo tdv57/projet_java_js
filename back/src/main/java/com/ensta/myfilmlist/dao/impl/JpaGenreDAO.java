@@ -17,6 +17,15 @@ public class JpaGenreDAO implements GenreDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    void checkDuplicate(String name) throws ServiceException {
+        List<String> nameList = entityManager
+                .createQuery("SELECT g.name FROM Genre g", String.class)
+                .getResultList();
+        if (nameList.contains(name)) {
+            throw new ServiceException("Genre already exists");
+        }
+    }
+
     /**
      * Returns the list of all Genres present in the database.
      * A ServiceException is thrown in case of an error (can't get Genres, list empty)
@@ -25,13 +34,14 @@ public class JpaGenreDAO implements GenreDAO {
      */
     @Override
     public List<Genre> findAll() throws ServiceException {
-        List<Genre> genres = entityManager
-                .createQuery("SELECT g FROM Genre g", Genre.class)
-                .getResultList();
-        if (genres.isEmpty()) {
-            throw new ServiceException("Can't get all Genres");
+        try {
+            List<Genre> genres = entityManager
+                    .createQuery("SELECT g FROM Genre g", Genre.class)
+                    .getResultList();
+            return genres;
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
         }
-        return genres;
     }
 
     /**
@@ -41,8 +51,12 @@ public class JpaGenreDAO implements GenreDAO {
      * @return the corresponding genre
      */
     @Override
-    public Optional<Genre> findById(long id) {
-        return Optional.ofNullable(entityManager.find(Genre.class, id));
+    public Optional<Genre> findById(long id) throws ServiceException {
+        try {
+            return Optional.ofNullable(entityManager.find(Genre.class, id));
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
+        }
     }
 
     /**
@@ -54,13 +68,18 @@ public class JpaGenreDAO implements GenreDAO {
      */
     @Override
     public Genre update(long id, String name) throws ServiceException {
-        Optional<Genre> prev_genre = this.findById(id);
-        if (prev_genre.isEmpty()) {
-            throw new ServiceException("Genre introuvable");
+        checkDuplicate(name);
+        try {
+            Optional<Genre> prev_genre = this.findById(id);
+            if (prev_genre.isEmpty()) {
+                throw new ServiceException("Genre introuvable");
+            }
+            Genre genre_to_modify = entityManager.merge(prev_genre.get());
+            genre_to_modify.setName(name);
+            entityManager.merge(genre_to_modify);
+            return genre_to_modify;
+        } catch (Exception e) {
+            throw new ServiceException("Internal Server Error");
         }
-        Genre genre_to_modify = entityManager.merge(prev_genre.get());
-        genre_to_modify.setName(name);
-        entityManager.merge(genre_to_modify);
-        return genre_to_modify;
     }
 }
