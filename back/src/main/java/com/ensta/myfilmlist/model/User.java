@@ -30,7 +30,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    private static String roles;
+    private String roles;
 
     /**
      * Getter and setter for every attribute
@@ -104,7 +104,7 @@ public class User implements UserDetails {
     }
 
     public void setRoles(String roles) {
-        User.roles = roles;
+        this.roles = roles;
     }
 
     @Override 
