@@ -23,7 +23,8 @@ public class JpaDirectorDAO implements DirectorDAO {
     }
 
     void checkDuplicate(Director director) throws ServiceException {
-        if (findBySurnameAndName(director.getSurname(), director.getName()).isPresent()) {
+        Optional<Director> another = findBySurnameAndName(director.getSurname(), director.getName());
+        if (another.isPresent() && another.get().getId() != director.getId()) {
             throw new ServiceException("Director already exists");
         }
     }

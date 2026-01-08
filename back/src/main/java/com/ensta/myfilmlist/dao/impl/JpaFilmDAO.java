@@ -4,6 +4,7 @@ import com.ensta.myfilmlist.dao.FilmDAO;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.model.Director;
 import com.ensta.myfilmlist.model.Film;
+import com.ensta.myfilmlist.model.History;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -159,10 +160,15 @@ public class JpaFilmDAO implements FilmDAO {
         try {
             Film managedFilm = entityManager.find(Film.class, film.getId());
             if (managedFilm != null) {
+                List<History> watchedList = entityManager
+                        .createQuery("SELECT h FROM History h WHERE h.film.id = :film_id", History.class)
+                        .setParameter("film_id", film.getId())
+                        .getResultList();
+                watchedList.forEach(history -> entityManager.remove(history));
                 entityManager.remove(managedFilm);
             }
         } catch (Exception e) {
-            throw new ServiceException("Internal Server Error");
+            throw new ServiceException("Internal Server Error ?");
         }
     }
 

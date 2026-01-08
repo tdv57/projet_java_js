@@ -13,7 +13,7 @@ INSERT INTO Director(surname, name, birthdate, famous) VALUES('Sotozaki', 'Haruo
 INSERT INTO Director(surname, name, birthdate, famous) VALUES('Sotozaki', 'Haruo', '1974-10-31', false);
 
 -- User table
-CREATE TABLE IF NOT EXISTS User(id INT primary key auto_increment, surname VARCHAR(100), name VARCHAR(100), hash VARCHAR(100), roles VARCHAR(100));
+CREATE TABLE IF NOT EXISTS User(id INT primary key auto_increment, username VARCHAR(100), surname VARCHAR(100), name VARCHAR(100), hash VARCHAR(100), roles VARCHAR(100));
 INSERT INTO User(surname, name) VALUES('Axel', 'Richard');
 INSERT INTO User(surname, name) VALUES('Benoit', 'Boero');
 INSERT INTO User(surname, name, roles) VALUES('Elfie', 'Molina--Bonnefoy', 'ADMIN');

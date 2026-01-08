@@ -292,8 +292,7 @@ class FilmsDAOTests {
         assertEquals(result, filmDAO.findById(1L).get());
 
         ServiceException error = assertThrows(ServiceException.class, () -> filmDAO.update(10, newAvatar));
-
-        assertEquals("Film doesn't exist", error.getMessage());
+        assertEquals("Film already exists", error.getMessage());
     }
 
     @Test

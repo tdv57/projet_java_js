@@ -143,9 +143,10 @@ public class MyFilmsServiceImpl implements MyFilmsService {
     @Transactional
     public Director updateDirectorFamous(Director director) throws ServiceException {
         try {
-            List<Film> filmsDuDirector = filmDAO.findByDirectorId(director.getId());
-            director.setFilmsProduced(filmsDuDirector);
-            director.setFamous(director.getFilmsProduced().size() >= MIN_NB_FILMS_FAMOUS_DIRECTOR);
+            List<Film> directorFilms = filmDAO.findByDirectorId(director.getId());
+            director.setFilmsProduced(directorFilms);
+            boolean newFame = directorFilms.size() >= MIN_NB_FILMS_FAMOUS_DIRECTOR;
+            director.setFamous(newFame);
             return directorDAO.update(director.getId(), director);
         } catch (ServiceException e) {
             throw new ServiceException("Director doesn't exist");
@@ -170,6 +171,7 @@ public class MyFilmsServiceImpl implements MyFilmsService {
                     .filter(Director::isFamous)
                     .collect(Collectors.toList());
         } catch (Throwable e) {
+            System.err.println("update director famous: T");
             throw new ServiceException("Erreur dans la mise à jour de la célébrité", e);
         }
     }
