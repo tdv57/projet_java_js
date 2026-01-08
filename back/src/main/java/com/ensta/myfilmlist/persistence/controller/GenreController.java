@@ -35,6 +35,7 @@ public interface GenreController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Le genre a été édité avec succès"),
             @ApiResponse(code = 404, message = "Le genre demandé n'existe pas"),
+            @ApiResponse(code = 409, message = "Le genre existe déjà"),
             @ApiResponse(code = 500, message = "Erreur interne lors de la requête")
     })
     ResponseEntity<GenreDTO> updateGenre(long id, String surname) throws ControllerException;

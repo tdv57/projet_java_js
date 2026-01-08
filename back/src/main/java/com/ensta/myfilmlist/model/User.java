@@ -19,17 +19,20 @@ import java.util.Collections;
 @Entity
 public class User implements UserDetails {
 
+    private static String roles;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(unique = true)
+    private String username;
 
     private String surname;
 
     private String name;
 
     private String password;
-
-    private static String roles;
 
     /**
      * Getter and setter for every attribute
@@ -69,9 +72,17 @@ public class User implements UserDetails {
         return this.password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String getUsername() {
         return this.name + " " + this.surname;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -92,10 +103,6 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getRoles() {

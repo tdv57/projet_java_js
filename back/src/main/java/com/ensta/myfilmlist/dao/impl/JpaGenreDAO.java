@@ -35,10 +35,9 @@ public class JpaGenreDAO implements GenreDAO {
     @Override
     public List<Genre> findAll() throws ServiceException {
         try {
-            List<Genre> genres = entityManager
+            return entityManager
                     .createQuery("SELECT g FROM Genre g", Genre.class)
                     .getResultList();
-            return genres;
         } catch (Exception e) {
             throw new ServiceException("Internal Server Error");
         }
@@ -72,7 +71,7 @@ public class JpaGenreDAO implements GenreDAO {
         try {
             Optional<Genre> prev_genre = this.findById(id);
             if (prev_genre.isEmpty()) {
-                throw new ServiceException("Genre introuvable");
+                throw new ServiceException("Can't find previous Genre");
             }
             Genre genre_to_modify = entityManager.merge(prev_genre.get());
             genre_to_modify.setName(name);

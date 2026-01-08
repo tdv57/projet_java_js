@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
@@ -42,8 +42,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class DirectorsControllerTests {
     private static int count = 0;
-    private static Long directorId = Long.valueOf(1L);
-    private static Long filmId = Long.valueOf(2L);
+    private static Long directorId = 1L;
+    private static Long filmId = 2L;
     @MockBean
     private MyFilmsService myFilmsService;
     @Autowired
@@ -68,17 +68,17 @@ public class DirectorsControllerTests {
         System.out.println("\n");
         jamesCameron.setFamous(false);
         jamesCameron.setBirthdate(LocalDate.of(1950, 03, 20));
-        jamesCameron.setId(Long.valueOf(1L));
+        jamesCameron.setId(1L);
         jamesCameron.setSurname("Cameron");
         jamesCameron.setName("James");
 
         peterJackson.setFamous(false);
         peterJackson.setBirthdate(LocalDate.of(1980, 02, 02));
-        peterJackson.setId(Long.valueOf(2L));
+        peterJackson.setId(2L);
         peterJackson.setSurname("Jackson");
         peterJackson.setName("Peter");
 
-        directorId = Long.valueOf(3L);
+        directorId = 3L;
 
         Genre action = new Genre();
         action.setId(genreId++);
@@ -129,28 +129,28 @@ public class DirectorsControllerTests {
         hihihi1.setDuration(60);
         hihihi1.setDirector(jamesCameron);
         hihihi1.setTitle("hihihi1");
-        hihihi1.setId(Long.valueOf(1L));
+        hihihi1.setId(1L);
         hihihi1.setGenre(genres.get(2));
 
         hihihi2.setDuration(61);
         hihihi2.setDirector(jamesCameron);
         hihihi2.setTitle("hihihi2");
-        hihihi2.setId(Long.valueOf(2L));
+        hihihi2.setId(2L);
         hihihi2.setGenre(genres.get(2));
 
         hihihi3.setDuration(62);
         hihihi3.setDirector(jamesCameron);
         hihihi3.setTitle("hihihi3");
-        hihihi3.setId(Long.valueOf(3L));
+        hihihi3.setId(3L);
         hihihi3.setGenre(genres.get(2));
 
         deBonMatin.setDuration(90);
-        deBonMatin.setId(Long.valueOf(4L));
+        deBonMatin.setId(4L);
         deBonMatin.setDirector(peterJackson);
         deBonMatin.setTitle("de bon matin");
         deBonMatin.setGenre(genres.get(4));
 
-        filmId = Long.valueOf(5L);
+        filmId = 5L;
 
         List<Film> jamesCameronFilms = new ArrayList<>();
         jamesCameronFilms.add(hihihi1);
@@ -162,7 +162,7 @@ public class DirectorsControllerTests {
         peterJacksonFilms.add(deBonMatin);
         peterJackson.setFilmsProduced(peterJacksonFilms);
 
-        erreurInterne.setId(Long.valueOf(1000L));
+        erreurInterne.setId(1000L);
     }
 
     @AfterEach
@@ -191,7 +191,7 @@ public class DirectorsControllerTests {
         }
     }
 
-    private Director mockMyFilmsServiceFindDirectorBySurnameAndName(String surname, String name) throws ServiceException {
+    private Director mockMyFilmsServiceFindDirectorByNameAndSurname(String name, String surname) throws ServiceException {
         if (Objects.equals(surname, jamesCameron.getSurname()) && Objects.equals(name, jamesCameron.getName())) {
             return jamesCameron;
         } else if (Objects.equals(surname, peterJackson.getSurname()) && Objects.equals(name, peterJackson.getName())) {
@@ -278,9 +278,9 @@ public class DirectorsControllerTests {
 
     @Test
     void whenGetDirectorByNameAndSurname_thenShouldHaveDirector() throws Exception {
-        when(myFilmsService.findDirectorBySurnameAndName(anyString(), anyString())).thenAnswer(invocation -> mockMyFilmsServiceFindDirectorBySurnameAndName(invocation.getArgument(0), invocation.getArgument(1)));
+        when(myFilmsService.findDirectorByNameAndSurname(anyString(), anyString())).thenAnswer(invocation -> mockMyFilmsServiceFindDirectorByNameAndSurname(invocation.getArgument(0), invocation.getArgument(1)));
 
-        mockMvc.perform(get("/director/names/?name=James&surname=Cameron"))
+        mockMvc.perform(get("/director/names?surname=Cameron&name=James"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.surname").value("Cameron"))
@@ -295,19 +295,11 @@ public class DirectorsControllerTests {
 
     @Test
     void whenCreateDirector_thenShouldCreateDirector() throws Exception {
-        when(myFilmsService.createDirector(any(DirectorForm.class))).thenAnswer(invocation -> {
-            return mockMyFilmsServiceCreateDirector(invocation.getArgument(0));
-        });
+        when(myFilmsService.createDirector(any(DirectorForm.class))).thenAnswer(invocation -> mockMyFilmsServiceCreateDirector(invocation.getArgument(0)));
 
-        String newDirector = """
-                {
-                "birthdate": "2000-03-20",
-                "name": "name",
-                "surname": "surname"
-                }
-                """;
+        String newDirector = "{\"birthdate\": \"2000-03-20\", \"name\": \"name\", \"surname\": \"surname\"}";
 
-        mockMvc.perform(post("/director/")
+        mockMvc.perform(post("/director")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newDirector))
                 .andExpect(status().isOk())
@@ -324,13 +316,8 @@ public class DirectorsControllerTests {
             return mockMyFilmsServiceUpdateDirector(invocation.getArgument(0), invocation.getArgument(1));
         });
 
-        String newDirector = """
-                {
-                "birthdate": "2000-03-20",
-                "name": "name",
-                "surname": "surname"
-                }
-                """;
+        String newDirector = "{\"birthdate\": \"2000-03-20\", \"name\": \"name\", \"surname\": \"surname\"}";
+
 
         mockMvc.perform(put("/director/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -358,7 +345,7 @@ public class DirectorsControllerTests {
         mockMvc.perform(delete("/director/1"))
                 .andExpect(status().isNoContent());
 
-        assertEquals(jamesCameron, null);
+        assertNull(jamesCameron);
 
         mockMvc.perform(delete("/director/100"))
                 .andExpect(status().isNotFound());

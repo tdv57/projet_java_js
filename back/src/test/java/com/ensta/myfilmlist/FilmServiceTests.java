@@ -79,11 +79,14 @@ public class FilmServiceTests {
     }
 
     private Optional<Director> mockJpaDirectorDAOFindById(long id) {
-        return switch ((int) id) {
-            case 1 -> Optional.of(jamesCameron);
-            case 2 -> Optional.of(peterJackson);
-            default -> Optional.empty();
-        };
+        switch ((int) id) {
+            case 1:
+                return Optional.of(jamesCameron);
+            case 2:
+                return Optional.of(peterJackson);
+            default:
+                return Optional.empty();
+        }
     }
 
     private Director mockJpaDirectorDAOSave(Director director) {
@@ -118,33 +121,53 @@ public class FilmServiceTests {
     }
 
     private Optional<Film> mockJpaFilmDAOFindById(long id) {
-        return switch ((int) id) {
-            case 1 -> Optional.of(hihihi1);
-            case 2 -> Optional.of(hihihi2);
-            case 3 -> Optional.of(hihihi3);
-            case 4 -> Optional.of(deBonMatin);
-            default -> Optional.empty();
-        };
+        switch ((int) id) {
+            case 1:
+                return Optional.of(hihihi1);
+            case 2:
+                return Optional.of(hihihi2);
+            case 3:
+                return Optional.of(hihihi3);
+            case 4:
+                return Optional.of(deBonMatin);
+            default:
+                return Optional.empty();
+        }
     }
 
     private Optional<Film> mockJpaFilmDAOFindByTitle(String title) {
-        return switch (title) {
-            case "hihihi1" -> Optional.of(hihihi1);
-            case "hihihi2" -> Optional.of(hihihi2);
-            case "hihihi3" -> Optional.of(hihihi3);
-            case "de bon matin" -> Optional.of(deBonMatin);
-            default -> Optional.empty();
-        };
+        switch (title) {
+            case "hihihi1":
+                return Optional.of(hihihi1);
+            case "hihihi2":
+                return Optional.of(hihihi2);
+            case "hihihi3":
+                return Optional.of(hihihi3);
+            case "de bon matin":
+                return Optional.of(deBonMatin);
+            default:
+                return Optional.empty();
+        }
     }
 
     private Film mockJpaFilmDAOUpdate(long id, Film film) throws ServiceException {
-        Film filmFound = switch ((int) id) {
-            case 1 -> hihihi1;
-            case 2 -> hihihi2;
-            case 3 -> hihihi3;
-            case 4 -> deBonMatin;
-            default -> throw new ServiceException("Can't update Film");
-        };
+        Film filmFound;
+        switch ((int) id) {
+            case 1:
+                filmFound = hihihi1;
+                break;
+            case 2:
+                filmFound = hihihi2;
+                break;
+            case 3:
+                filmFound = hihihi3;
+                break;
+            case 4:
+                filmFound = deBonMatin;
+                break;
+            default:
+                throw new ServiceException("Can't update Film");
+        }
 
         filmFound.setDirector(film.getDirector());
         filmFound.setDuration(film.getDuration());
@@ -600,15 +623,15 @@ public class FilmServiceTests {
 
     @Test
     void whenFindDirectorBySurnameAndName_thenShouldHaveDirector() throws ServiceException {
-        when(jpaDirectorDAO.findBySurnameAndName(anyString(), anyString())).thenAnswer(invocation -> mockJpaDirectorFindBySurnameAndName(invocation.getArgument(0), invocation.getArgument(1)));
+        when(jpaDirectorDAO.findByNameAndSurname(anyString(), anyString())).thenAnswer(invocation -> mockJpaDirectorFindBySurnameAndName(invocation.getArgument(0), invocation.getArgument(1)));
         String JAMES = "James";
         String CAMERON = "Cameron";
         String PETER = "Peter";
         String JACKSON = "Jackson";
         String UNKNOWN = "unknown";
-        assertEquals(jamesCameron, myFilmsServiceImpl.findDirectorBySurnameAndName(JAMES, CAMERON));
-        assertEquals(peterJackson, myFilmsServiceImpl.findDirectorBySurnameAndName(PETER, JACKSON));
-        ServiceException serviceException = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findDirectorBySurnameAndName(UNKNOWN, UNKNOWN));
+        assertEquals(jamesCameron, myFilmsServiceImpl.findDirectorByNameAndSurname(JAMES, CAMERON));
+        assertEquals(peterJackson, myFilmsServiceImpl.findDirectorByNameAndSurname(PETER, JACKSON));
+        ServiceException serviceException = assertThrows(ServiceException.class, () -> myFilmsServiceImpl.findDirectorByNameAndSurname(UNKNOWN, UNKNOWN));
         assertEquals("Given Director doesn't exist", serviceException.getMessage());
     }
 

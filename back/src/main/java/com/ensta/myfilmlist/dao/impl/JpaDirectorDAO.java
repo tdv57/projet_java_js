@@ -23,7 +23,7 @@ public class JpaDirectorDAO implements DirectorDAO {
     }
 
     void checkDuplicate(Director director) throws ServiceException {
-        Optional<Director> another = findBySurnameAndName(director.getSurname(), director.getName());
+        Optional<Director> another = findByNameAndSurname(director.getName(), director.getSurname());
         if (another.isPresent() && another.get().getId() != director.getId()) {
             throw new ServiceException("Director already exists");
         }
@@ -52,7 +52,7 @@ public class JpaDirectorDAO implements DirectorDAO {
      * @return the corresponding director
      */
     @Override
-    public Optional<Director> findByNameAndSurname(String surname, String name) throws ServiceException {
+    public Optional<Director> findByNameAndSurname(String name, String surname) throws ServiceException {
         try {
             List<Director> directors = entityManager.createQuery("SELECT r FROM Director r WHERE surname = :surname AND name = :name", Director.class)
                     .setParameter("surname", surname)

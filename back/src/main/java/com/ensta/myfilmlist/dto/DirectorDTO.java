@@ -1,7 +1,8 @@
 package com.ensta.myfilmlist.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
-import java.util.*;
 
 /**
  * Class representing data of a Director.
@@ -11,6 +12,7 @@ public class DirectorDTO {
     private long id;
     private String surname;
     private String name;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
     private boolean famous;
 
@@ -21,6 +23,7 @@ public class DirectorDTO {
         this.birthdate = null;
         this.famous = false;
     }
+
     public DirectorDTO(DirectorDTO directorDTO) {
         this.id = directorDTO.id;
         this.surname = directorDTO.surname;
@@ -28,28 +31,29 @@ public class DirectorDTO {
         this.birthdate = directorDTO.birthdate;
         this.famous = directorDTO.famous;
     }
-    
+
+    public long getId() {
+        return this.id;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
 
-    public long getId() {
-        return this.id;
+    public String getSurname() {
+        return this.surname;
     }
 
     public void setSurname(String surname) {
         this.surname = surname;
     }
 
-    public String getSurname() {
-        return this.surname;
-    } 
+    public String getName() {
+        return this.name;
+    }
 
     public void setName(String name) {
         this.name = name;
-    } 
-    public String getName() {
-        return this.name;
     }
 
     public LocalDate getBirthdate() {
@@ -69,8 +73,8 @@ public class DirectorDTO {
     }
 
     @Override
-    public String toString(){
-        return "DirectorDTO [id=" + this.id + ", surname=" + this.surname + ", name=" + this.name +", birthdate=" + this.birthdate+ ", famous=" + this.famous + "]";
+    public String toString() {
+        return "DirectorDTO [id=" + this.id + ", surname=" + this.surname + ", name=" + this.name + ", birthdate=" + this.birthdate + ", famous=" + this.famous + "]";
     }
 
 }

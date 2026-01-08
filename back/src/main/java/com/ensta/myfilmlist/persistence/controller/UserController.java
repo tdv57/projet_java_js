@@ -34,35 +34,35 @@ public interface UserController {
 
     @ApiOperation(value = "Recherche un utilisateur par son nom et prénom", notes = "Permet de renvoyer les détails d'un utilisateur grâce à son nom et prénom.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "L'utilisateur demandé a été trouvé"),
+            @ApiResponse(code = 200, message = "L'utilisateur demandé a été trouvé avec succès"),
             @ApiResponse(code = 404, message = "L'utilisateur demandé n'existe pas")
     })
-    ResponseEntity<UserDTO> getUserByNameAndSurname(String name, String surname) throws ControllerException;
+    ResponseEntity<UserDTO> getUserByUsername(String username) throws ControllerException;
 
     @ApiOperation(value = "Ajouter un utilisateur", notes = "Permet d'ajouter un utilisateur.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "L'utilisateur a bien été ajouté"),
+            @ApiResponse(code = 200, message = "L'utilisateur a été ajouté avec succès"),
             @ApiResponse(code = 404, message = "L'utilisateur n'a pas pu être ajouté")
     })
     ResponseEntity<UserDTO> createUser(UserForm directorForm) throws ControllerException;
 
     @ApiOperation(value = "Éditer un utilisateur", notes = "Permet d'éditer un utilisateur d'après un formulaire.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "L'utilisateur a bien été édité"),
+            @ApiResponse(code = 200, message = "L'utilisateur a été édité avec succès"),
             @ApiResponse(code = 404, message = "L'utilisateur n'a pas pu être édité")
     })
     ResponseEntity<UserDTO> updateUser(long id, UserForm directorForm) throws ControllerException;
 
     @ApiOperation(value = "Changer un utilisateur en admin", notes = "Permet de donner les rôles d'administrateurs à un utilisateur.", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "L'utilisateur a bien été édité"),
+            @ApiResponse(code = 200, message = "L'utilisateur a été édité avec succès"),
             @ApiResponse(code = 404, message = "L'utilisateur n'a pas pu être édité")
     })
     ResponseEntity<UserDTO> updateUserAsAdmin(@PathVariable long id) throws ControllerException;
 
-        @ApiOperation(value = "Supprimer un utilisateur", notes = "Permet de supprimer un utilisateur d'après son identifiant.")
+    @ApiOperation(value = "Supprimer un utilisateur", notes = "Permet de supprimer un utilisateur d'après son identifiant.")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "L'utilisateur a bien été supprimé"),
+            @ApiResponse(code = 204, message = "L'utilisateur a été supprimé avec succès"),
             @ApiResponse(code = 404, message = "L'utilisateur n'a pas pu être supprimé")
     })
     ResponseEntity<?> deleteUser(long id) throws ControllerException;

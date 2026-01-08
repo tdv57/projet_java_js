@@ -1,7 +1,6 @@
 package com.ensta.myfilmlist.persistence.controller.impl;
 
 import com.ensta.myfilmlist.dto.GenreDTO;
-import com.ensta.myfilmlist.exception.ControllerException;
 import com.ensta.myfilmlist.exception.ServiceException;
 import com.ensta.myfilmlist.mapper.GenreMapper;
 import com.ensta.myfilmlist.persistence.controller.GenreController;
@@ -27,8 +26,7 @@ public class GenreControllerImpl implements GenreController {
     /**
      * Returns the list of all genres registered in the database.
      *
-     * @return  list of existing Genre' DTO
-     * @throws ControllerException  in case of any error
+     * @return list of existing Genre' DTO
      */
     @Override
     @GetMapping("")
@@ -43,9 +41,8 @@ public class GenreControllerImpl implements GenreController {
     /**
      * Returns a Genre's DTO based on its id.
      *
-     * @param id    id of the genre to return
-     * @return      the corresponding Genre
-     * @throws ControllerException  in case of any error
+     * @param id id of the genre to return
+     * @return the corresponding Genre
      */
     @Override
     @GetMapping("/{id}")
@@ -64,19 +61,20 @@ public class GenreControllerImpl implements GenreController {
     /**
      * Updates a Genre based on a form (user entry)
      *
-     * @param id            id of the Genre to update
-     * @param name          name updated
-     * @return              the updated Genre's DTO
-     * @throws ControllerException  in case of any error
+     * @param id   id of the Genre to update
+     * @param name name updated
+     * @return the updated Genre's DTO
      */
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<GenreDTO> updateGenre(@PathVariable long id, @RequestBody String name) throws ControllerException {
+    public ResponseEntity<GenreDTO> updateGenre(@PathVariable long id, @RequestBody String name) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(myFilmsService.updateGenre(id, name));
         } catch (ServiceException e) {
-            if (e.getMessage().equals("Internal Server Error")) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            if (e.getMessage().equals("Can't find previous Genre")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            } else if (e.getMessage().equals("Genre already exists")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

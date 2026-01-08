@@ -1,8 +1,12 @@
 package com.ensta.myfilmlist.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Data representing a Director.
@@ -18,6 +22,7 @@ public class Director {
 
     private String name;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
 
     @OneToMany(mappedBy = "director")
@@ -62,6 +67,10 @@ public class Director {
         this.famous = famous;
     }
 
+    public long getId() {
+        return this.id;
+    }
+
     /**
      * Getter and setter for every attribute
      */
@@ -70,23 +79,20 @@ public class Director {
         this.id = id;
     }
 
-    public long getId() {
-        return this.id;
+    public String getSurname() {
+        return this.surname;
     }
 
     public void setSurname(String surname) {
         this.surname = surname;
     }
 
-    public String getSurname() {
-        return this.surname;
-    } 
+    public String getName() {
+        return this.name;
+    }
 
     public void setName(String name) {
         this.name = name;
-    } 
-    public String getName() {
-        return this.name;
     }
 
     public LocalDate getBirthdate() {
@@ -114,22 +120,18 @@ public class Director {
     }
 
     @Override
-    public String toString(){
-        return "Director [id=" + this.id + ", surname=" + this.surname + ", name=" + this.name +", date de naissance=" + this.birthdate+ ", famous=" + this.famous + "]";
+    public String toString() {
+        return "Director [id=" + this.id + ", surname=" + this.surname + ", name=" + this.name + ", date de naissance=" + this.birthdate + ", famous=" + this.famous + "]";
     }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
-        if (!(object instanceof Director)) return false;
-        Director director = (Director) object;
-        if (Objects.equals(this.id, director.getId())
-            && director.isFamous() == this.famous 
-            && Objects.equals(director.getBirthdate(), this.birthdate) 
-            && Objects.equals(director.getName(), this.name) 
-            && Objects.equals(director.getSurname(), this.surname)) {
-            return true;
-        }
-        return false;
+        if (!(object instanceof Director director)) return false;
+        return Objects.equals(this.id, director.getId())
+                && director.isFamous() == this.famous
+                && Objects.equals(director.getBirthdate(), this.birthdate)
+                && Objects.equals(director.getName(), this.name)
+                && Objects.equals(director.getSurname(), this.surname);
     }
 }
