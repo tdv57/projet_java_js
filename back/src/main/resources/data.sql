@@ -1,9 +1,72 @@
-CREATE TABLE IF NOT EXISTS Realisateur(id INT primary key auto_increment, nom VARCHAR(100), prenom VARCHAR(100), date_naissance TIMESTAMP, celebre BOOLEAN);
-INSERT INTO Realisateur(nom, prenom, date_naissance, celebre) VALUES('Cameron', 'James', '1954-08-16', false);
-INSERT INTO Realisateur(nom, prenom, date_naissance, celebre) VALUES('Jackson', 'Peter', '1961-10-31', true);
+-- Director table
+CREATE TABLE IF NOT EXISTS Director(id INT primary key auto_increment, surname VARCHAR(100), name VARCHAR(100), birthdate TIMESTAMP, famous BOOLEAN);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Cameron', 'James', '1954-08-16', false);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Jackson', 'Peter', '1961-10-31', true);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Trachtenberg', 'Dan', '1981-05-11', false);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Chu', 'Jon', '1979-11-02', false);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Moore', 'Rich', '1963-05-10', false);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Gansel', 'Denis', '1973-10-04', false);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Caruso', 'D.J.', '1965-01-17', false);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Safdie', 'Joshua', '1984-04-03', false);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Dowse', 'Michael', '1973-04-19', false);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Sotozaki', 'Haruo', '1982-04-12', false);
+INSERT INTO Director(surname, name, birthdate, famous) VALUES('Sotozaki', 'Haruo', '1974-10-31', false);
 
-CREATE TABLE IF NOT EXISTS Film(id INT primary key auto_increment, titre VARCHAR(100), duree INT, realisateur_id INT);
-INSERT INTO Film(titre, duree, realisateur_id) VALUES('avatar', 162, 1);
-INSERT INTO Film(titre, duree, realisateur_id) VALUES('La communauté de l''anneau', 178, 2);
-INSERT INTO Film(titre, duree, realisateur_id) VALUES('Les deux tours', 179, 2);
-INSERT INTO Film(titre, duree, realisateur_id) VALUES('Le retour du roi', 201, 2);
+-- User table
+CREATE TABLE IF NOT EXISTS User(id INT primary key auto_increment, username VARCHAR(100), hash VARCHAR(100));
+INSERT INTO User(username) VALUES ('user');
+INSERT INTO User(username) VALUES ('admin');
+
+-- Film table
+CREATE TABLE IF NOT EXISTS Film(id INT primary key auto_increment, title VARCHAR(100), duration INT, director_id INT, genre_id INT);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Predator: Badlands', 107, 3, 1);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Avatar', 162, 1, 8);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Avatar: la Voie de l''eau', 192, 1, 8);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Avatar: de Feu et de Cendre', 197, 1, 8);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Terminator', 107, 1, 8);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Terminator 2: le Jugement dernier', 137, 1, 8);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Terminator 3: le Soulèvement des machines', 109, 1, 8);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Titanic', 195, 1, 4);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('La communauté de l''anneau', 178, 2, 5);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Les deux tours', 179, 2, 5);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Le retour du Roi', 201, 2, 5);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Le Hobbit: un voyage inatendu', 182, 2, 5);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Le Hobbit: la Désolation de Smaug', 186, 2, 5);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Le Hobbit: La bataille des Cinq Armées', 164, 2, 5);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Wicked 2', 137, 4, 5);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Wicked', 160, 4, 5);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Zootopie', 108, 5, 3);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Zootopie 2', 110, 5, 3);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('The Tank', 116, 6, 1);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('xXx: Reactivated', 107, 7, 1);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Marty Supreme', 149, 8, 4);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Trap House', 102, 9, 1);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Demon Slayer: Kimetsu no Yaiba Infinity Castle', 157, 10, 5);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Insaisissables', 115, 11, 9);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Insaisissables 2', 129, 11, 9);
+INSERT INTO Film(title, duration, director_id, genre_id) VALUES('Insaisissables 3', 113, 11, 9);
+
+-- Genre table
+CREATE TABLE IF NOT EXISTS Genre(id INT primary key auto_increment, name VARCHAR(100));
+INSERT INTO Genre(name) VALUES('Action');
+INSERT INTO Genre(name) VALUES('Romance');
+INSERT INTO Genre(name) VALUES('Comédie');
+INSERT INTO Genre(name) VALUES('Drame');
+INSERT INTO Genre(name) VALUES('Fantaisie');
+INSERT INTO Genre(name) VALUES('Horreur');
+INSERT INTO Genre(name) VALUES('Policier');
+INSERT INTO Genre(name) VALUES('SF');
+INSERT INTO Genre(name) VALUES('Thriller');
+
+-- History table
+CREATE TABLE IF NOT EXISTS History(id INT primary key auto_increment, film_id INT, user_id INT, rating INT);
+INSERT INTO History(film_id, user_id, rating) VALUES(1, 1, 1);
+INSERT INTO History(film_id, user_id, rating) VALUES(2, 1, 20);
+INSERT INTO History(film_id, user_id, rating) VALUES(4, 1, 10);
+INSERT INTO History(film_id, user_id, rating) VALUES(6, 1, 15);
+INSERT INTO History(film_id, user_id, rating) VALUES(7, 1, 5);
+INSERT INTO History(film_id, user_id, rating) VALUES(9, 1, 19);
+INSERT INTO History(film_id, user_id, rating) VALUES(10, 1, 20);
+INSERT INTO History(film_id, user_id, rating) VALUES(11, 1, 20);
+INSERT INTO History(film_id, user_id, rating) VALUES(13, 1, 16);
+INSERT INTO History(film_id, user_id, rating) VALUES(15, 1, 8);

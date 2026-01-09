@@ -1,158 +1,338 @@
 package com.ensta.myfilmlist.service.impl;
 
+import com.ensta.myfilmlist.dao.*;
+import com.ensta.myfilmlist.dto.DirectorDTO;
+import com.ensta.myfilmlist.dto.FilmDTO;
+import com.ensta.myfilmlist.dto.GenreDTO;
+import com.ensta.myfilmlist.dto.UserDTO;
 import com.ensta.myfilmlist.exception.ServiceException;
+import com.ensta.myfilmlist.form.DirectorForm;
 import com.ensta.myfilmlist.form.FilmForm;
+import com.ensta.myfilmlist.form.UserForm;
+import com.ensta.myfilmlist.mapper.DirectorMapper;
 import com.ensta.myfilmlist.mapper.FilmMapper;
-import com.ensta.myfilmlist.mapper.RealisateurMapper;
-import com.ensta.myfilmlist.model.Film;
-import com.ensta.myfilmlist.model.Realisateur;
-import com.ensta.myfilmlist.service.*;
-import com.ensta.myfilmlist.dao.impl.JdbcRealisateurDAO;
-import com.ensta.myfilmlist.dao.FilmDAO;
-import com.ensta.myfilmlist.dao.RealisateurDAO;
-import com.ensta.myfilmlist.dto.*;
-
-import java.util.*;
-
+import com.ensta.myfilmlist.mapper.GenreMapper;
+import com.ensta.myfilmlist.mapper.UserMapper;
+import com.ensta.myfilmlist.model.*;
+import com.ensta.myfilmlist.service.MyFilmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class MyFilmsServiceImpl implements MyFilmsService {
-    public static final int NB_FILMS_MIN_REALISATEUR_CELEBRE = 3; 
+    public static final int MIN_NB_FILMS_FAMOUS_DIRECTOR = 3;
     @Autowired
     private FilmDAO filmDAO;
 
     @Autowired
-    private RealisateurDAO realisateurDAO;
-    /**
-     * La méthode prend en entré un Realisateur non null, si le Realisateur a fait au moins 3 films indique celebre=true, le cas contraire celebre=false, renvoit le Realisateur modifié.
-     */
-    @Override
-    @Transactional
-    public Realisateur updateRealisateurCelebre(Realisateur realisateur) throws ServiceException {
-        try {
-            if (realisateur==null) {
-                System.out.println("realisateur==null");
-            }
-            List<Film> filmsDuRealisateur = filmDAO.findByRealisateurId(realisateur.getId());
-            realisateur.setFilmRealises(filmsDuRealisateur);
-            if (realisateur.getFilmRealises().size() >= NB_FILMS_MIN_REALISATEUR_CELEBRE) {
-                realisateur.setCelebre(true);
-            } else {
-                realisateur.setCelebre(false);
-            }
-            return realisateurDAO.update(realisateur);
-        } catch(Throwable e) {
-            throw new ServiceException("Erreur lors de la mise à jour de la célébrité", e);
-        }
-    }
+    private DirectorDAO directorDAO;
 
-    /**
-     * Prend une liste de Film et renvoie une int représentant la somme des durées de chaque film 
-     */
-    @Override 
-    public int calculerDureeTotale(List<Film> filmRealises) {
-        int dureeTotale = filmRealises.stream()
-                                       .map(film -> film.getDuree())
-                                       .reduce(0, (dureetotale, duree) -> dureetotale + duree);
-        return dureeTotale;
-    }
-    
-    /**
-     * Prend un array de double et calcule un double représentant la note moyenne, renvoie 0 par défaut;
-     */
-    @Override
-    public Optional<Double> calculerNoteMoyenne(List<Double> notes) {
-        if (notes.size() == 0) {
-            return Optional.empty();
-        }
-    
-        double noteMoyenne = notes.stream()
-                                    .reduce(0.0, (notemoyenne, note) -> notemoyenne + note);
-        return Optional.of(((double) Math.round(noteMoyenne*100 / notes.size())) / 100);
-    }
+    @Autowired
+    private GenreDAO genreDAO;
+
+    @Autowired
+    private UserDAO userDAO;
+
+    @Autowired
+    private HistoryDAO historyDAO;
+
+    @Autowired
+    private FilmMapper filmMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     @Transactional
-    public List<Realisateur> updateRealisateurCelebres(List<Realisateur> realisateurs) throws ServiceException {
-        try {
-        List<Realisateur> realisateursCelebres = realisateurs.stream()
-                    .map(realisateur -> {
-                            try {
-                                return updateRealisateurCelebre(realisateur);
-                            } catch(ServiceException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-                    .filter(realisateur -> realisateur.isCelebre())
-                    .collect(Collectors.toList());
-        return realisateursCelebres;
-        } catch (Throwable e) {
-            throw new ServiceException("Erreur dans la mise à jour de la célébrité", e);
+    public FilmDTO createFilm(FilmForm filmForm) throws ServiceException {
+        Film film = filmMapper.convertFilmFormToFilm(filmForm);
+        if (directorDAO.findById(filmForm.getDirectorId()).isEmpty()) {
+            throw new ServiceException("Director doens't exist");
         }
+        film = this.filmDAO.save(film);
+        film.setDirector(updateDirectorFamous(film.getDirector()));
+        return FilmMapper.convertFilmToFilmDTO(film);
     }
 
     @Override
     public List<Film> findAll() throws ServiceException {
         return this.filmDAO.findAll();
     }
-    
-    @Override
-    @Transactional
-    public FilmDTO createFilm(FilmForm filmForm) throws ServiceException {
-        Film film = FilmMapper.convertFilmFormToFilm(filmForm);
-        if (realisateurDAO.findById(filmForm.getRealisateurId()).isEmpty()) {
-            throw new ServiceException("Le réalisateur n'existe pas");
-        }
-        film = this.filmDAO.save(film);
-        film.setRealisateur(updateRealisateurCelebre(film.getRealisateur()));
-        return FilmMapper.convertFilmToFilmDTO(film);
-    }
-
-    @Override
-    public RealisateurDTO createRealisateur(Realisateur realisateur) throws ServiceException {
-        realisateur = this.realisateurDAO.save(realisateur);
-        return RealisateurMapper.convertRealisateurToRealisateurDTO(realisateur);
-    }
-
-    @Override 
-    public List<Realisateur> findAllRealisateurs() throws ServiceException {
-        JdbcRealisateurDAO jdbcRealisateurDAO = new JdbcRealisateurDAO();
-        return jdbcRealisateurDAO.findAll();
-    }
-
-    @Override
-    public Realisateur findRealisateurById(Long id) throws ServiceException {
-        JdbcRealisateurDAO jdbcRealisateurDAO = new JdbcRealisateurDAO();
-        Optional<Realisateur> realisateur = jdbcRealisateurDAO.findById(id);
-        if (realisateur.isPresent()) {
-            return realisateur.get();
-        } else {
-            throw new ServiceException ("Le realisateur n'existe pas");
-        }
-    }
-
-    @Override
-    public Realisateur findRealisateurByNomAndPrenom(String nom, String prenom) throws ServiceException {
-        JdbcRealisateurDAO jdbcRealisateurDAO = new JdbcRealisateurDAO();
-        return jdbcRealisateurDAO.findByNomAndPrenom(nom, prenom);
-    }
 
     @Override
     public Film findFilmById(long id) throws ServiceException {
         Optional<Film> film = this.filmDAO.findById(id);
-        if (film.isEmpty()) return null;
+        if (film.isEmpty()) {
+            throw new ServiceException("Given Film doesn't exist");
+        }
         return film.get();
     }
 
     @Override
+    public Film findFilmByTitle(String title) throws ServiceException {
+        Optional<Film> film = this.filmDAO.findByTitle(title);
+        if (film.isEmpty()) {
+            throw new ServiceException("Given Film doesn't exist");
+        }
+        return film.get();
+    }
+
+    @Override
+    public List<Film> findFilmByDirectorId(long id) throws ServiceException {
+        return this.filmDAO.findByDirectorId(id);
+    }
+
+    @Override
+    @Transactional
+    public FilmDTO updateFilm(long id, FilmForm filmForm) throws ServiceException {
+        Optional<Director> director = this.directorDAO.findById(filmForm.getDirectorId());
+        if (director.isEmpty()) {
+            throw new ServiceException("Director doesn't exist");
+        }
+        Film new_film = filmMapper.convertFilmFormToFilm(filmForm);
+        Film film = this.filmDAO.update(id, new_film);
+        return FilmMapper.convertFilmToFilmDTO(film);
+    }
+
+    @Override
+    @Transactional
     public void deleteFilm(long id) throws ServiceException {
         Film film = findFilmById(id);
         this.filmDAO.delete(film);
-        updateRealisateurCelebre(film.getRealisateur());
+        updateDirectorFamous(film.getDirector());
+    }
+
+
+    @Override
+    @Transactional
+    public DirectorDTO createDirector(DirectorForm directorForm) throws ServiceException {
+        Director director = DirectorMapper.convertDirectorFormToDirector(directorForm);
+        director = this.directorDAO.save(director);
+        return DirectorMapper.convertDirectorToDirectorDTO(director);
+    }
+
+    @Override
+    public List<Director> findAllDirectors() throws ServiceException {
+        return this.directorDAO.findAll();
+    }
+
+    @Override
+    public Director findDirectorById(long id) throws ServiceException {
+        Optional<Director> director = this.directorDAO.findById(id);
+        if (director.isEmpty()) {
+            throw new ServiceException("Given Director doesn't exist");
+        }
+        return director.get();
+    }
+
+    @Override
+    public Director findDirectorByNameAndSurname(String name, String surname) throws ServiceException {
+        Optional<Director> director = this.directorDAO.findByNameAndSurname(name, surname);
+        if (director.isEmpty()) {
+            throw new ServiceException("Given Director doesn't exist");
+        }
+        return director.get();
+    }
+
+    /**
+     * La méthode prend en entrée un Director non null, si le Director a fait au moins 3 films indique famous=true, le cas contraire famous=false, renvoit le Director modifié.
+     */
+    @Override
+    @Transactional
+    public Director updateDirectorFamous(Director director) throws ServiceException {
+        try {
+            List<Film> directorFilms = filmDAO.findByDirectorId(director.getId());
+            director.setFilmsProduced(directorFilms);
+            boolean newFame = directorFilms.size() >= MIN_NB_FILMS_FAMOUS_DIRECTOR;
+            director.setFamous(newFame);
+            return directorDAO.update(director.getId(), director);
+        } catch (ServiceException e) {
+            throw new ServiceException("Director doesn't exist");
+        } catch (Throwable e) {
+            throw new ServiceException("Can't update famous", e);
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public List<Director> updateDirectorsFamous(List<Director> directors) throws ServiceException {
+        try {
+            return directors.stream()
+                    .map(director -> {
+                        try {
+                            return updateDirectorFamous(director);
+                        } catch (ServiceException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .filter(Director::isFamous)
+                    .collect(Collectors.toList());
+        } catch (Throwable e) {
+            System.err.println("update director famous: T");
+            throw new ServiceException("Erreur dans la mise à jour de la célébrité", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public DirectorDTO updateDirector(long id, DirectorForm directorForm) throws ServiceException {
+        Director new_director = DirectorMapper.convertDirectorFormToDirector(directorForm);
+        Director director = this.directorDAO.update(id, new_director);
+        return DirectorMapper.convertDirectorToDirectorDTO(director);
+    }
+
+    @Override
+    @Transactional
+    public void deleteDirector(long id) throws ServiceException {
+        Optional<Director> optionalDirector = this.directorDAO.findById(id);
+        if (optionalDirector.isEmpty()) throw new ServiceException("Director doesn't exist");
+        this.directorDAO.delete(id);
+    }
+
+
+    @Override
+    public List<Genre> findAllGenres() throws ServiceException {
+        return this.genreDAO.findAll();
+    }
+
+    @Override
+    public Genre findGenreById(long id) throws ServiceException {
+        Optional<Genre> genre = this.genreDAO.findById(id);
+        if (genre.isEmpty()) {
+            throw new ServiceException("Given Genre doesn't exist");
+        }
+        return genre.get();
+    }
+
+    @Override
+    @Transactional
+    public GenreDTO updateGenre(long id, String name) throws ServiceException {
+        Genre genre = this.genreDAO.update(id, name);
+        return GenreMapper.convertGenreToGenreDTO(genre);
+    }
+
+
+    @Override
+    //@PreAuthorize("hasRole('ADMIN')")
+    public List<User> findAllUsers() throws ServiceException {
+        return this.userDAO.findAll();
+    }
+
+    @Override
+    public UserDTO createUser(UserForm userForm) {
+        User user = UserMapper.convertUserFormToUser(userForm);
+        user = this.userDAO.save(user);
+        return UserMapper.convertUserToUserDTO(user);
+    }
+
+    @Override
+    public User findUserById(long id) throws ServiceException {
+        Optional<User> user = this.userDAO.findById(id);
+        if (user.isEmpty()) {
+            throw new ServiceException("User can't be found.");
+        }
+        return user.get();
+    }
+
+    @Override
+    public User findByUsername(String username) throws ServiceException {
+        Optional<User> user = this.userDAO.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new ServiceException("User can't be found.");
+        }
+        return user.get();
+    }
+
+    @Override
+    public UserDTO updateUser(long id, UserForm userForm) throws ServiceException {
+        User new_user = UserMapper.convertUserFormToUser(userForm);
+        User user = this.userDAO.update(id, new_user);
+        return UserMapper.convertUserToUserDTO(user);
+    }
+
+    @Override
+    //@PreAuthorize("hasRole('ADMIN')")
+    public UserDTO setUserAsAdmin(long id) throws ServiceException {
+        try {
+            Optional<User> user = userDAO.findById(id);
+            if (user.isEmpty()) {
+                throw new ServiceException("User can't be found.");
+            }
+            user.get().setRoles("USER, ADMIN");
+            return UserMapper.convertUserToUserDTO(userDAO.update(id, user.get()));
+        } catch (Throwable e) {
+            throw new ServiceException("User can't be updated.", e);
+        }
+    }
+
+    @Override
+    public void deleteUser(long id) {
+        this.userDAO.delete(id);
+    }
+
+
+    @Override
+    @Transactional
+    public List<Film> findWatchList(long userId) throws ServiceException {
+        return this.historyDAO.getWatchList(userId);
+    }
+
+    @Override
+    @Transactional
+    public History addFilmToWatchList(long userId, long filmId) throws ServiceException {
+        return this.historyDAO.addFilmToWatchList(userId, filmId);
+    }
+
+    @Override
+    public void removeFilmFromWatchList(long userId, long filmId) {
+        try {
+            this.historyDAO.deleteFilm(userId, filmId);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public History rateFilm(long userId, long filmId, int rating) throws ServiceException {
+        return this.historyDAO.rateFilm(userId, filmId, rating);
+    }
+
+    @Override
+    public int getUserRating(long userId, long filmId) throws ServiceException {
+        return this.historyDAO.getUserRating(userId, filmId);
+    }
+
+
+    @Override
+    public Optional<Double> getMeanRating(long filmId) {
+        try {
+            return this.historyDAO.getMeanRating(filmId);
+        } catch (ServiceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * Prend une liste de Film et renvoie une int représentant la somme des durées de chaque film
+     */
+    @Override
+    public int getFullWatchTime(List<Film> filmsProduced) {
+        return this.historyDAO.getFullWatchTime(filmsProduced);
+    }
+
+    /**
+     * Prend un array de double et calcule un double représentant la note moyenne, renvoie 0 par défaut;
+     */
+    @Override
+    public Optional<Double> getMeanRating(List<Double> notes) {
+        return this.historyDAO.getMeanRating(notes);
     }
 }

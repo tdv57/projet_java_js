@@ -1,77 +1,116 @@
 package com.ensta.myfilmlist.model;
 
+import java.util.Objects;
+
+import javax.persistence.*;
+
 /**
- * Represente un Film.
+ * Data representing a Film.
  */
+@Entity
+@Table
 public class Film {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	private String titre;
+    @Column
+	private String title;
 
-	private int duree;
+	private int duration;
 
-	private Realisateur realisateur;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+	private Director director;
 
-	public Film() {
-		this.id = 0;
-		this.titre = new String();
-		this.duree = 0;
-		this.realisateur = null;
+    @ManyToOne
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
+
+    /**
+     * Constructors for a Film
+     */
+
+    public Film() {
+		this.id = 0L;
+		this.title = "";
+		this.duration = 0;
+		this.director = null;
+        this.genre = null;
 	}
 
 	public Film(Film film) {
 		this.id = film.id;
-		this.titre = film.titre;
-		this.duree = film.duree;
-		this.realisateur = film.realisateur;
+		this.title = film.title;
+		this.duration = film.duration;
+		this.director = film.director;
+        this.genre = film.genre;
 	}
 
-	public Film(Long id, String titre, int duree, Realisateur realisateur) {
+	public Film(long id, String title, int duration, Director director, Genre genre) {
 		this.id = id;
-		this.titre = titre;
-		this.duree = duree;
-		this.realisateur = new Realisateur(realisateur);
-	}
-	
-	public long getId() {
-		return id;
+		this.title = title;
+		this.duration = duration;
+		this.director = new Director(director);
+        this.genre = new Genre(genre);
 	}
 
-	public void setId(long id) {
-		this.id = id;
+    /**
+     * Getter and setter for every attribute
+     */
+
+    public long getId() {
+        return id;
+    }
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public String getTitre() {
-		return titre;
+    public int getDuration() {
+        return duration;
+    }
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public Director getDirector() {
+        return this.director;
+    }
+    public void setDirector(Director director) {
+		this.director = director;
 	}
 
-	public void setTitre(String titre) {
-		this.titre = titre;
-	}
+    public Genre getGenre() { return this.genre; }
+    public void setGenre(Genre genre) { this.genre = genre; }
 
-	public int getDuree() {
-		return duree;
-	}
-
-	public void setDuree(int duree) {
-		this.duree = duree;
-	}
-
-	public void setRealisateur(Realisateur realisateur) {
-		this.realisateur = realisateur;
-	}
-
-	public Realisateur getRealisateur() {
-		return this.realisateur;
-	}
-
-	@Override
+    @Override
 	public String toString() {
-		String realisateurPrenomEtNom = "";
-		if (!(this.realisateur == null)) {
-			realisateurPrenomEtNom = ", realisateur=" + this.realisateur.getPrenom() + " " + this.realisateur.getNom();
+		String directorNameEtSurname = "";
+		if (!(this.director == null)) {
+			directorNameEtSurname = ", director=" + this.director.getName() + " " + this.director.getSurname();
 		}
-		return "Film [id=" + id + ", titre=" + titre + ", duree=" + duree + realisateurPrenomEtNom + "]";
+		return "Film [id=" + id + ", title=" + title + ", duration=" + duration + directorNameEtSurname + "]";
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Film)) return false;
+        Film film = (Film) o;
+        if (Objects.equals(this.getDirector(), film.getDirector())
+            && Objects.equals(this.getTitle(), film.getTitle())
+            && Objects.equals(this.getDuration(), film.getDuration())
+            && Objects.equals(this.id, film.getId())) {
+                return true;
+            }
+        return false;
+    }
 }

@@ -1,40 +1,43 @@
 package com.ensta.myfilmlist.dto;
 
-import com.ensta.myfilmlist.model.Film;
-import com.ensta.myfilmlist.model.Realisateur;
-
 /**
- * Contient les donnees d'un Film.
+ * Class representing data of a Film.
+ * DTO: transferred data between layers.
  */
 public class FilmDTO {
 
 	private long id;
 
-	private String titre;
+	private String title;
 
-	private int duree;
+	private int duration;
 
-	private RealisateurDTO realisateurDTO;
+	private DirectorDTO directorDTO;
+
+    private GenreDTO genreDTO;
 
 	public FilmDTO() {
-		this.id = 0;
-		this.titre = new String();
-		this.duree = 0;
-		this.realisateurDTO = new RealisateurDTO();
+		this.id = 0L;
+		this.title = "";
+		this.duration = 0;
+		this.directorDTO = new DirectorDTO();
+        this.genreDTO = new GenreDTO();
 	}
 
 	public FilmDTO(FilmDTO filmDTO) {
 		this.id = filmDTO.id;
-		this.titre = filmDTO.titre;
-		this.duree = filmDTO.duree;
-		this.realisateurDTO = filmDTO.realisateurDTO;
+		this.title = filmDTO.title;
+		this.duration = filmDTO.duration;
+		this.directorDTO = filmDTO.directorDTO;
+        this.genreDTO = filmDTO.genreDTO;
 	}
 
-	public FilmDTO(Long id, String titre, int duree, RealisateurDTO realisateurDTO) {
+	public FilmDTO(long id, String title, int duration, DirectorDTO directorDTO) {
 		this.id = id;
-		this.titre = titre;
-		this.duree = duree;
-		this.realisateurDTO = new RealisateurDTO(realisateurDTO);
+		this.title = title;
+		this.duration = duration;
+		this.directorDTO = new DirectorDTO(directorDTO);
+        this.genreDTO = new GenreDTO();
 	}
 
 	public long getId() {
@@ -45,33 +48,37 @@ public class FilmDTO {
 		this.id = id;
 	}
 
-	public String getTitre() {
-		return titre;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setTitre(String titre) {
-		this.titre = titre;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public int getDuree() {
-		return duree;
+	public int getDuration() {
+		return duration;
 	}
 
-	public void setDuree(int duree) {
-		this.duree = duree;
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 
-	public void setRealisateurDTO(RealisateurDTO realisateurDTO) {
-		this.realisateurDTO = realisateurDTO;
+	public void setDirectorDTO(DirectorDTO directorDTO) {
+		this.directorDTO = directorDTO;
 	}
 
-	public RealisateurDTO getRealisateurDTO() {
-		return this.realisateurDTO;
+	public DirectorDTO getDirectorDTO() {
+		return this.directorDTO;
 	}
+
+    public void setGenreDTO(GenreDTO genreDTO) {this.genreDTO = genreDTO;}
+
+    public GenreDTO getGenreDTO() {return this.genreDTO;}
 
 	@Override
 	public String toString() {
-		return "FilmDTO [id=" + id + ", titre=" + titre + ", duree=" + duree + "]";
+		return "FilmDTO [id=" + id + ", title=" + title + ", duration=" + duration + "]";
 	}
 
 }

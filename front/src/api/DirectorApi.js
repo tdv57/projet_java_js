@@ -1,0 +1,69 @@
+import axios from "axios";
+import { doRequest } from "../utils.js";
+
+const DIRECTORS_URI = import.meta.env.VITE_API_URL + "/director";
+
+export function getAllDirectors() {
+  return doRequest(axios.get(DIRECTORS_URI), {
+    error: "Impossible de charger les réalisateurs.",
+  });
+}
+
+export function getDirectorByName(name, surname) {
+  return doRequest(
+    axios.get(DIRECTORS_URI + "/names", {
+      params: {
+        surname,
+        name,
+      },
+    }),
+    {
+      error: "Impossible de récupérer le réalisateur.",
+      404: "Le réalisateur n'existe pas.",
+    },
+  );
+}
+
+export function getDirectorById(id) {
+  return doRequest(axios.get(DIRECTORS_URI + `/${id}`), {
+    error: "Impossible de récupérer le réalisateur.",
+    404: "Le réalisateur n'existe pas.",
+  });
+}
+
+export function addDirector(name, surname, birthdate) {
+  return doRequest(
+    axios.post(DIRECTORS_URI, {
+      surname,
+      name,
+      birthdate,
+    }),
+    {
+      200: "Réalisateur ajouté.",
+      404: "Impossible d'ajouter ce réalisateur.",
+      409: "Le réalisateur existe déjà.",
+    },
+  );
+}
+
+export function editDirector(id, name, surname, birthdate) {
+  return doRequest(
+    axios.put(DIRECTORS_URI + `/${id}`, {
+      name,
+      surname,
+      birthdate,
+    }),
+    {
+      200: "Réalisateur mis à jour.",
+      404: "Impossible de modifier le réalisateur.",
+      409: "Le réalisateur existe déjà.",
+    },
+  );
+}
+
+export function deleteDirector(id) {
+  return doRequest(axios.delete(DIRECTORS_URI + `/${id}`), {
+    204: "Réalisateur supprimé.",
+    404: "Impossible de supprimer le réalisateur.",
+  });
+}

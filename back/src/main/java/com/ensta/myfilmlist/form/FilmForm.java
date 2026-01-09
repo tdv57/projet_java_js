@@ -4,43 +4,50 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Min;
+
 /**
- * Contient les donnees pour requeter un film.
+ * Form to parse create a Film from an entry.
  */
 public class FilmForm {
 
-	@NotBlank(message = "Le titre ne peut pas être vide")
-	private String titre;
+	@NotBlank(message = "Film's title can't be blank/empty.")
+	private String title;
 
-	@NotNull(message = "La durée doit être strictement supérieure à 0")
-	@Positive(message = "La durée doit être strictement supérieure à 0")
-	private int duree;
+	@NotNull(message = "Film's duration must be strictly greater than 0.")
+	@Positive(message = "Film's duration must be strictly greater than 0.")
+	private int duration;
 
-	@Min(value=1, message="L'id du realisateur doit être strictement positif")
-	private long realisateurId;
+	@Min(value=1, message="Director's id must be strictly greater than 0.")
+	private Long directorId;
 
-	public String getTitre() {
-		return titre;
+    @Min(value=1, message="Genre's id must be strictly greater than 0.")
+    private Long genreId;
+
+	public String getTitle() {
+		return title;
 	}
 
-	public void setTitre(String titre) {
-		this.titre = titre;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public int getDuree() {
-		return duree;
+	public int getDuration() {
+		return duration;
 	}
 
-	public void setDuree(int duree) {
-		this.duree = duree;
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 
-	public long getRealisateurId() {
-		return realisateurId;
+	public long getDirectorId() {
+		return directorId;
 	}
 
-	public void setRealisateurId(long realisateurId) {
-		this.realisateurId = realisateurId;
+	public void setDirectorId(long directorId) {
+		this.directorId = directorId;
 	}
 
+    public long getGenreId() {return genreId;}
+
+    public void setGenreId(long genreId) {this.genreId = genreId;}
 }

@@ -1,335 +1,337 @@
 package com.ensta.myfilmlist;
+
+import com.ensta.myfilmlist.dto.DirectorDTO;
+import com.ensta.myfilmlist.dto.FilmDTO;
+import com.ensta.myfilmlist.exception.ServiceException;
+import com.ensta.myfilmlist.form.FilmForm;
+import com.ensta.myfilmlist.mapper.DirectorMapper;
+import com.ensta.myfilmlist.mapper.FilmMapper;
+import com.ensta.myfilmlist.model.Director;
+import com.ensta.myfilmlist.model.Film;
 import com.ensta.myfilmlist.service.MyFilmsService;
-import com.ensta.myfilmlist.service.impl.MyFilmsServiceImpl;
-import com.ensta.myfilmlist.model.*;
-
-import java.rmi.server.ServerCloneException;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ensta.myfilmlist.exception.*;
-import com.ensta.myfilmlist.dto.*;
-import com.ensta.myfilmlist.form.*;
-import com.ensta.myfilmlist.mapper.FilmMapper;
-import com.ensta.myfilmlist.mapper.RealisateurMapper;
-import com.ensta.myfilmlist.service.impl.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Classe de tests du service MyFilmsServiceImpl.
  */
 @Component
-public class MyfilmlistTests{
+public class MyfilmlistTests {
 
-	/** Initialisation du service pour les traitements de l'application MyFilms */
+    /**
+     * Initialisation du service pour les traitements de l'application MyFilms
+     */
+    @Autowired
+    private MyFilmsService myFilmsService;
+
 	@Autowired
-	private MyFilmsService myFilmsService;
-
+	private FilmMapper filmMapper;
 	/**
-	 * Permet de tester la mise a jour du statut "celebre" d'un RealisateurDTO en fonction du nombre de films realises.
+	 * Permet de tester la mise a jour du statut "famous" d'un DirectorDTO en fonction du surnamebre de films realises.
 	 */
-	public void updateRealisateurCelebreTest(){
-		// Creation des Realisateurs
+	public void updateDirectorFamousTest(){
+		// Creation des Directors
 		try {
-			Realisateur jamesCameron = myFilmsService.findRealisateurByNomAndPrenom("Cameron", "James");
-			jamesCameron.setCelebre(false);
-			// Realisateur jamesCameron = new Realisateur();
-			// jamesCameron.setNom("Cameron");
-			// jamesCameron.setPrenom("James");
-			// jamesCameron.setDateNaissance(LocalDate.of(1954, 8, 16));
+			Director jamesCameron = myFilmsService.findDirectorByNameAndSurname("Cameron", "James");
+			jamesCameron.setFamous(false);
+			// Director jamesCameron = new Director();
+			// jamesCameron.setSurname("Cameron");
+			// jamesCameron.setName("James");
+			// jamesCameron.setBirthdate(LocalDate.of(1954, 8, 16));
 
-			Realisateur peterJackson = myFilmsService.findRealisateurByNomAndPrenom("Jackson", "Peter");
-			peterJackson.setCelebre(false);
-			// Realisateur peterJackson = new Realisateur();
-			// peterJackson.setNom("Jackson");
-			// peterJackson.setPrenom("Peter");
-			// peterJackson.setDateNaissance(LocalDate.of(1961, 10, 31));
-			// peterJackson = RealisateurMapper.convertRealisateurDTOToRealisateur(myFilmsService.createRealisateur(peterJackson));
+			Director peterJackson = myFilmsService.findDirectorByNameAndSurname("Jackson", "Peter");
+			peterJackson.setFamous(false);
+			// Director peterJackson = new Director();
+			// peterJackson.setSurname("Jackson");
+			// peterJackson.setName("Peter");
+			// peterJackson.setBirthdate(LocalDate.of(1961, 10, 31));
+			// peterJackson = DirectorMapper.convertDirectorDTOToDirector(myFilmsService.createDirector(peterJackson));
 			// Creation des films
 
-			FilmForm avatarForm = new FilmForm();
-			avatarForm.setTitre("Avatar");
-			avatarForm.setDuree(162);
-			avatarForm.setRealisateurId(jamesCameron.getId());
-			Film avatar = FilmMapper.convertFilmFormToFilm(avatarForm);		// Affectation des films aux realisateurs
+            FilmForm avatarForm = new FilmForm();
+            avatarForm.setTitle("Avatar");
+            avatarForm.setDuration(162);
+            avatarForm.setDirectorId(jamesCameron.getId());
+            Film avatar = filmMapper.convertFilmFormToFilm(avatarForm);        // Affectation des films aux directors
 
-			FilmForm laCommunauteDeLAnneauForm = new FilmForm();
-			laCommunauteDeLAnneauForm.setTitre("La communauté de l'anneau");
-			laCommunauteDeLAnneauForm.setDuree(178);
-			laCommunauteDeLAnneauForm.setRealisateurId(peterJackson.getId());
-			Film laCommunauteDeLAnneau = FilmMapper.convertFilmFormToFilm(laCommunauteDeLAnneauForm);		// Affectation des films aux realisateurs
+            FilmForm laCommunauteDeLAnneauForm = new FilmForm();
+            laCommunauteDeLAnneauForm.setTitle("La communauté de l'anneau");
+            laCommunauteDeLAnneauForm.setDuration(178);
+            laCommunauteDeLAnneauForm.setDirectorId(peterJackson.getId());
+            Film laCommunauteDeLAnneau = filmMapper.convertFilmFormToFilm(laCommunauteDeLAnneauForm);        // Affectation des films aux directors
 
-			FilmForm lesDeuxToursForm = new FilmForm();
-			lesDeuxToursForm.setTitre("Les deux tours");
-			lesDeuxToursForm.setDuree(179);
-			lesDeuxToursForm.setRealisateurId(peterJackson.getId());
-			Film lesDeuxTours = FilmMapper.convertFilmFormToFilm(lesDeuxToursForm);		// Affectation des films aux realisateurs
+            FilmForm lesDeuxToursForm = new FilmForm();
+            lesDeuxToursForm.setTitle("Les deux tours");
+            lesDeuxToursForm.setDuration(179);
+            lesDeuxToursForm.setDirectorId(peterJackson.getId());
+            Film lesDeuxTours = filmMapper.convertFilmFormToFilm(lesDeuxToursForm);        // Affectation des films aux directors
 
-			FilmForm leRetourDuRoiForm = new FilmForm();
-			leRetourDuRoiForm.setTitre("Le retour du roi");
-			leRetourDuRoiForm.setDuree(201);
-			leRetourDuRoiForm.setRealisateurId(peterJackson.getId());
-			Film leRetourDuRoi = FilmMapper.convertFilmFormToFilm(leRetourDuRoiForm);		// Affectation des films aux realisateurs
+            FilmForm leRetourDuRoiForm = new FilmForm();
+            leRetourDuRoiForm.setTitle("Le retour du roi");
+            leRetourDuRoiForm.setDuration(201);
+            leRetourDuRoiForm.setDirectorId(peterJackson.getId());
+            Film leRetourDuRoi = filmMapper.convertFilmFormToFilm(leRetourDuRoiForm);        // Affectation des films aux directors
 
-			List<Film> peterJacksonFilms = new ArrayList<>();
-			peterJacksonFilms.add(laCommunauteDeLAnneau);
-			peterJacksonFilms.add(lesDeuxTours);
-			peterJacksonFilms.add(leRetourDuRoi);
-			peterJackson.setFilmRealises(peterJacksonFilms);
+            List<Film> peterJacksonFilms = new ArrayList<>();
+            peterJacksonFilms.add(laCommunauteDeLAnneau);
+            peterJacksonFilms.add(lesDeuxTours);
+            peterJacksonFilms.add(leRetourDuRoi);
+            peterJackson.setFilmsProduced(peterJacksonFilms);
 
-			List<Film> jamesCameronFilms = new ArrayList<>();
-			jamesCameronFilms.add(avatar);
-			jamesCameron.setFilmRealises(jamesCameronFilms);
+            List<Film> jamesCameronFilms = new ArrayList<>();
+            jamesCameronFilms.add(avatar);
+            jamesCameron.setFilmsProduced(jamesCameronFilms);
 
-		// Mise a jour du statut "celebre" des Realisateurs
+            // Mise a jour du statut "famous" des Directors
 
 
-			jamesCameron = myFilmsService.updateRealisateurCelebre(jamesCameron);
-			peterJackson = myFilmsService.updateRealisateurCelebre(peterJackson);
+            jamesCameron = myFilmsService.updateDirectorFamous(jamesCameron);
+            peterJackson = myFilmsService.updateDirectorFamous(peterJackson);
 
-			// Attendue : false
-			System.out.println("James Cameron est-il celebre ? " + jamesCameron.isCelebre());
-			// Attendue : true
-			System.out.println("Peter Jackson est-il celebre ? " + peterJackson.isCelebre());
-		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+            // Attendue : false
+            System.out.println("James Cameron est-il famous ? " + jamesCameron.isFamous());
+            // Attendue : true
+            System.out.println("Peter Jackson est-il famous ? " + peterJackson.isFamous());
+        } catch (ServiceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Permet de tester le calcul de la duree totale des films.
-	 */
-	public void calculerDureeTotaleTest() {
-		// Creation des films
+    /**
+     * Permet de tester le calcul de la duration totale des films.
+     */
+    public void calculerDurationTotaleTest() {
+        // Creation des films
 
-		Film laCommunauteDeLAnneau = new Film();
-		laCommunauteDeLAnneau.setTitre("La communauté de l'anneau");
-		laCommunauteDeLAnneau.setDuree(178);
+        Film laCommunauteDeLAnneau = new Film();
+        laCommunauteDeLAnneau.setTitle("La communauté de l'anneau");
+        laCommunauteDeLAnneau.setDuration(178);
 
-		Film lesDeuxTours = new Film();
-		lesDeuxTours.setTitre("Les deux tours");
-		lesDeuxTours.setDuree(179);
+        Film lesDeuxTours = new Film();
+        lesDeuxTours.setTitle("Les deux tours");
+        lesDeuxTours.setDuration(179);
 
-		Film leRetourDuRoi = new Film();
-		leRetourDuRoi.setTitre("Le retour du roi");
-		leRetourDuRoi.setDuree(201);
+        Film leRetourDuRoi = new Film();
+        leRetourDuRoi.setTitle("Le retour du roi");
+        leRetourDuRoi.setDuration(201);
 
-		List<Film> leSeigneurDesAnneaux = new ArrayList<>();
-		leSeigneurDesAnneaux.add(laCommunauteDeLAnneau);
-		leSeigneurDesAnneaux.add(lesDeuxTours);
-		leSeigneurDesAnneaux.add(leRetourDuRoi);
+        List<Film> leSeigneurDesAnneaux = new ArrayList<>();
+        leSeigneurDesAnneaux.add(laCommunauteDeLAnneau);
+        leSeigneurDesAnneaux.add(lesDeuxTours);
+        leSeigneurDesAnneaux.add(leRetourDuRoi);
 
-		// Calcule de la duree totale
+        // Calcul de la duration totale
 
-		long dureeTotale = myFilmsService.calculerDureeTotale(leSeigneurDesAnneaux);
-		// Attendue : 558 minutes
-		System.out.println("La duree totale de la trilogie \"Le Seigneur des Anneaux\" est de : " + dureeTotale + " minutes");
-	}
+        long durationTotale = myFilmsService.getFullWatchTime(leSeigneurDesAnneaux);
+        // Attendue : 558 minutes
+        System.out.println("La duration totale de la trilogie \"Le Seigneur des Anneaux\" est de : " + durationTotale + " minutes");
+    }
 
-	/**
-	 * Permet de tester le calcul de la note moyenne des films.
-	 */
-	public void calculerNoteMoyenneTest() {
-		// Creation des notes
+    /**
+     * Permet de tester le calcul de la note moyenne des films.
+     */
+    public void calculerNoteMoyenneTest() {
+        // Creation des notes
 
-		double[] notes = { 18, 15.5, 12 };
-		List<Double> notesList = Arrays.stream(notes) // crée un DoubleStream
-										.boxed()       // convertit les doubles primitifs en objets Double
-										.collect(Collectors.toList());
+        double[] notes = {18, 15.5, 12};
+        List<Double> notesList = Arrays.stream(notes) // crée un DoubleStream
+                .boxed()       // convertit les doubles primitifs en objets Double
+                .collect(Collectors.toList());
 
-		// Calcul de la note moyenne
+        // Calcul de la note moyenne
 
-		Optional<Double> noteMoyenne = myFilmsService.calculerNoteMoyenne(notesList);
+        Optional<Double> noteMoyenne = myFilmsService.getMeanRating(notesList);
 
-		// Attendue : 15,17
-		System.out.println("La note moyenne est : " + noteMoyenne.toString());
-	}
+        // Attendue : 15,17
+        System.out.println("La note moyenne est : " + noteMoyenne.toString());
+    }
 
-	public void updateRealisateursCelebresTest() {
+	public void updateDirectorsFamoussTest() {
 		try {
-			Realisateur jamesCameron = myFilmsService.findRealisateurByNomAndPrenom("Cameron", "James");
-			jamesCameron.setCelebre(false);
-			// jamesCameron = RealisateurMapper.convertRealisateurDTOToRealisateur(myFilmsService.createRealisateur(jamesCameron));
+			Director jamesCameron = myFilmsService.findDirectorByNameAndSurname("Cameron", "James");
+			jamesCameron.setFamous(false);
+			// jamesCameron = DirectorMapper.convertDirectorDTOToDirector(myFilmsService.createDirector(jamesCameron));
 
-			Realisateur peterJackson = myFilmsService.findRealisateurByNomAndPrenom("Jackson", "Peter");
-			peterJackson.setCelebre(false);
-			// peterJackson.setNom("Jackson");
-			// peterJackson.setPrenom("Peter");
-			// peterJackson.setDateNaissance(LocalDate.of(1961, 10, 31));
-			// peterJackson = RealisateurMapper.convertRealisateurDTOToRealisateur(myFilmsService.createRealisateur(peterJackson));
+			Director peterJackson = myFilmsService.findDirectorByNameAndSurname("Jackson", "Peter");
+			peterJackson.setFamous(false);
+			// peterJackson.setSurname("Jackson");
+			// peterJackson.setName("Peter");
+			// peterJackson.setBirthdate(LocalDate.of(1961, 10, 31));
+			// peterJackson = DirectorMapper.convertDirectorDTOToDirector(myFilmsService.createDirector(peterJackson));
 
-			// Creation des films
+            // Creation des films
 
-			FilmForm avatarForm = new FilmForm();
-			avatarForm.setTitre("Avatar");
-			avatarForm.setDuree(162);
-			avatarForm.setRealisateurId(jamesCameron.getId());
-			Film avatar = FilmMapper.convertFilmFormToFilm(avatarForm);
-			// Film avatar = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(avatarForm));
+            FilmForm avatarForm = new FilmForm();
+            avatarForm.setTitle("Avatar");
+            avatarForm.setDuration(162);
+            avatarForm.setDirectorId(jamesCameron.getId());
+            Film avatar = filmMapper.convertFilmFormToFilm(avatarForm);
+            // Film avatar = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(avatarForm));
 
-			FilmForm laCommunauteDeLAnneauForm = new FilmForm();
-			laCommunauteDeLAnneauForm.setTitre("La communauté de l'anneau");
-			laCommunauteDeLAnneauForm.setDuree(178);
-			laCommunauteDeLAnneauForm.setRealisateurId(peterJackson.getId());
-			Film laCommunauteDeLAnneau = FilmMapper.convertFilmFormToFilm(laCommunauteDeLAnneauForm);
-			// Film laCommunauteDeLAnneau = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(laCommunauteDeLAnneauForm));
+            FilmForm laCommunauteDeLAnneauForm = new FilmForm();
+            laCommunauteDeLAnneauForm.setTitle("La communauté de l'anneau");
+            laCommunauteDeLAnneauForm.setDuration(178);
+            laCommunauteDeLAnneauForm.setDirectorId(peterJackson.getId());
+            Film laCommunauteDeLAnneau = filmMapper.convertFilmFormToFilm(laCommunauteDeLAnneauForm);
+            // Film laCommunauteDeLAnneau = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(laCommunauteDeLAnneauForm));
 
-			FilmForm lesDeuxToursForm = new FilmForm();
-			lesDeuxToursForm.setTitre("Les deux tours");
-			lesDeuxToursForm.setDuree(179);
-			lesDeuxToursForm.setRealisateurId(peterJackson.getId());
-			Film lesDeuxTours = FilmMapper.convertFilmFormToFilm(lesDeuxToursForm);
-			// Film lesDeuxTours = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(lesDeuxToursForm));
+            FilmForm lesDeuxToursForm = new FilmForm();
+            lesDeuxToursForm.setTitle("Les deux tours");
+            lesDeuxToursForm.setDuration(179);
+            lesDeuxToursForm.setDirectorId(peterJackson.getId());
+            Film lesDeuxTours = filmMapper.convertFilmFormToFilm(lesDeuxToursForm);
+            // Film lesDeuxTours = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(lesDeuxToursForm));
 
-			FilmForm leRetourDuRoiForm = new FilmForm();
-			leRetourDuRoiForm.setTitre("Le retour du roi");
-			leRetourDuRoiForm.setDuree(201);
-			leRetourDuRoiForm.setRealisateurId(peterJackson.getId());
-			Film leRetourDuRoi = FilmMapper.convertFilmFormToFilm(leRetourDuRoiForm);
-			// Film leRetourDuRoi = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(leRetourDuRoiForm));
+            FilmForm leRetourDuRoiForm = new FilmForm();
+            leRetourDuRoiForm.setTitle("Le retour du roi");
+            leRetourDuRoiForm.setDuration(201);
+            leRetourDuRoiForm.setDirectorId(peterJackson.getId());
+            Film leRetourDuRoi = filmMapper.convertFilmFormToFilm(leRetourDuRoiForm);
+            // Film leRetourDuRoi = FilmMapper.convertFilmDTOToFilm(myFilmsService.createFilm(leRetourDuRoiForm));
 
-			// Affectation des films aux realisateurs
+            // Affectation des films aux directors
 
-			List<Film> peterJacksonFilms = new ArrayList<>();
-			peterJacksonFilms.add(laCommunauteDeLAnneau);
-			peterJacksonFilms.add(lesDeuxTours);
-			peterJacksonFilms.add(leRetourDuRoi);
-			peterJackson.setFilmRealises(peterJacksonFilms);
+            List<Film> peterJacksonFilms = new ArrayList<>();
+            peterJacksonFilms.add(laCommunauteDeLAnneau);
+            peterJacksonFilms.add(lesDeuxTours);
+            peterJacksonFilms.add(leRetourDuRoi);
+            peterJackson.setFilmsProduced(peterJacksonFilms);
 
-			List<Film> jamesCameronFilms = new ArrayList<>();
-			jamesCameronFilms.add(avatar);
-			jamesCameron.setFilmRealises(jamesCameronFilms);
+            List<Film> jamesCameronFilms = new ArrayList<>();
+            jamesCameronFilms.add(avatar);
+            jamesCameron.setFilmsProduced(jamesCameronFilms);
 
-			// Mise a jour du statut "celebre" des Realisateurs
-			List<Realisateur> realisateurs = new ArrayList<>();
-			realisateurs.add(jamesCameron);
-			realisateurs.add(peterJackson);
+            // Mise a jour du statut "famous" des Directors
+            List<Director> directors = new ArrayList<>();
+            directors.add(jamesCameron);
+            directors.add(peterJackson);
 
-			List <Realisateur> realisateursCelebres = myFilmsService.updateRealisateurCelebres(realisateurs);
-			System.out.println(realisateursCelebres.size());
-			for(Realisateur realisateurCelebre : realisateursCelebres) {
-				System.out.println(realisateurCelebre.getPrenom() + realisateurCelebre.getNom() + " est célèbre");
-			}
-			// Attendue : false
-			// Attendue : true
-		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+            List<Director> directorsFamouss = myFilmsService.updateDirectorsFamous(directors);
+            System.out.println(directorsFamouss.size());
+            for (Director directorFamous : directorsFamouss) {
+                System.out.println(directorFamous.getName() + directorFamous.getSurname() + " est célèbre");
+            }
+            // Attendue : false
+            // Attendue : true
+        } catch (ServiceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Permet de tester la recuperation des films.
-	 */
-	public void findAllFilmsTest() {
-		try {
-			List<Film> films = myFilmsService.findAll();
-
-			// Attendue : 4
-			System.out.println("Combien y a-t-il de films ? " + films.size());
-
-			films.forEach(System.out::println);
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Permet de tester la recuperation des films.
+     */
+    public void findAllFilmsTest() {
+        try {
+            List<Film> films = myFilmsService.findAll();
+            // Attendue : 4
+            System.out.println("Combien y a-t-il de films ? " + films.size());
+            films.forEach(System.out::println);
+        } catch (ServiceException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 
 	/**
 	 * Permet de tester la creation des films.
 	 */
 	public void createFilmTest() {
 		try {
-			Realisateur realisateur = myFilmsService.findRealisateurByNomAndPrenom("Cameron", "James");
-			RealisateurDTO realisateurDTO = RealisateurMapper.convertRealisateurToRealisateurDTO(realisateur);
+			Director director = myFilmsService.findDirectorByNameAndSurname("Cameron", "James");
+			DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(director);
 			FilmForm titanic = new FilmForm();
-			titanic.setTitre("Titanic");
-			titanic.setDuree(195);
-			titanic.setRealisateurId(realisateurDTO.getId());
+			titanic.setTitle("Titanic");
+			titanic.setDuration(195);
+			titanic.setDirectorId(directorDTO.getId());
 
-			FilmDTO newFilm = myFilmsService.createFilm(titanic);
+            FilmDTO newFilm = myFilmsService.createFilm(titanic);
 
-			System.out.println("Le nouveau film 'Titanic' possede l'id : " + newFilm.getId());
+            System.out.println("Le nouveau film 'Titanic' possede l'id : " + newFilm.getId());
 
-			List<Film> films = myFilmsService.findAll();
+            List<Film> films = myFilmsService.findAll();
 
-			// Attendue : 5
-			System.out.println("Combien y a-t-il de films ? " + films.size());
+            // Attendue : 5
+            System.out.println("Combien y a-t-il de films ? " + films.size());
 
-			films.forEach(f -> System.out.println("Le realisateur du film : '" + f.getTitre() + "' est : " + f.getRealisateur()));
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
-	}
+            films.forEach(f -> System.out.println("Le director du film : '" + f.getTitle() + "' est : " + f.getDirector()));
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Permet de tester la recuperation d'un film par son identifiant.
+     */
+    public void findFilmByIdTest() {
+        try {
+            FilmDTO avatar = filmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(1));
+            System.out.println("Le film avec l'identifiant 1 est : " + avatar);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Permet de tester la suppression d'un film avec son identifiant.
+     */
+    public void deleteFilmByIdTest() {
+        try {
+            FilmDTO filmDTO = filmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(5));
+            System.out.println("Le film avec l'identifiant 5 est : " + filmDTO);
+            myFilmsService.deleteFilm(5);
+            filmDTO = filmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(5));
+
+            System.out.println("Suppression du film avec l'identifiant 5...");
+            System.out.println("Le film avec l'identifiant 5 est : " + filmDTO);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+    }
 
 	/**
-	 * Permet de tester la recuperation d'un film par son identifiant.
+	 * Permet de tester la mise a jour du statut famous d'un Director.
 	 */
-	public void findFilmByIdTest() {
+	public void updateDirectorFamous() {
 		try {
-			FilmDTO avatar = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(1));
-			System.out.println("Le film avec l'identifiant 1 est : " + avatar);
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Permet de tester la suppression d'un film avec son identifiant.
-	 */
-	public void deleteFilmByIdTest() {
-		try {
-			FilmDTO filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(5));
-			System.out.println("Le film avec l'identifiant 5 est : " + filmDTO);
-			myFilmsService.deleteFilm(5);
-			filmDTO = FilmMapper.convertFilmToFilmDTO(myFilmsService.findFilmById(5));
-
-			System.out.println("Suppression du film avec l'identifiant 5...");
-			System.out.println("Le film avec l'identifiant 5 est : " + filmDTO);
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Permet de tester la mise a jour du statut celebre d'un Realisateur.
-	 */
-	public void updateRealisateurCelebre() {
-		try {
-			RealisateurDTO realisateurDTO = RealisateurMapper.convertRealisateurToRealisateurDTO(myFilmsService.findRealisateurByNomAndPrenom("Cameron", "James"));
+			DirectorDTO directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorByNameAndSurname("Cameron", "James"));
 			// Attendue : false
-			System.out.println("James Cameron est-il celebre ? " + realisateurDTO.isCelebre());
+			System.out.println("James Cameron est-il famous ? " + directorDTO.isFamous());
 
-			FilmForm titanic = new FilmForm();
-			titanic.setTitre("Titanic");
-			titanic.setDuree(195);
-			titanic.setRealisateurId(realisateurDTO.getId());
+            FilmForm titanic = new FilmForm();
+            titanic.setTitle("Titanic");
+            titanic.setDuration(195);
+            titanic.setDirectorId(directorDTO.getId());
 
-			FilmForm leHobbit = new FilmForm();
-			leHobbit.setTitre("Le Hobbit : Un voyage inattendu");
-			leHobbit.setDuree(169);
-			leHobbit.setRealisateurId(realisateurDTO.getId());
+            FilmForm leHobbit = new FilmForm();
+            leHobbit.setTitle("Le Hobbit : Un voyage inattendu");
+            leHobbit.setDuration(169);
+            leHobbit.setDirectorId(directorDTO.getId());
 
-			myFilmsService.createFilm(titanic);
-			FilmDTO leHobbitDTO = myFilmsService.createFilm(leHobbit);
+            myFilmsService.createFilm(titanic);
+            FilmDTO leHobbitDTO = myFilmsService.createFilm(leHobbit);
 
 			System.out.println("James Cameron a realise deux nouveaux films");
-			realisateurDTO = RealisateurMapper.convertRealisateurToRealisateurDTO(myFilmsService.findRealisateurByNomAndPrenom("Cameron", "James"));
+			directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorByNameAndSurname("Cameron", "James"));
 
-			// Attendue : true
-			System.out.println("James Cameron est-il celebre ? " + realisateurDTO.isCelebre());
+            // Attendue : true
+            System.out.println("James Cameron est-il famous ? " + directorDTO.isFamous());
 
 			myFilmsService.deleteFilm(leHobbitDTO.getId());
 			System.out.println("Ce n'est pas James Cameron qui a realise le Hobbit, suppression du film !");
-			realisateurDTO = RealisateurMapper.convertRealisateurToRealisateurDTO(myFilmsService.findRealisateurByNomAndPrenom("Cameron", "James"));
+			directorDTO = DirectorMapper.convertDirectorToDirectorDTO(myFilmsService.findDirectorByNameAndSurname("Cameron", "James"));
 
-			// Attendue : false
-			System.out.println("James Cameron est-il celebre ? " + realisateurDTO.isCelebre());
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
-	}
+            // Attendue : false
+            System.out.println("James Cameron est-il famous ? " + directorDTO.isFamous());
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+    }
 }
